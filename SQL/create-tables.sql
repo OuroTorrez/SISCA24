@@ -234,7 +234,6 @@ CALL insertar_registro_dotaciones(
     'Nota de prueba 1' -- p_nota
 );
 
-ALTER TABLE registro_dotaciones ADD COLUMN pdf_docs VARCHAR(50) COMMENT 'PDF con los documentos que se generan al llegar la dotacion';
-ALTER TABLE registro_dotaciones MODIFY COLUMN pdf_docs VARCHAR(50) DEFAULT NULL COMMENT 'PDF con los documentos que se generan al llegar la dotacion';
+ALTER TABLE registro_dotaciones ADD COLUMN pdf_docs VARCHAR(50) DEFAULT COMMENT 'PDF con los documentos que se generan al llegar la dotacion';
 
 UPDATE registro_dotaciones SET pdf_docs = NULL;

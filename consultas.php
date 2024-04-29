@@ -197,6 +197,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
                 // Verificar si el tooltip sale de la pantalla a la derecha
                 if (spaceRight < tooltipWidth) {
+                    console.log('derecha', spaceRight, tooltipWidth, rect.left + 10, 'px');
                     tooltip.style.setProperty('--tooltip-left', '-' + (tooltipWidth - spaceRight + 20) + 'px');
                 }
 

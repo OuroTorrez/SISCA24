@@ -66,7 +66,7 @@
                 </button>
             </div>
             <object class="ResponseObject" data="" download=""></object>
-            <button onclick="UploadDoc('Reemplazar documentos', folioGlobal)">
+            <button class="ResponseDocReplaceButton" onclick="">
                 <i class="bi bi-cloud-upload"></i>
                 <span>Reemplazar</span>
             </button>
@@ -76,8 +76,7 @@
 
 </html>
 <script>
-    var folioGlobal = null;
-    // Path: ventanaResponse.php
+
     function WaitDoc(title, message) {
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseDoc').css('display', 'none');
@@ -86,6 +85,8 @@
         $('#ResponseDocEditable').css('display', 'none');
         $('.ResponseTitle h2').text(title);
         $('#WaitDoc h4').text(message);
+        data = null;
+        blob = null;
     }
 
     function ResponseDoc(title, objectData, downloadName) {
@@ -99,6 +100,8 @@
         $('.ResponseObject').attr('download', downloadName);
         $('#ResponseObjectFail').attr('href', objectData);
         $('#ResponseObjectFail').attr('download', downloadName);
+        data = null;
+        blob = null;
     }
 
     function CloseResponse() {
@@ -107,6 +110,8 @@
         $('#WaitDoc').css('display', 'none');
         $('#UploadDoc').css('display', 'none');
         $('#ResponseDocEditable').css('display', 'none');
+        data = null;
+        blob = null;
     }
 
     function UploadDoc(title, folio) {
@@ -117,9 +122,11 @@
         $('#ResponseDocEditable').css('display', 'none');
         $('.ResponseTitle h2').text(title);
         $('#folio').val(folio);
+        data = null;
+        blob = null;
     }
 
-    function ResponseDocEditable(title,objectData, closeFunction) {
+    function ResponseDocEditable(title,objectData, closeFunction, replaceFunction) {
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseDoc').css('display', 'none');
         $('#WaitDoc').css('display', 'none');
@@ -128,6 +135,9 @@
         $('.ResponseTitle h2').text(title);
         $('.ResponseObject').attr('data', objectData);
         $('#ResponseDocEditable .ResponseDocCloseCustom').attr('onclick', closeFunction);
+        $('#ResponseDocEditable .ResponseDocReplaceButton').attr('onclick', replaceFunction);
+        data = null;
+        blob = null;
     }
 
     function generarEntradasyPDF(datoAEnviar, orientacion, toDownload) {
@@ -255,15 +265,17 @@
                 WaitDoc("Error al generar el registro", "Por favor intente de nuevo");
             }
         });
+        data = null;
+        blob = null;
     }
 
     function subirDocumentos() {
         WaitDoc("Subiendo tus documentos...", "Por favor espere un momento...");
-        var targetDirectory = "DocsEntradas/";
-        var nombrePersonalizado = 'ENTRADAS_' + $folio + '.pdf';
-
+        
         var folio = document.getElementById("folio").value;
         var docs = document.getElementById("SubirDocs").files[0]; // Acceder al archivo seleccionado
+        var targetDirectory = "DocsEntradas/";
+        var nombrePersonalizado = 'ENTRADAS_' + folio + '.pdf';
 
         var formData = new FormData();
         formData.append("docs", docs);
@@ -281,7 +293,7 @@
             success: function (response) {
                 console.log(response);
                 if (response != "") {
-                    ResponseDocEditable("Documentos subidos exitosamente", response, 'location.reload()')
+                    ResponseDocEditable("Documentos subidos exitosamente", response, 'location.reload()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
                     folioGlobal = folio;
                 } else {
                     WaitDoc("Error al subir los documentos", "Por favor intente de nuevo");
@@ -292,6 +304,8 @@
                 WaitDoc("Error al enviar los documentos al servidor", "Por favor intente de nuevo");
             }
         });
+        data = null;
+        blob = null;
     }
 
     function consultarDoc(folio) {
@@ -303,14 +317,15 @@
             },
             success: function (response) {
                 console.log(response);
-                ResponseDocEditable("Documentos subidos", response, 'CloseResponse()');
-                folioGlobal = folio;
+                ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
             },
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);
                 WaitDoc("Error al consultar los documentos", "Por favor intente de nuevo");
             }
         });
+        data = null;
+        blob = null;
     }
 
 
