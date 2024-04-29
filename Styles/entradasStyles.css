@@ -1,0 +1,124 @@
+#EntradasTitle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#SelectDotacionesLabel {
+    margin-top: 20px;
+    font-size: 190%;
+    color: var(--Primary);
+}
+
+#EntradasTitle h2 {
+    font-size: 220%;
+}
+
+#EntradasTitle h3 {
+    font-size: 150%;
+}
+
+/*########## FORMULARIO ##########*/
+
+#registroDotaciones {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 40px 0;
+}
+
+#registroDotacionesInputs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 50vw;
+    flex-wrap: wrap;
+}
+
+.FormData {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 45%;
+    padding: 10px;
+}
+
+.FormData > * {
+    width: 100%;
+}
+
+.FormData #nota {
+    height: 100px;
+}
+
+.FormData > *:not(label) {
+    height: 47px;
+}
+
+@media screen and (max-width: 1024px){
+    #registroDotacionesInputs {
+        width: 80vw;
+    }
+}
+
+@media screen and (max-width: 768px){
+    #registroDotacionesInputs {
+        width: 100vw;
+    }
+}
+
+@media screen and (max-width: 425px){
+    #registroDotacionesInputs {
+        flex-direction: column;
+    }
+    
+    #registroDotacionesInputs .FormData {
+        width: 100%;
+    }
+}
+
+/*########## Entradas ##########*/
+hr {
+    width: 70%;
+    border-radius: 20px;
+    border: 1px solid var(--Secondary);
+    margin: 0, auto;
+}
+#tablaEntradas {
+    display: table;
+    width: 100%;
+    margin: 0 auto 30px auto;
+}
+
+#tablaEntradas div.tr:first-child span.td {
+    border-bottom: 2px solid var(--Secondary);
+}
+
+#tablaEntradas div.tr span.td {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+div.tr, form.tr {
+    display: table-row;
+    width: 100%;
+}
+
+span.td {
+    display: table-cell;
+    padding: 10px;
+    margin: 0;
+}
+
+span.td > * {
+    height: 47px;
+    width: 100%;
+}
+
+/* A partir de tableta 768px implementar dieseño para la tabla moviles */

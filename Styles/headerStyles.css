@@ -1,0 +1,173 @@
+/*########## Header ##########*/
+
+#Header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    background-image: var(--Gaussian);
+    background-blend-mode: overlay;
+    box-shadow: 0px 0px 5px 1px #000000;
+}
+
+#HeaderMenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 90%;
+}
+
+#HeaderMenuImage {
+    width: 110px;
+    height: 110px;
+}
+
+.HeaderMenuNav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 50%;
+}
+
+.HeaderMenuNav .MenuNavOption {
+    list-style: none;
+}
+
+.HeaderMenuNav .MenuNavOption a {
+    text-decoration: none;
+    font-family: "Asap Condensed", sans-serif;
+    font-size: large;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--Background);
+    padding: 10px 20px;
+    margin: none;
+    border-radius: 10px;
+}
+
+.HeaderMenuNav .MenuNavOption a:hover{
+    background-color: #6841598e;
+}
+
+.HeaderMenuSubNav {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    background-color: var(--Background);
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 1px #000000;
+    margin: 10px 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.HeaderMenuNav .MenuNavOption:hover .HeaderMenuSubNav {
+    display: block;
+}
+
+.HeaderMenuSubNav .MenuNavOption a{
+    display: block;
+    color: var(--OnBackground);
+    border-radius: 0px;
+}
+
+.HeaderMenuSubNav .MenuNavOption a:hover{
+    background-color: var(--Secondary);
+    color: var(--Background);
+}
+
+.HeaderMenuSubNav hr {
+    width: 80%;
+    border-radius: 200%;
+    border: 1px solid var(--Secondary);
+    margin: 0 auto;
+}
+
+/*########## Menú de usuario en header ##########*/
+
+#HeaderAccount {
+    width: 10%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#HeaderAccountButton {
+    pointer-events: all;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+#HeaderAccountImage {
+    height: 50px;
+}
+
+#HeaderAccountMenu {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    position: absolute;
+    top: 80%;
+    right: 10px;
+    background-color: var(--Background);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 1px #00000067;
+    overflow: hidden;
+    max-height: 0;
+    width: fit-content;
+}
+
+#HeaderAccountMenu > *{
+    font-family: "Asap Condensed", sans-serif;
+    color: var(--OnBackground);
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    background-color: var(--Background);
+}
+
+#HeaderAccountMenu span {
+    display: block;
+    height: fit-content;
+}
+
+#HeaderAccountMenu a, span {
+    padding: 10px 20px;
+    max-width: 700px;
+    width: 200px;
+}
+
+#HeaderAccountMenu a:hover {
+    background-color: var(--Secondary);
+    color: var(--Background);
+}
+
+#HeaderAccountMenu hr {
+    width: 80%;
+    border-radius: 200%;
+    border: 1px solid var(--Secondary);
+    margin: 0 auto;
+}
+
+@keyframes HeaderAccountMenuShowAnim {
+    0% {
+    }
+    100% {
+        max-height: 700px;
+    }
+}
+
+#HeaderAccountMenu.show {
+    animation: 1.5s HeaderAccountMenuShowAnim forwards ease;
+}
