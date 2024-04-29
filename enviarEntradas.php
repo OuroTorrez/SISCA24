@@ -153,10 +153,9 @@ function generarDocumento($folio)
     <html lang='es'>
 
     <head>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <!-- Include common resources -->
+        <?php include 'commonResources.php'; ?>
         <title>Enviar entradas</title>
-
         <!-- Styles -->
         <link rel='stylesheet' href='Styles/enviarEntradaDoc.css'>
     </head>
