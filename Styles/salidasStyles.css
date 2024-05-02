@@ -6,7 +6,7 @@
 
 /*########## FORMULARIO ##########*/
 
-#registroDotaciones {
+#salidasDotaciones {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,12 +15,12 @@
     margin: 40px 0;
 }
 
-#registroDotacionesInputs {
+#salidasDotacionesInputs {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 50vw;
+    width: 70vw;
     flex-wrap: wrap;
 }
 
@@ -29,7 +29,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 45%;
+    width: 30%;
     padding: 10px;
 }
 
@@ -46,23 +46,23 @@
 }
 
 @media screen and (max-width: 1024px){
-    #registroDotacionesInputs {
+    #salidasDotacionesInputs {
         width: 80vw;
     }
 }
 
 @media screen and (max-width: 768px){
-    #registroDotacionesInputs {
+    #salidasDotacionesInputs {
         width: 100vw;
     }
 }
 
 @media screen and (max-width: 425px){
-    #registroDotacionesInputs {
+    #salidasDotacionesInputs {
         flex-direction: column;
     }
     
-    #registroDotacionesInputs .FormData {
+    #salidasDotacionesInputs .FormData {
         width: 100%;
     }
 }
@@ -74,17 +74,17 @@ hr {
     border: 1px solid var(--Secondary);
     margin: 0, auto;
 }
-#tablaEntradas {
+#tablaProductos {
     display: table;
     width: 100%;
     margin: 0 auto 30px auto;
 }
 
-#tablaEntradas div.tr:first-child span.td {
+#tablaProductos div.tr:first-child span.td {
     border-bottom: 2px solid var(--Secondary);
 }
 
-#tablaEntradas div.tr span.td {
+#tablaProductos div.tr span.td {
     font-weight: bold;
     white-space: nowrap;
 }
@@ -104,8 +104,6 @@ span.td > * {
     height: 47px;
     width: 100%;
 }
-
-/* A partir de tableta 768px implementar dieseño para la tabla moviles */
 
 /*########## Tabla contenidos de caja ##########*/
 

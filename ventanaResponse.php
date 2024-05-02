@@ -14,7 +14,7 @@
         <div id="ResponseDoc">
             <div class="ResponseTitle">
                 <h2 style="color: var(--Background);">Registro generado exitosamente</h2>
-                <button id="ResponseDocClose" onclick="CloseResponse()">
+                <button id="ResponseDocClose" class="ResponseDocCloseCustom" onclick="CloseResponse()">
                     <i class="bi bi-x-circle"></i>
                 </button>
             </div>
@@ -80,7 +80,7 @@
         blob = null;
     }
 
-    function ResponseDoc(title, objectData, downloadName) {
+    function ResponseDoc(title, objectData, downloadName, closeFunction) {
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseDoc').css('display', 'flex');
         $('#WaitDoc').css('display', 'none');
@@ -91,6 +91,7 @@
         $('.ResponseObject').attr('download', downloadName);
         $('#ResponseObjectFail').attr('href', objectData);
         $('#ResponseObjectFail').attr('download', downloadName);
+        $('#ResponseDocClose').attr('onclick', closeFunction);
         data = null;
         blob = null;
     }
@@ -171,7 +172,7 @@
                         // Crea un enlace para descargar el PDF
                         var link = document.createElement('a');
                         link.href = window.URL.createObjectURL(blob);
-                        ResponseDoc("Registro generado exitosamente", link.href, link.download);
+                        ResponseDoc("Registro generado exitosamente", link.href, link.download, 'window.location.reload()');
                         if (toDownload) {
                             // Obtiene la fecha actual y Formatea la fecha en el formato 'dia-mes-año para Asignar el nombre al archivo'
                             var date = new Date();
@@ -313,6 +314,72 @@
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);
                 WaitDoc("Error al consultar los documentos", "Por favor intente de nuevo");
+            }
+        });
+        data = null;
+        blob = null;
+    }
+
+    function generarSalidasyPDF(datoAEnviar, orientacion, toDownload) {
+        WaitDoc("Generando registro...", "Por favor espere un momento");
+        // Enviar los datos a enviarSalidas.php para darle formato HTML-->>PDF y/o guardar en BD
+        $.ajax({
+            url: 'enviarSalidas.php',
+            type: 'POST',
+            data: datoAEnviar,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(datoAEnviar);
+                console.log(data);
+                console.log(response);
+                // Extraer el folio del registro de la respuesta HTML
+                if (toDownload) {
+                    var parser = new DOMParser();
+                    var htmlDoc = parser.parseFromString(response, 'text/html');
+                    var folio = htmlDoc.querySelector('#folioElement').innerText;
+                }
+
+                // Envia los datos para generar el PDF a generatePDF.php
+                $.ajax({
+                    url: 'generatePDF.php',
+                    type: 'POST',
+                    data: {
+                        html: response,
+                        orientation: orientacion
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (response) {
+                        // Crea un objeto Blob con los datos del PDF, esto para que pueda ser leído por el elemento object
+                        var blob = new Blob([response], {
+                            type: 'application/pdf'
+                        });
+
+                        // Crea un enlace para descargar el PDF
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        ResponseDoc("Registro generado exitosamente", link.href, link.download, 'window.location.reload()');
+                        if (toDownload) {
+                            // Obtiene la fecha actual y Formatea la fecha en el formato 'dia-mes-año para Asignar el nombre al archivo'
+                            var date = new Date();
+                            var formattedDate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+                            link.download = 'SALIDA ' + folio + ' ' + formattedDate + '.pdf';
+                            link.click();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr, status, error);
+                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo");
+                    }
+                });
+
+            },
+            error: function (xhr, status, error) {
+                // Maneja los errores aquí
+                console.error(xhr, status, error);
+                WaitDoc("Error al generar el registro", "Por favor intente de nuevo");
             }
         });
         data = null;

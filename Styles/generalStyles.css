@@ -25,7 +25,7 @@ h3,
 h4,
 h5,
 h6,
-table {
+table, th {
     font-family: "Asap Condensed", sans-serif;
     font-style: normal;
     color: var(--Primary);
@@ -318,19 +318,44 @@ input[type="file"]::file-selector-button:hover {
     padding: 20px;
 }
 
-.CenteredSection {
+#UserTitle {
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    overflow-x: hidden;
 }
 
-.CenteredSection h2 {
+#UserTitle h2 {
     font-size: 220%;
 }
 
-.CenteredSection h3 {
+#UserTitle h3 {
     font-size: 150%;
+}
+
+/*########## Tabla ##########*/
+
+table {
+    width: 60%;
+    font-size: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, td {
+    text-align: left;
+}
+
+th {
+    padding: 10px;
+    border-bottom: 2px solid #691549;
+}
+
+td {
+    padding: 10px;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #69154956;
 }

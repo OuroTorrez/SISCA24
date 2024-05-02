@@ -1,4 +1,22 @@
 <?php
+$municipios = [
+    "Acuitzio","Aguililla","Álvaro Obregón","Angamacutiro","Angangueo",
+    "Apatzingán","Aporo","Aquila","Ario","Arteaga","Briseñas","Buenavista","Carácuaro",
+    "Coahuayana","Coalcomán de Vázquez Pallares","Coeneo","Contepec","Copándaro","Cotija","Cuitzeo","Charapan","Charo","Chavinda","Cherán",
+    "Chilchota","Chinicuila","Chucándiro","Churintzio","Churumuco","Ecuandureo","Epitacio Huerta",
+    "Erongarícuaro","Gabriel Zamora","Hidalgo","La Huacana","Huandacareo","Huaniqueo","Huetamo",
+    "Huiramba","Indaparapeo","Irimbo","Ixtlán","Jacona","Jiménez","Jiquilpan","Juárez",
+    "Jungapeo","Lagunillas","Madero","Maravatío","Marcos Castellanos","Lázaro Cárdenas","Morelia",
+    "Morelos","Múgica","Nahuatzen","Nocupétaro","Nuevo Parangaricutiro","Nuevo Urecho","Numarán","Ocampo","Pajacuarán",
+    "Panindícuaro","Parácuaro","Paracho","Pátzcuaro","Penjamillo","Peribán",
+    "La Piedad","Purépero","Puruándiro","Queréndaro","Quiroga","Cojumatlán de Régules","Los Reyes",
+    "Sahuayo","San Lucas","Santa Ana Maya","Salvador Escalante","Senguio","Susupuato","Tacámbaro","Tancítaro","Tangamandapio",
+    "Tangancícuaro","Tanhuato","Taretan","Tarímbaro","Tepalcatepec","Tingambato","Tingüindín",
+    "Tiquicheo de Nicolás Romero","Tlalpujahua","Tlazazalca","Tocumbo","Tumbiscatío","Turicato","Tuxpan","Tuzantla",
+    "Tzintzuntzan","Tzitzio","Uruapan","Venustiano Carranza","Villamar","Vista Hermosa","Yurécuaro",
+    "Zacapu","Zamora","Zináparo","Zinapécuaro","Ziracuaretiro","Zitácuaro","José Sixto Verduzco"
+];
+
 include 'conexion.php';
 // Establish database connection
 $conn = conectar();
@@ -7,62 +25,60 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 }
 ?>
 <?php if (isset($error)) { ?>
-    <div id="Errores">
-        <div id="Error">
-            <p><?php echo $error; ?></p>
-        </div>
+<div id="Errores">
+    <div id="Error">
+        <p><?php echo $error; ?></p>
     </div>
+</div>
 <?php } ?>
-<!-- Formulario de registro de dotaciones -->
-<form id="registroDotaciones" method="post" action="">
-    <div id="registroDotacionesInputs">
+<!-- Formulario de registro de salidas -->
+<form id="salidasDotaciones" method="post" action="">
+    <div id="salidasDotacionesInputs">
         <div class="FormData">
-            <label for="proveedor" class="req">Proveedor:</label>
-            <select name="proveedor" id="proveedor" required>
+            <label for="afavor" class="req">A favor:</label>
+            <input type="text" name="afavor" id="afavor" required>
+        </div>
+        <div class="FormData">
+            <label for="municipio" class="req">municipio:</label>
+            <select name="municipio" id="municipio" required>
                 <?php
-                // Muestra los proveedores que pueden surtir el programa de dotaciones seleccionado
-                $query = $conn->prepare("SELECT a.id_proveedor, p.nombre FROM proveedores_autorizados a INNER JOIN proveedores p ON a.id_proveedor = p.id_proveedor WHERE a.programa = ? AND a.disponibilidad = 'SI'");
-                $query->bind_param("s", $_POST['data']);
-                $query->execute();
-                $result = $query->get_result();
-
-                if ($result->num_rows > 0) {
-                    // Imprime los proveedores en un select
-                    while ($row = $result->fetch_assoc()) {
-                        $id = $row["id_proveedor"];
-                        $nombre = $row["nombre"];
-                        echo "<option value='$id'>$nombre</option>";
-                    }
-                } else {
-                    echo "<option value=''>Ningún proveedor puede surtir</option>";
+                foreach ($municipios as $municipio) {
+                    echo "<option value='$municipio'>$municipio</option>";
                 }
                 ?>
             </select>
         </div>
         <div class="FormData">
-            <label for="entrada" class="req">Tipo de entrada:</label>
-            <select name="entrada" id="entrada" required>
+            <label for="salida"class="req">Tipo de salida:</label>
+            <select name="salida" id="salida" required>
                 <?php
-                // Muestra los tipos de entrada posibles en un select
-                $sql = "SELECT * FROM entradas";
+                // Muestra los tipos de salida posibles en un select
+                $sql = "SELECT * FROM salidas";
                 $result = $conn->query($sql);
-
                 if ($result->num_rows > 0) {
                     // Output options as select dropdown
                     while ($row = $result->fetch_assoc()) {
-                        $id = $row["id_entrada"];
-                        $tipo_entrada = $row["tipo"];
-                        echo "<option value='$id'>$id - $tipo_entrada</option>";
+                        $id = $row["id_salida"];
+                        $tipo_salida = $row["tipo"];
+                        echo "<option value='$id'>$id - $tipo_salida</option>";
                     }
                 } else {
-                    echo "<option value=''>No options found.</option>";
+                    echo "<option value=''>No se encontraron</option>";
                 }
                 ?>
             </select>
         </div>
         <div class="FormData">
-            <label for="entrega" class="req">Entrega:</label>
-            <input type="text" name="entrega" id="entrega" maxlength="255" required>
+            <label for="recibe" class="req">Persona que recibe:</label>
+            <input type="text" name="recibe" id="recibe" required>
+        </div>
+        <div class="FormData">
+            <label for="referencia" class="req">Referencia:</label>
+            <input type="text" name="referencia" id="referencia" required>
+        </div>
+        <div class="FormData">
+            <label for="monto" class="req">Monto ($ MXN):</label>
+            <input type="number" name="monto" id="monto" min="0" max="999999" step="any" required>
         </div>
         <div class="FormData">
             <label for="dotacion" class="req">Dotación:</label>
@@ -84,20 +100,24 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         </div>
     </div>
 
-
-    <!-- Formulario de registro de entradas -->
-    <div id="tablaEntradas">
+    <!-- Tabla de productos -->
+    <div id="tablaProductos">
         <div class="tr">
             <span class="td" style="width: 10%;">Clave</span>
-            <span class="td" style="width: 40%;">Artículo</span>
+            <span class="td" style="width: 30%;">Artículo</span>
             <span class="td" style="width: 15%;">Unidad</span>
             <span class="td req" style="width: 15%;">Lote</span>
             <span class="td req" style="width: 10%;">Caducidad</span>
             <span class="td req" style="width: 10%;">Cantidad</span>
+            <span class="td" style="width: 10%;">Existencias</span>
         </div>
         <?php
+        $usuario = $_SESSION['usuario'];
         // Muestra los productos correspondientes al programa o dotación seleccionada
-        $query = $conn->prepare("SELECT clave, producto, medida FROM dotaciones WHERE programa = ?");
+        $query = $conn->prepare("SELECT d.clave, d.producto, d.medida, SUM(dr.cantidad) - COALESCE((SELECT SUM(sr.cantidad) FROM salidas_registradas sr WHERE sr.clave = d.clave), 0) AS existencias
+        FROM dotaciones d
+        INNER JOIN salidas_registradas sr ON d.clave = sr.clave 
+        INNER JOIN dotaciones_registradas dr ON d.clave = dr.clave WHERE d.programa = ? AND sr.id_almacen = (SELECT id_almacen FROM usuarios WHERE usuario = $usuario) GROUP BY dr.clave");
         $query->bind_param("s", $_POST['data']);
         if ($query->execute()) {
             $result = $query->get_result();
@@ -123,6 +143,9 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                     echo "<span class='td'>";
                     echo "<input type='numbrer' name='cantidad[]' id='cantidad' placeholder='Cantidad' min='0' max='999'>";
                     echo "</span>";
+                    echo "<span class='td'>";
+                    echo "<input type='text' name='existencias[]' value='" . $row['existencias'] . "' disabled>";
+                    echo "</span>";
                     echo "</div>";
                 }
             }
@@ -147,9 +170,9 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             <span>Guardar</span>
         </button>
     </div>
-    
-    <?php include 'ventanaResponse.php'; ?>
 </form>
+
+<?php include 'ventanaResponse.php'; ?>
 
 <div id="tableContenidosCont">
     <?php
@@ -553,13 +576,42 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 </div>
 
 <script>
+    // Verificar en tiempo real que no se ingresen más cantidad de salidas que de existencias
+    // Obtener los elementos de cantidad de salida y existencias
+var inputsCantidad = document.querySelectorAll('input[name="cantidad[]"]');
+var inputsExistencias = document.querySelectorAll('input[name="existencias[]"]');
+
+// Iterar sobre los elementos de cantidad de salida
+for (var i = 0; i < inputsCantidad.length; i++) {
+    // Agregar un evento de escucha para el evento input
+    inputsCantidad[i].addEventListener('input', function() {
+        // Obtener el índice del elemento actual
+        var index = Array.from(inputsCantidad).indexOf(this);
+        // Obtener la cantidad de salida ingresada
+        var cantidadSalida = parseInt(this.value);
+        // Obtener las existencias correspondientes al mismo índice
+        var existencias = parseInt(inputsExistencias[index].value);
+
+        // Verificar si la cantidad de salida es mayor que las existencias
+        if (cantidadSalida > existencias) {
+            // Si es mayor, mostrar un mensaje de error
+            this.setCustomValidity('La cantidad de salida no puede ser mayor que las existencias');
+            this.reportValidity();
+        } else {
+            // Si no es mayor, borrar cualquier mensaje de error previo
+            this.setCustomValidity('');
+        }
+    });
+}
+
+
     // Selecciona la tabla para aplicar los estilos de efecto hover
-    var table = document.querySelector('#tablaEntradas');
+    var table = document.querySelector('#tablaProductos');
     table.addEventListener('mouseover', function(event) {
         // Encuentra la celda más cercana al elemento actual
         var cell = event.target.closest('.td');
         if (cell) {
-            var cells = document.querySelectorAll('#tablaEntradas .td');
+            var cells = document.querySelectorAll('#tablaProductos .td');
             var index = Array.from(cell.parentNode.children).indexOf(cell);
             cells.forEach(function(otherCell) {
                 if (Array.from(otherCell.parentNode.children).indexOf(otherCell) === index) {
@@ -576,7 +628,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     table.addEventListener('mouseout', function(event) {
         var cell = event.target.closest('.td');
         if (cell) {
-            var cells = document.querySelectorAll('#tablaEntradas .td');
+            var cells = document.querySelectorAll('#tablaProductos .td');
             cells.forEach(function(otherCell) {
                 otherCell.style.backgroundColor = '';
             });
@@ -590,7 +642,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         e.preventDefault();
 
 
-        var form = document.getElementById('registroDotaciones');
+        var form = document.getElementById('salidasDotaciones');
         var dataForm = new FormData(form);
 
         //Verifica que no haya campos vacios
@@ -602,7 +654,20 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             }
         }
 
-        generarEntradasyPDF(dataForm, 'portrait', true);
+        // Verificar errores en las cantidades de salida
+    var inputsCantidad = document.querySelectorAll('input[name="cantidad[]"]');
+    var inputsExistencias = document.querySelectorAll('input[name="existencias[]"]');
+    for (var i = 0; i < inputsCantidad.length; i++) {
+        var cantidadSalida = parseInt(inputsCantidad[i].value);
+        var existencias = parseInt(inputsExistencias[i].value);
+        if (cantidadSalida > existencias) {
+            inputsCantidad[i].setCustomValidity('La cantidad de salida no puede ser mayor que las existencias');
+            inputsCantidad[i].reportValidity();
+            return;
+        }
+    }
+
+        generarSalidasyPDF(dataForm, 'portrait', true);
     });
 
     if ( window.history.replaceState ) {

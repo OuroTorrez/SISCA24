@@ -1,0 +1,152 @@
+:root {
+    --Background: #f5f5f5;
+    --Primary: #3b1b2f;
+    --Secondary: #691549;
+    --OnBackground: #000000;
+    --Gaussian: url('https://upload.wikimedia.org/wikipedia/commons/5/5c/Image_gaussian_noise_example.png'), linear-gradient(90deg, rgb(75, 35, 60), rgb(71, 29, 56));
+}
+
+@page {
+    margin: 0cm 0cm;
+}
+
+html {
+    aspect-ratio: 1 / 1.41;
+}
+
+body {
+    padding: 20pt 20pt;
+}
+
+* {
+    color: var(--OnBackground) !important;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-style: normal;
+    page-break-inside: avoid;
+}
+
+/* .col[N] hasta 20 */
+.col1 {width: 5%;}
+.col2 {width: 10%;}
+.col3 {width: 15%;}
+.col4 {width: 20%;}
+.col5 {width: 25%;}
+.col6 {width: 30%;}
+.col7 {width: 35%;}
+.col8 {width: 40%;}
+.col9 {width: 45%;}
+.col10 {width: 50%;}
+.col11 {width: 55%;}
+.col12 {width: 60%;}
+.col13 {width: 65%;}
+.col14 {width: 70%;}
+.col15 {width: 75%;}
+.col16 {width: 80%;}
+.col17 {width: 85%;}
+.col18 {width: 90%;}
+.col19 {width: 95%;}
+.col20 {width: 100%;}
+
+/* Para todos los .col[N] */
+[class*="col"] {
+    display: inline-table;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.HeaderImg img {
+    height: 70pt;
+    vertical-align: middle
+}
+#HeaderTitle h5 {
+    padding: 0;
+}
+
+#HeaderTitle h5 span{
+    font-weight: normal;
+}
+
+.DatosContent {
+    vertical-align: top;
+    margin: 5pt 10pt;
+}
+
+.DatosTitulo {
+    font-weight: bold;
+    padding: 5pt;
+    border-bottom: 2pt solid #691549;
+}
+
+.DatosDatos {
+    padding: 2pt 15pt;
+    text-align: left;
+}
+
+.DatosDatos h5 {
+    padding: 5px;
+}
+
+.DatosDatos h5 span {
+    font-weight: normal;
+}
+
+#SeccionTabla {
+    margin: 5pt 0;
+}
+
+#TablaTitulo {
+    font-weight: bold;
+    padding: 5pt;
+    border-bottom: 2pt solid #691549;
+}
+
+table {
+    width: 100%;
+    border-spacing: 3pt;
+    page-break-inside: avoid;
+}
+
+th, td {
+    text-align: left;
+}
+
+th {
+    padding: 1pt 5pt;
+    border-bottom: 2pt solid #691549;
+}
+
+td {
+    padding: 0pt 5pt;
+    font-size: 38px;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #69154956;
+}
+
+#SeccionNota {
+    margin: 15pt 0;
+    text-align: left;
+}
+
+#SeccionNota h5 span {
+    font-weight: normal;
+}
+
+#SeccionFirmas {
+    margin: 15pt 0;
+}
+
+.FirmaEspacio {
+    height: 350px;
+}
+
+.FirmaLinea {
+    border-top: 2pt solid #691549;
+}
+
+#SeccionFirmas > div{
+    vertical-align: top;
+}

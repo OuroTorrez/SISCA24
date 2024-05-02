@@ -29,6 +29,7 @@
                         <li class="MenuNavOption"><a href="consultas.php">Consulta</a></li>
                     </ul>
                 </li>
+                <li class="MenuNavOption"><a href="salidas.php">Salidas</a></li>
                 <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] == 1){ ?>
                 <li class="MenuNavOption"><a href="registro.php">Usuarios</a></li>
                 <?php } ?>
