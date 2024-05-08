@@ -1,4 +1,7 @@
 <?php
+if(!isset($_SESSION)){
+    session_start();
+}
 $municipios = [
     "Acuitzio","Aguililla","Álvaro Obregón","Angamacutiro","Angangueo",
     "Apatzingán","Aporo","Aquila","Ario","Arteaga","Briseñas","Buenavista","Carácuaro",
@@ -113,12 +116,23 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         </div>
         <?php
         $usuario = $_SESSION['usuario'];
-        // Muestra los productos correspondientes al programa o dotación seleccionada
-        $query = $conn->prepare("SELECT d.clave, d.producto, d.medida, SUM(dr.cantidad) - COALESCE((SELECT SUM(sr.cantidad) FROM salidas_registradas sr WHERE sr.clave = d.clave), 0) AS existencias
+        // Obtener id_almacen del usuario
+        $query = $conn->prepare("SELECT id_almacen FROM usuarios WHERE usuario = ?");
+        $query->bind_param("s", $usuario);
+        $query->execute();
+        $query->bind_result($id_almacen);   
+        $query->store_result();
+        $query->fetch();
+
+
+        $query = $conn->prepare("SELECT d.clave, d.producto, d.medida, 
+        COALESCE((SELECT SUM(dr.cantidad) FROM dotaciones_registradas dr INNER JOIN registro_dotaciones rd ON dr.folio = rd.folio WHERE dr.clave = d.clave AND rd.id_almacen = ?), 0) 
+        - COALESCE((SELECT SUM(sr.cantidad) FROM salidas_registradas sr INNER JOIN salidas_dotaciones sd ON sr.folio = sd.folio WHERE sr.clave = d.clave AND sd.id_almacen = ?), 0) AS existencias
         FROM dotaciones d
-        INNER JOIN salidas_registradas sr ON d.clave = sr.clave 
-        INNER JOIN dotaciones_registradas dr ON d.clave = dr.clave WHERE d.programa = ? AND sr.id_almacen = (SELECT id_almacen FROM usuarios WHERE usuario = $usuario) GROUP BY dr.clave");
-        $query->bind_param("s", $_POST['data']);
+        WHERE d.programa = ?");
+
+
+        $query->bind_param("sss",$id_almacen, $id_almacen, $_POST['data']);
         if ($query->execute()) {
             $result = $query->get_result();
             if ($result->num_rows > 0) {

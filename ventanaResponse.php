@@ -44,7 +44,7 @@
                 <input class="inputFile" type="file" name="SubirDocs" id="SubirDocs" accept=".pdf">
             </label>
             <input type="text" id="folio" value="" hidden>
-            <button type="submit" onclick="subirDocumentos()">
+            <button class="ResponseDocUploadButton" type="submit" onclick="subirDocumentos()">
                 <i class="bi bi-cloud-upload"></i>
                 <span>Subir</span>
             </button>
@@ -106,7 +106,7 @@
         blob = null;
     }
 
-    function UploadDoc(title, folio) {
+    function UploadDoc(title, folio, accion) {
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseDoc').css('display', 'none');
         $('#WaitDoc').css('display', 'none');
@@ -116,6 +116,11 @@
         $('#folio').val(folio);
         data = null;
         blob = null;
+        if (accion == "Entradas") {
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsEntradas/", "ENTRADAS_' + folio + '.pdf")');
+        } else if (accion == "Salidas") {
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidas/", "SALIDAS_' + folio + '.pdf")');
+        }
     }
 
     function ResponseDocEditable(title,objectData, closeFunction, replaceFunction) {
@@ -261,13 +266,13 @@
         blob = null;
     }
 
-    function subirDocumentos() {
+    function subirDocumentos(targetDirectory, nombrePersonalizado) {
         WaitDoc("Subiendo tus documentos...", "Por favor espere un momento...");
         
         var folio = document.getElementById("folio").value;
         var docs = document.getElementById("SubirDocs").files[0]; // Acceder al archivo seleccionado
-        var targetDirectory = "DocsEntradas/";
-        var nombrePersonalizado = 'ENTRADAS_' + folio + '.pdf';
+        var targetDirectory = targetDirectory;
+        var nombrePersonalizado = nombrePersonalizado;
 
         var formData = new FormData();
         formData.append("docs", docs);
@@ -300,12 +305,13 @@
         blob = null;
     }
 
-    function consultarDoc(folio) {
+    function consultarDoc(folio, tipo) {
         $.ajax({
             url: 'enviarEntradas.php',
             type: 'POST',
             data: {
-                folioDocs: folio
+                folioDocs: folio,
+                tipo: tipo
             },
             success: function (response) {
                 console.log(response);
@@ -366,6 +372,69 @@
                             var date = new Date();
                             var formattedDate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
                             link.download = 'SALIDA ' + folio + ' ' + formattedDate + '.pdf';
+                            link.click();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr, status, error);
+                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo");
+                    }
+                });
+
+            },
+            error: function (xhr, status, error) {
+                // Maneja los errores aquí
+                console.error(xhr, status, error);
+                WaitDoc("Error al generar el registro", "Por favor intente de nuevo");
+            }
+        });
+        data = null;
+        blob = null;
+    }
+
+    function consultarPDFSalidas(datoAEnviar, orientacion, toDownload) {
+        WaitDoc("Generando registro...", "Por favor espere un momento");
+        // Enviar los datos a enviarEntradas.php para darle formato HTML-->>PDF y/o guardar en BD
+        $.ajax({
+            url: 'enviarSalidas.php',
+            type: 'POST',
+            data: {
+                folio: datoAEnviar
+            },
+            success: function (response) {
+                // Extraer el folio del registro de la respuesta HTML
+                if (toDownload) {
+                    var parser = new DOMParser();
+                    var htmlDoc = parser.parseFromString(response, 'text/html');
+                    var folio = htmlDoc.querySelector('#folioElement').innerText;
+                }
+
+                // Envia los datos para generar el PDF a generatePDF.php
+                $.ajax({
+                    url: 'generatePDF.php',
+                    type: 'POST',
+                    data: {
+                        html: response,
+                        orientation: orientacion
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (response) {
+                        // Crea un objeto Blob con los datos del PDF, esto para que pueda ser leído por el elemento object
+                        var blob = new Blob([response], {
+                            type: 'application/pdf'
+                        });
+
+                        // Crea un enlace para descargar el PDF
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        ResponseDoc("Registro generado exitosamente", link.href, link.download);
+                        if (toDownload) {
+                            // Obtiene la fecha actual y Formatea la fecha en el formato 'dia-mes-año para Asignar el nombre al archivo'
+                            var date = new Date();
+                            var formattedDate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+                            link.download = 'ENTRADA ' + folio + ' ' + formattedDate + '.pdf';
                             link.click();
                         }
                     },

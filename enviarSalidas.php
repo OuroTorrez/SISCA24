@@ -5,8 +5,9 @@ $conn = conectar();
 if (empty($conn) || !($conn instanceof mysqli)) {
     $error = "⛔Error de conexión: <br>" . $conn;
 }
+
 if (isset($_SESSION['usuario'])) {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['folio']) ) {
         //Obtener el id de usuario y de almacen para la inserción del registro
         $query = $conn->prepare("SELECT id, id_almacen FROM usuarios WHERE usuario = ?");
         $query->bind_param("s", $_SESSION['usuario']);
@@ -54,6 +55,10 @@ if (isset($_SESSION['usuario'])) {
                 generarDocumento($lastInsertedFolio);
             }
         }
+    } else if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['folio'])) {
+        generarDocumento($_POST['folio']);
+    } else {
+        $error = "⛔Error en la petición";
     }
 }
 

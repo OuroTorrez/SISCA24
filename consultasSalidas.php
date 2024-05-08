@@ -11,9 +11,9 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 <head>
     <!-- Include common resources -->
     <?php include 'commonResources.php'; ?>
-    <title>Consulta entradas - DIF Michoacán</title>
+    <title>Consulta salidas - DIF Michoacán</title>
     <!-- Styles -->
-    <link rel="stylesheet" href="Styles/consultasStyles.css">
+    <link rel="stylesheet" href="Styles/consultasSalidasStyles.css">
 </head>
 
 <body>
@@ -23,14 +23,14 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     <?php include 'ventanaResponse.php'; ?>
     <!-- Contenido -->
     <content>
-        <?php if (isset($error)) { ?>
+    <?php if (isset($error)) { ?>
             <div id="Errores">
                 <div id="Error">
                     <p><?php echo $error; ?></p>
                 </div>
             </div>
         <?php } ?>
-        <h1 class="PageTitle">Consulta de entradas</h1>
+        <h1 class="PageTitle">Consulta de salidas</h1>
 
         <div id="UserTitle" style="padding-bottom: 50px;">
             <?php
@@ -47,76 +47,74 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 echo "<h3>$almacen</h3>";
             }
 
-            $query = $conn->prepare("SELECT DISTINCT rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs
-        FROM registro_dotaciones rd INNER JOIN proveedores p ON rd.id_proveedor = p.id_proveedor 
-        INNER JOIN dotaciones_registradas dr ON rd.folio = dr.folio INNER JOIN dotaciones d ON dr.clave  = d.clave
-        WHERE rd.id_almacen = (SELECT id_almacen FROM usuarios WHERE usuario = ?)");
-            $query->bind_param("s", $usuario);
-            if ($query->execute()) {
-                $query->bind_result($folio, $proveedor, $dotacion, $fecha, $programa, $pdf_docs);
-                $query->store_result();
-                if ($query->num_rows > 0) {
-                    ?>
-                    <table id="tablaRegistros">
-                        <thead>
-                            <tr>
-                                <th>Folio</th>
-                                <th>Proveedor</th>
-                                <th>Dotación</th>
-                                <th>Fecha de registro</th>
-                                <th>Entrega</th>
-                                <th>Documentos</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            while ($query->fetch()) {
-                                ?>
-                                <tr>
-                                    <td class="t-center" data-search="<?php echo $programa, $folio ?>">
-                                        <?php echo $folio; ?>
-                                    </td>
-                                    <td data-tooltip="<?php echo $programa ?>"><?php echo $proveedor; ?></td>
-                                    <td class="t-center"><?php echo $dotacion; ?></td>
-                                    <td class="t-center"><?php echo $fecha; ?></td>
-                                    <td class="t-center"><a data-tooltip="Consultar registro de entrada"
-                                            onclick="consultarPDFEntradas(<?php echo $folio ?>, 'portrait', false)"><i
-                                                class="bi bi-file-earmark-text"></i></a></td>
-                                    <?php
-                                    if ($pdf_docs != null) {
-                                        ?>
-                                        <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, 'Entradas')"><i
-                                                    class="bi bi-file-earmark-text"></i></td>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <td class="t-center"><a data-tooltip="Subir documentos"
-                                                onclick="UploadDoc('Sube tus documentos', <?php echo $folio ?>, 'Entradas')"><i
-                                                    class="bi bi-cloud-upload"></i></a></td>
-                                        <?php
-                                    }
-                                    ?>
-                                </tr>
-                                <?php
-                            }
+            $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, d.programa
+        FROM salidas_dotaciones sd
+        INNER JOIN salidas_registradas sr ON sd.folio = sr.folio
+        INNER JOIN dotaciones d ON sr.clave = d.clave
+        WHERE sd.id_almacen = (SELECT id_almacen FROM usuarios WHERE usuario = ?)");
+        $query->bind_param("s", $usuario);
+        if ($query->execute()) {
+            $query->bind_result($folio, $afavor, $municipio, $dotacion, $fecha, $pdf_docs, $programa);
+            $query->store_result();
+            if ($query->num_rows > 0) {
+                ?>
+                <table id="tablaRegistros" style="padding-bottom: 50px;">
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+                            <th>A favor de</th>
+                            <th>Municipio</th>
+                            <th>Dotacion</th>
+                            <th>Fecha de registro</th>
+                            <th>Salida</th>
+                            <th>Documentos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        while ($query->fetch()) {
                             ?>
-                        </tbody>
-                    </table>
-                    <?php
-                } else {
-                    echo "<h3>No hay registros de entradas</h3>";
-                }
+                            <tr>
+                                <td class="t-center" data-search="<?php echo $programa, $folio ?>"><?php echo $folio ?></td>
+                                <td data-tooltip="<?php echo $programa ?>"><?php echo $afavor ?></td>
+                                <td class="t-center"><?php echo $municipio ?></td>
+                                <td class="t-center"><?php echo $dotacion ?></td>
+                                <td class="t-center"><?php echo $fecha ?></td>
+                                <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, 'portrait', false)"><i
+                                            class="bi bi-file-earmark-text"></i></a></td>
+                                <?php
+                                if ($pdf_docs != null) {
+                                    ?>
+                                    <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas')"><i class="bi bi-file-earmark-text"></i></a>
+                                    </td>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <td class="t-center"><a data-tooltip="Subir documentos" onclick="UploadDoc('Sube tus documentos', <?php echo $folio ?>, 'Salidas')"><i class="bi bi-cloud-upload"></i></a></td>
+                                    <?php
+                                }
+                        }
+                        ?>
+                        </tr>
+                    </tbody>
+                </table>
+                <?php
             } else {
-                echo "<h3>No se pudieron obtener los registros de entradas ". $conn->error ."</h3>";
+                echo "<h3>No hay registros de salidas</h3>";
             }
+        } else {
+            echo "<h3>No se pudieron obtener los registros de salidas ". $conn->error ."</h3>";
+        }
             ?>
         </div>
+        <?php
+        
+        ?>
     </content>
 </body>
-
 </html>
 <script>
-    // Selecciona la tabla para aplicar los estilos de efecto hover
+    // Selecciona la tabla para aplicar los estulos de efecto hover
     var table = document.querySelector('#tablaRegistros');
     table.addEventListener('mouseover', function (event) {
         // Encuentra la celda más cercana al elemento actual
@@ -151,15 +149,15 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         }
     });
 
-
+    // data tables
     $(document).ready(function () {
         $('#tablaRegistros').DataTable({
             "language": {
-                "lengthMenu": "Mostrar _MENU_ entradas por página",
-                "zeroRecords": "No se encontraron entradas",
+                "lengthMenu": "Mostrar _MENU_ salidas por página",
+                "zeroRecords": "No se encontraron salidas",
                 "info": "Mostrando página _PAGE_ de _PAGES_",
-                "infoEmpty": "No se encontraron entradas con esos criterios",
-                "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                "infoEmpty": "No se encontraron salidas con esos criterios",
+                "infoFiltered": "(filtrado de _MAX_ salidas totales)",
                 "search": "Buscar:",
                 "paginate": {
                     "first": "<i class='bi bi-chevron-double-left'></i>",
@@ -172,12 +170,13 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 ]
             },
             "columnDefs": [{
-                "targets": [5, 4],
+                "targets": [5, 6],
                 "orderable": false
             }],
         });
     });
 
+    // Previene que el tooltip se salga de la pantalla (a veces funciona xd)
     document.addEventListener('DOMContentLoaded', function () {
         var tooltips = document.querySelectorAll('[data-tooltip]');
 
