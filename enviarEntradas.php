@@ -76,8 +76,11 @@ if (isset($_SESSION['usuario'])) {
 
         // Sube el nuevo archivo
         if (move_uploaded_file($docs, $rutaCompleta)) {
-            $query = $conn->prepare("UPDATE registro_dotaciones SET pdf_docs = ? WHERE folio = ?");
-            // La cadena de definición de tipo debe tener dos caracteres: 'ss' (string, string)
+            if($directorio == "DocsEntradas/"){
+                $query = $conn->prepare("UPDATE registro_dotaciones SET pdf_docs = ? WHERE folio = ?");
+            } else if ($directorio == "DocsSalidas/"){
+                $query = $conn->prepare("UPDATE salidas_dotaciones SET pdf_docs = ? WHERE folio = ?");
+            }
             $query->bind_param("ss", $rutaCompleta, $folio);
             if ($query->execute()) {
                 $query->close();
@@ -93,7 +96,12 @@ if (isset($_SESSION['usuario'])) {
 
     } else if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['folioDocs'])) {
         $folio = $_POST['folioDocs'];
-        $query = $conn->prepare("SELECT pdf_docs FROM registro_dotaciones WHERE folio = ?");
+        $tipo = $_POST['tipo'];
+        if ($tipo == "Entradas") {
+            $query = $conn->prepare("SELECT pdf_docs FROM registro_dotaciones WHERE folio = ?");
+        } else if ($tipo == "Salidas") {
+            $query = $conn->prepare("SELECT pdf_docs FROM salidas_dotaciones WHERE folio = ?");
+        }
         $query->bind_param("i", $folio);
         if ($query->execute()) {
             $result = $query->get_result();

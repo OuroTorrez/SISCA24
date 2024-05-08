@@ -29,7 +29,17 @@
                         <li class="MenuNavOption"><a href="consultas.php">Consulta</a></li>
                     </ul>
                 </li>
-                <li class="MenuNavOption"><a href="salidas.php">Salidas</a></li>
+                <li class="MenuNavOption">
+                    <a href="salidas.php">Salidas</a>
+                    <ul class="HeaderMenuSubNav">
+                        <li class="MenuNavOption"><a href="salidas.php">Captura</a></li>
+                        <hr>
+                        <li class="MenuNavOption"><a href="consultasSalidas.php">Consulta</a></li>
+                    </ul>
+                </li>
+                <li class="MenuNavOption">
+                    <a href="existencias.php">Existencias</a>
+                </li>
                 <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] == 1){ ?>
                 <li class="MenuNavOption"><a href="registro.php">Usuarios</a></li>
                 <?php } ?>

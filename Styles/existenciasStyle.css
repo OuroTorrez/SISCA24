@@ -1,0 +1,19 @@
+#Consulta {
+    padding-bottom: 100px;
+}
+
+.tablaExistencias {
+    border-collapse: collapse;
+    margin: 50px auto 50px auto;
+    font-size: 105%;
+}
+
+.ProgramaTitle {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 20px;
+    background-color: white !important;
+    pointer-events: none;
+    font-size: 150% !important;
+}
