@@ -47,14 +47,14 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 echo "<h3>$almacen</h3>";
             }
 
-            $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, d.programa
+            $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa
         FROM salidas_dotaciones sd
         INNER JOIN salidas_registradas sr ON sd.folio = sr.folio
         INNER JOIN dotaciones d ON sr.clave = d.clave
         WHERE sd.id_almacen = (SELECT id_almacen FROM usuarios WHERE usuario = ?)");
         $query->bind_param("s", $usuario);
         if ($query->execute()) {
-            $query->bind_result($folio, $afavor, $municipio, $dotacion, $fecha, $pdf_docs, $programa);
+            $query->bind_result($folio, $afavor, $municipio, $dotacion, $fecha, $pdf_docs, $pdf_docs_coord, $programa);
             $query->store_result();
             if ($query->num_rows > 0) {
                 ?>
@@ -68,6 +68,9 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                             <th>Fecha de registro</th>
                             <th>Salida</th>
                             <th>Documentos</th>
+                            <?php if($_SESSION['rol'] == 3){ ?>
+                                <th>Documentos</th>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,24 +78,38 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                         while ($query->fetch()) {
                             ?>
                             <tr>
-                                <td class="t-center" data-search="<?php echo $programa, $folio ?>"><?php echo $folio ?></td>
-                                <td data-tooltip="<?php echo $programa ?>"><?php echo $afavor ?></td>
-                                <td class="t-center"><?php echo $municipio ?></td>
-                                <td class="t-center"><?php echo $dotacion ?></td>
-                                <td class="t-center"><?php echo $fecha ?></td>
-                                <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, 'portrait', false)"><i
-                                            class="bi bi-file-earmark-text"></i></a></td>
+                            <td class="t-center" data-search="<?php echo $programa, $folio ?>"><?php echo $folio ?></td>
+                            <td data-tooltip="<?php echo $programa ?>"><?php echo $afavor ?></td>
+                            <td class="t-center"><?php echo $municipio ?></td>
+                            <td class="t-center"><?php echo $dotacion ?></td>
+                            <td class="t-center"><?php echo $fecha ?></td>
+                            <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, 'portrait', false)"><i
+                                        class="bi bi-file-earmark-text"></i></a></td>
+                            <?php
+                            if ($pdf_docs != null) {
+                                ?>
+                                <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>)"><i class="bi bi-file-earmark-text"></i></a>
+                                </td>
                                 <?php
-                                if ($pdf_docs != null) {
-                                    ?>
-                                    <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas')"><i class="bi bi-file-earmark-text"></i></a>
-                                    </td>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <td class="t-center"><a data-tooltip="Subir documentos" onclick="UploadDoc('Sube tus documentos', <?php echo $folio ?>, 'Salidas')"><i class="bi bi-cloud-upload"></i></a></td>
-                                    <?php
-                                }
+                            } else if ($_SESSION['rol'] != 3){
+                                ?>
+                                <td class="t-center"><a data-tooltip="Subir documentos" onclick="UploadDoc('Sube tus documentos', <?php echo $folio ?>, 'Salidas')"><i class="bi bi-cloud-upload"></i></a></td>
+                                <?php
+                            } else if ($pdf_docs == null && $_SESSION['rol'] == 3){
+                                ?>
+                                <td class="t-center"><a data-tooltip="Sin documentos"><i class="bi bi-file-earmark-x"></i></a></td>
+                                <?php
+                            }
+                            if($pdf_docs_coord != null && $_SESSION['rol'] == 3){
+                                ?>
+                                <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>)"><i class="bi bi-file-earmark-text"></i></a>
+                                </td>
+                                <?php
+                            } else if ($_SESSION['rol'] == 3){
+                                ?>
+                                <td class="t-center"><a data-tooltip="Subir documentos" onclick="UploadDoc('Sube tus documentos', <?php echo $folio ?>, 'SalidasCoord')"><i class="bi bi-cloud-upload"></i></a></td>
+                                <?php
+                            }
                         }
                         ?>
                         </tr>

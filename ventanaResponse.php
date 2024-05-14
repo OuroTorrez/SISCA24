@@ -116,10 +116,12 @@
         $('#folio').val(folio);
         data = null;
         blob = null;
-        if (accion == "Entradas") {
+        if (accion == "Entradas") { 
             $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsEntradas/", "ENTRADAS_' + folio + '.pdf")');
         } else if (accion == "Salidas") {
             $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidas/", "SALIDAS_' + folio + '.pdf")');
+        } else if (accion == "SalidasCoord") {
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidasCoord/", "SALIDAS_COORDINADOR_' + folio + '.pdf")');
         }
     }
 
@@ -305,7 +307,7 @@
         blob = null;
     }
 
-    function consultarDoc(folio, tipo) {
+    function consultarDoc(folio, tipo, rol) {
         $.ajax({
             url: 'enviarEntradas.php',
             type: 'POST',
@@ -315,7 +317,11 @@
             },
             success: function (response) {
                 console.log(response);
-                ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
+                if(rol == 3 && tipo != "SalidasCoord") {
+                    ResponseDoc("Documentos subidos", response, 'ARCHIVOS ' + folio + '.pdf', 'CloseResponse()');
+                } else {
+                    ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos coord", ' + folio + ', "SalidasCoord")');
+                }
             },
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);

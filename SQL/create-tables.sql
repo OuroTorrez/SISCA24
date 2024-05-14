@@ -334,4 +334,6 @@ CALL insertar_registro_dotaciones(
 );
 
 /* SENTENCIAS PARA LA SIGUENTE ACTUALIZACION */
-ALTER TABLE salidas_dotaciones ADD COLUMN pdf_docs VARCHAR(50) DEFAULT NULL COMMENT 'PDF con los documentos que se generan al llegar la dotacion';
+ALTER TABLE salidas_dotaciones ADD COLUMN pdf_docs_coord VARCHAR(50) DEFAULT NULL COMMENT 'PDF con los documentos que sube el coordinador administrativo';
+
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(3, 'Coordinador administrativo', 'Supervisa las operaciones de los almacenes pero no puede realizar capturas');

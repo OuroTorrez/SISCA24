@@ -58,7 +58,7 @@ if (isset($_SESSION['usuario'])) {
     } else if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['folio'])) {
         generarDocumento($_POST['folio']);
     } else {
-        $error = "⛔Error en la petición";
+        generarDocumento(20014);
     }
 }
 
@@ -152,9 +152,9 @@ function generarDocumento($folio)
                         <th style='width: 10%'>Clave</th>
                         <th style='width: 30%'>Producto</th>
                         <th style='width: 10%'>Unidad</th>
-                        <th style='width: 5%'>Cuota</th>
+                        <?php if($programa != "Desayunos Escolares Calientes" && $programa != "Espacios de Alimentación") {echo "<th style='width: 5%'>Cuota</th>";}?>
                         <th style='width: 10%'>Cantidad</th>
-                        <th style='width: 5%;'>Total</th> 
+                        <?php if($programa != "Desayunos Escolares Calientes" && $programa != "Espacios de Alimentación") { echo "<th style='width: 5%;'>Total</th> ";}?>
                         <th style='width: 5%'>Caducidad</th>
                         <th style='width: 25%'>Lote</th>
                     </tr>
@@ -176,9 +176,13 @@ function generarDocumento($folio)
                                 <td><?= $row['clave'] ?></td>
                                 <td><?= $row['producto'] ?></td>
                                 <td><?= $row['medida'] ?></td>
-                                <td><?= '$' . $row['cuota'] ?></td>
+                                <?php if($programa != "Desayunos Escolares Calientes" && $programa != "Espacios de Alimentación")  { ?>
+                                    <td><?= '$' . $row['cuota'] ?></td>
+                                <?php } ?>
                                 <td><?= $row['cantidad'] ?></td>
-                                <td><?= '$' . $row['cantidad'] * $row['cuota'] ?></td>
+                                <?php if($programa != "Desayunos Escolares Calientes" && $programa != "Espacios de Alimentación")  { ?>
+                                    <td><?= '$' . $row['cantidad'] * $row['cuota'] ?></td>
+                                <?php } ?>
                                 <td><?= $row['caducidad'] ?></td>
                                 <td><?= $row['lote'] ?></td>
                             </tr>

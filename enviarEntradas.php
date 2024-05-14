@@ -80,6 +80,8 @@ if (isset($_SESSION['usuario'])) {
                 $query = $conn->prepare("UPDATE registro_dotaciones SET pdf_docs = ? WHERE folio = ?");
             } else if ($directorio == "DocsSalidas/"){
                 $query = $conn->prepare("UPDATE salidas_dotaciones SET pdf_docs = ? WHERE folio = ?");
+            } else if  ($directorio == "DocsSalidasCoord/"){
+                $query = $conn->prepare("UPDATE salidas_dotaciones SET pdf_docs_coord = ? WHERE folio = ?");
             }
             $query->bind_param("ss", $rutaCompleta, $folio);
             if ($query->execute()) {
@@ -101,12 +103,18 @@ if (isset($_SESSION['usuario'])) {
             $query = $conn->prepare("SELECT pdf_docs FROM registro_dotaciones WHERE folio = ?");
         } else if ($tipo == "Salidas") {
             $query = $conn->prepare("SELECT pdf_docs FROM salidas_dotaciones WHERE folio = ?");
+        } else if ($tipo == "SalidasCoord") {
+            $query = $conn->prepare("SELECT pdf_docs_coord FROM salidas_dotaciones WHERE folio = ?");
         }
         $query->bind_param("i", $folio);
         if ($query->execute()) {
             $result = $query->get_result();
             $row = $result->fetch_assoc();
-            echo $row['pdf_docs'];
+            if($tipo != "SalidasCoord"){
+                echo $row['pdf_docs'];
+            } else {
+                echo $row['pdf_docs_coord'];
+            }
         }
     } else {
         //Entorno de pruebas

@@ -85,14 +85,18 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                                     <?php
                                     if ($pdf_docs != null) {
                                         ?>
-                                        <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, 'Entradas')"><i
+                                        <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>)"><i
                                                     class="bi bi-file-earmark-text"></i></td>
                                         <?php
-                                    } else {
+                                    } else if($_SESSION['rol'] != 3){
                                         ?>
                                         <td class="t-center"><a data-tooltip="Subir documentos"
                                                 onclick="UploadDoc('Sube tus documentos', <?php echo $folio ?>, 'Entradas')"><i
                                                     class="bi bi-cloud-upload"></i></a></td>
+                                        <?php
+                                    } else if ($pdf_docs == null && $_SESSION['rol'] == 3){
+                                        ?>
+                                        <td class="t-center"><a data-tooltip="Sin documentos"><i class="bi bi-file-earmark-x"></i></td>
                                         <?php
                                     }
                                     ?>

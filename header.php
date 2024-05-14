@@ -1,5 +1,9 @@
 <?php
-    session_start();
+    // Si no hay una sesión iniciada, iniciarla
+    if(session_status() == PHP_SESSION_NONE){
+        session_start();
+    }
+    // Si no hay un usuario loggeado, redirigir a la página de login
     if(!isset($_SESSION['usuario']) || !$_SESSION['LoggedIn']){
         header('Location: login.php');
     }
@@ -17,41 +21,60 @@
 
 <body>
     <div id="Header">
+        <!-- Header menu Logo y Menú -->
         <div id="HeaderMenu">
+            <!-- Header Logo -->
             <a href="index.php"><img id="HeaderMenuImage" src="Media/LogoSimpleDIFBlanco.png" alt="Logo DIF Michoacán"></a>
+            <!-- Header menu de navegación -->
             <ul class="HeaderMenuNav">
-                <li class="MenuNavOption"><a href="index.php">Inicio</a></li>
-                <li class="MenuNavOption">
-                    <a href="entradas.php">Entradas</a>
-                    <ul class="HeaderMenuSubNav">
-                        <li class="MenuNavOption"><a href="entradas.php">Captura</a></li>
-                        <hr>
-                        <li class="MenuNavOption"><a href="consultas.php">Consulta</a></li>
-                    </ul>
-                </li>
-                <li class="MenuNavOption">
-                    <a href="salidas.php">Salidas</a>
-                    <ul class="HeaderMenuSubNav">
-                        <li class="MenuNavOption"><a href="salidas.php">Captura</a></li>
-                        <hr>
-                        <li class="MenuNavOption"><a href="consultasSalidas.php">Consulta</a></li>
-                    </ul>
-                </li>
-                <li class="MenuNavOption">
-                    <a href="existencias.php">Existencias</a>
-                </li>
-                <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] == 1){ ?>
-                <li class="MenuNavOption"><a href="registro.php">Usuarios</a></li>
+                <li class="MenuNavOption"><a href="index.php">Inicio</a></li><!-- Boton de incio -->
+                
+                
+                <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] == 3){ ?><!-- Menu para coordinador administrativo -->
+                    <li class="MenuNavOption"><a href="consultas.php">Entradas</a><!-- Boton de entradas coordinador -->
+                        <ul class="HeaderMenuSubNav">
+                            <li class="MenuNavOption"><a href="consultas.php">Consulta</a></li>
+                        </ul>
+                    </li>
+                    <li class="MenuNavOption"><a href="consultasSalidas.php">Salidas</a><!-- Boton de salidas coordinador -->
+                        <ul class="HeaderMenuSubNav">
+                            <li class="MenuNavOption"><a href="consultasSalidas.php">Consulta</a></li>
+                        </ul>
+                    </li>
+
+
+                <?php } else {?> <!-- Menu para almacenista, usuario común -->
+                    <li class="MenuNavOption"><a href="entradas.php">Entradas</a><!-- Boton de entradas -->
+                        <ul class="HeaderMenuSubNav">
+                            <li class="MenuNavOption"><a href="entradas.php">Captura</a></li><!-- Submenu de captura de entradas -->
+                            <hr>
+                            <li class="MenuNavOption"><a href="consultas.php">Consulta</a></li><!-- Submenu de consulta de entradas -->
+                        </ul>
+                    </li>
+                    <li class="MenuNavOption"><a href="salidas.php">Salidas</a><!-- Boton de salidas -->
+                        <ul class="HeaderMenuSubNav">
+                            <li class="MenuNavOption"><a href="salidas.php">Captura</a></li><!-- Submenu de captura de salidas -->
+                            <hr>
+                            <li class="MenuNavOption"><a href="consultasSalidas.php">Consulta</a></li><!-- Submenu de consulta de salidas -->
+                        </ul>
+                    </li>
+                <?php } ?>
+                <li class="MenuNavOption"><a href="existencias.php">Existencias</a></li><!-- Boton de existencias -->
+
+
+                <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] == 1){ ?> <!-- Opción solo para administradores -->
+                <li class="MenuNavOption"><a href="registro.php">Usuarios</a></li> <!-- Boton de registro de usuarios -->
                 <?php } ?>
             </ul>
         </div>
+        <!-- Header cuenta Menú de usuario -->
         <div id="HeaderAccount">
             <div id="HeaderAccountButton"><img id="HeaderAccountImage" src="Media/AccountIconBlanco.png"
                     alt="Imagen de perfil"></div>
             <div id="HeaderAccountMenu">
                 <span style="text-align: center; text-transform: uppercase; padding: 15px 20px; font-size: larger;"><?php echo $_SESSION ['usuario']?></span>
                 <hr>
-                <a href="#"><i class="bi bi-person-fill"></i> Mi perfil</a>
+                <a href="perfil.php"><i class="bi bi-person-fill"></i> Mi perfil</a>
                 <hr>
                 <a href="logout.php"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
             </div>

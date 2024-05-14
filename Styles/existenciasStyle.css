@@ -1,18 +1,25 @@
+
 #Consulta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
     padding-bottom: 100px;
+    margin: 0 auto;
 }
 
 .tablaExistencias {
     border-collapse: collapse;
     margin: 50px auto 50px auto;
     font-size: 105%;
+    width: 100%;
 }
 
 .ProgramaTitle {
     font-size: 20px;
     font-weight: bold;
     text-align: center;
-    padding-top: 20px;
     background-color: white !important;
     pointer-events: none;
     font-size: 150% !important;

@@ -34,10 +34,10 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         //Obtener e imprimir el nombre y almacen del usuario
         if (!empty($conn) && ($conn instanceof mysqli)) {
             $usuario = $_SESSION['usuario'];
-            $query = $conn->prepare("SELECT u.nombres, u.apellido_paterno, u.apellido_materno, a.almacen AS almacen FROM usuarios u INNER JOIN almacenes a ON u.id_almacen = a.id_almacen WHERE u.usuario = ?");
+            $query = $conn->prepare("SELECT u.nombres, u.apellido_paterno, u.apellido_materno, a.almacen, a.id_almacen AS almacen FROM usuarios u INNER JOIN almacenes a ON u.id_almacen = a.id_almacen WHERE u.usuario = ?");
             $query->bind_param("s", $usuario);
             $query->execute();
-            $query->bind_result($nombre, $apellido_paterno, $apellido_materno, $almacen);
+            $query->bind_result($nombre, $apellido_paterno, $apellido_materno, $almacen, $usr_id_almacen);
             $query->store_result();
             $query->fetch();
             echo "<h2>$nombre $apellido_paterno $apellido_materno</h2>";
@@ -47,42 +47,37 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     </div>
     <div id="Consulta">
         <?php
-        // Obtener id_almacen del usuario
-        $query = $conn->prepare("SELECT id_almacen FROM usuarios WHERE usuario = ?");
-        $query->bind_param("s", $usuario);
-        $query->execute();
-        $query->bind_result($id_almacen);   
-        $query->store_result();
-        $query->fetch();
+        $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, 
+        COALESCE((SELECT SUM(dr.cantidad) FROM dotaciones_registradas dr INNER JOIN registro_dotaciones rd ON dr.folio = rd.folio WHERE dr.clave = d.clave AND rd.id_almacen = ?), 0) 
+        - COALESCE((SELECT SUM(sr.cantidad) FROM salidas_registradas sr INNER JOIN salidas_dotaciones sd ON sr.folio = sd.folio WHERE sr.clave = d.clave AND sd.id_almacen = ?), 0) AS existencias
+        FROM dotaciones d");
+        $query->bind_param("ii", $_SESSION['id_almacen'], $_SESSION['id_almacen']);
 
-            $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, 
-            COALESCE((SELECT SUM(dr.cantidad) FROM dotaciones_registradas dr INNER JOIN registro_dotaciones rd ON dr.folio = rd.folio WHERE dr.clave = d.clave AND rd.id_almacen = ?), 0) 
-            - COALESCE((SELECT SUM(sr.cantidad) FROM salidas_registradas sr INNER JOIN salidas_dotaciones sd ON sr.folio = sd.folio WHERE sr.clave = d.clave AND sd.id_almacen = ?), 0) AS existencias
-            FROM dotaciones d");
-            $query->bind_param("ii", $id_almacen, $id_almacen);
-            if($query->execute()){
-                $query->bind_result($clave, $programa, $producto, $medida, $existencias);
-                $query->store_result();
-                ?>
-                <table class="tablaExistencias">
-                    <tr>
-                        <th colspan='5' class='ProgramaTitle'>Personas Adultas Mayores</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 15%;">Clave</th>
-                        <th style="width: 50%;">Producto</th>
-                        <th style="width: 25%;">Medida</th>
-                        <th style="width: 10%;">Existencias</th>
-                    </tr>
+        if ($query->execute()) {
+            $query->bind_result($clave, $programa, $producto, $medida, $existencias);
+            $query->store_result();
+            ?>
+            <table class="tablaExistencias">
+                <tr>
+                    <th colspan='5' class='ProgramaTitle'>Personas Adultas Mayores</th>
+                </tr>
+                <tr>
+                    <th style="width: 15%;">Clave</th>
+                    <th style="width: 50%;">Producto</th>
+                    <th style="width: 25%;">Medida</th>
+                    <th style="width: 10%;">Existencias</th>
+                </tr>
                 <?php
                 $previousPrograma = "Personas Adultas Mayores";
-                if($query->num_rows > 0){
-                    while($query->fetch()){
+                if ($query->num_rows > 0) {
+                    while ($query->fetch()) {
                         if ($programa != $previousPrograma) {
                             ?>
-                            </table>
-                            <table class="tablaExistencias">
-                            <tr><th colspan='5' class='ProgramaTitle'><?php echo $programa ?></th></tr>
+                        </table>
+                        <table class="tablaExistencias">
+                            <tr>
+                                <th colspan='5' class='ProgramaTitle'><?php echo $programa ?></th>
+                            </tr>
                             <tr>
                                 <th style="width: 15%;">Clave</th>
                                 <th style="width: 50%;">Producto</th>
@@ -92,7 +87,6 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                             <?php
                             $previousPrograma = $programa;
                         }
-
                         echo "<tr>";
                         echo "<td>$clave</td>";
                         echo "<td>$producto</td>";
@@ -100,23 +94,30 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                         echo "<td>$existencias</td>";
                         echo "</tr>";
                     }
-                }else{
+                } else {
                     echo "<p>No hay existencias registradas</p>";
                 }
-            }else{
-                echo "<p>Error al consultar las existencias</p>";
-            }
+        } else {
+            echo "<p>Error al consultar las existencias</p>";
+        }
         ?>
         </table>
     </div>
 </body>
 
 </html>
+<?php
+function setTarget($id_almacen)
+{
+    $target = $id_almacen;
+    echo $target;
+}
+?>
 <script>
     // Selecciona todas las tablas existentes para aplicar los estilos de efecto hover
     var tables = document.querySelectorAll('#Consulta .tablaExistencias');
 
-    tables.forEach(function(table) {
+    tables.forEach(function (table) {
         table.addEventListener('mouseover', function (event) {
             var cell = event.target.closest('th, td');
             if (cell && !cell.parentNode.classList.contains('ProgramaTitle')) { // Añadimos esta condición para excluir el encabezado y las celdas de título del programa
@@ -144,11 +145,3 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         });
     });
 </script>
-
-
-
-
-
-
-
-

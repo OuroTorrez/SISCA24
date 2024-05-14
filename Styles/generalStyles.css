@@ -76,6 +76,34 @@ td {
     margin: 20px;
 }
 
+#Avisos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#Aviso {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    height: fit-content;
+    background-color: var(--Background);
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 1px #00000090;
+    border-left: 10px solid green;
+    padding: 0px 20px;
+    margin: 20px;
+}
+
+#mensajeContraseña {
+    font-weight: bold;
+}
+
 /*########## Form ##########*/
 label {
     font-weight: bold;
@@ -369,4 +397,50 @@ tbody tr:nth-child(odd) {
 
 tr {
     border-bottom: 2px solid #74325a57;
+}
+
+/*########## Menú de opciones ##########*/
+
+.OpcMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: 2px solid var(--Primary);
+    margin-top: 50px;
+    border-radius: 10px;
+    background-color: var(--Background);
+    overflow: hidden;
+}
+
+.OpcMenuButton {
+    text-decoration: none;
+    text-align: center;
+    color: var(--Primary);
+    padding: 10px;
+    width: 100%;
+    font-size: 130%;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.OpcMenuButton:hover {
+    background-color: #801456 !important;
+    color: var(--Background);
+}
+
+.OpcMenuButton:active {
+    background-color: var(--Primary);
+    font-size: 120%;
+}
+
+.OpcMenuButton.active {
+    background-color: var(--Secondary);
+    color: var(--Background);
+}
+
+.OpcMenu hr {
+    margin: 0 auto 0 auto !important;
 }
