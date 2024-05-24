@@ -29,7 +29,7 @@ if (isset($_SESSION['usuario'])) {
         $dotacion = $_POST['dotacion'];
         $nota = $_POST['nota'];
 
-        $query = $conn->prepare("call insertar_salida_dotaciones(?,?,?,?,?,?,?,?,?,?)");
+        $query = $conn->prepare("call insertar_registro_salidas(?,?,?,?,?,?,?,?,?,?)");
         $query->bind_param("iississiis", $id_usuario, $id_almacen, $afavor, $municipio, $salida, $recibe, $referencia, $monto, $dotacion, $nota);
         if($query->execute()){
             // Obtener el folio del registro realizado
@@ -41,7 +41,7 @@ if (isset($_SESSION['usuario'])) {
                 $query->close();
 
                 // Insertar los productos enviados por post con el folio generado
-                $query = $conn->prepare("INSERT INTO salidas_registradas (clave, folio, lote, caducidad, cantidad) VALUES (?, ?, ?, ?, ?)");
+                $query = $conn->prepare("INSERT INTO registro_salidas_registradas (clave, folio, lote, caducidad, cantidad) VALUES (?, ?, ?, ?, ?)");
                 $query->bind_param("isssi", $clave, $lastInsertedFolio, $lote, $caducidad, $cantidad);
 
                 for ($i = 0; $i < count($_POST['clave']); $i++) {
@@ -68,10 +68,10 @@ function generarDocumento($folio)
     $query = $conn->prepare("SELECT
     DATE_FORMAT(sd.fecha_registro, '%d/%m/%Y | %H:%i:%s') AS fecha_registro, sd.dotacion, sd.afavor, sd.recibe, sd.referencia, sd.monto, sd.nota, sd.nota, sd.municipio,
     a.almacen, u.nombres, u.apellido_paterno, u.apellido_materno, d.programa, s.tipo
-    FROM salidas_dotaciones sd
+    FROM registro_salidas sd
     INNER JOIN almacenes a ON sd.id_almacen = a.id_almacen
     INNER JOIN usuarios u ON sd.id_usuario = u.id
-    INNER JOIN salidas_registradas sr ON sd.folio = sr.folio
+    INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio
     INNER JOIN dotaciones d ON sr.clave = d.clave
     INNER JOIN salidas s ON sd.id_salida = s.id_salida
     WHERE sd.folio = ?");
@@ -164,7 +164,7 @@ function generarDocumento($folio)
                     $query = $conn->prepare("SELECT
     d.clave, d.producto, d.medida, d.programa, d.cuota,
     sr.lote, DATE_FORMAT(sr.caducidad, '%d/%m/%Y') AS caducidad, sr.cantidad
-    FROM salidas_registradas sr
+    FROM registro_salidas_registradas sr
     INNER JOIN dotaciones d ON sr.clave = d.clave
     WHERE sr.folio = ?");
                     $query->bind_param("i", $folio);

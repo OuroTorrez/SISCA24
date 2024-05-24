@@ -8,7 +8,7 @@
 </head>
 <body>
     <?php include 'header.php'; ?>
-    <h1>Bienvenido <?php echo $_SESSION['usuario'];?>. Coordinador administrativo</h1>
+    <h1>Bienvenido <?php echo $_SESSION['usuario'];?>.</h1>
     <div id="Noticias">
         <h1>Noticias</h1>
         <div id="NoticiasCont">

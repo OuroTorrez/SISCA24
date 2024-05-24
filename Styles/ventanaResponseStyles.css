@@ -66,13 +66,21 @@
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    width: 20vw;
-    height: 20vh;
+    width: 30vw;
+    height: 30vh;
     background-color: var(--Background);
     border-radius: 15px;
     box-shadow: 0px 0px 15px 1px #00000067;
     overflow: hidden;
     position: relative;
+}
+
+#WaitDoc .ResponseTitle {
+    margin: 0 0 20px 0;
+}
+
+.WaitDocText {
+    padding: 0 20px;
 }
 
 #UploadDoc {
@@ -107,4 +115,29 @@
 
 #ResponseDocEditable button {
     margin: 0 0 10px 0;
+}
+
+#ResponseCancel {
+    display: none;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 30vw;
+    height: 40vh;
+    background-color: var(--Background);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 1px #00000067;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+#ResponseCancel .ResponseTitle {
+    margin: 0 0 20px 0;
+}
+
+#ResponseCancel textarea {
+    width: 90%;
+    height: 100%;
+    margin: 20px 0;
 }

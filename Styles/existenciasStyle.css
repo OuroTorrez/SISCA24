@@ -1,3 +1,20 @@
+#ConsultaCont {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: start;
+    width: 100%;
+    margin: 0 auto;
+}
+
+#ConsultaOpcMenu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    margin: 80px auto;
+}
 
 #Consulta {
     display: flex;

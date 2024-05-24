@@ -126,8 +126,8 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
 
         $query = $conn->prepare("SELECT d.clave, d.producto, d.medida, 
-        COALESCE((SELECT SUM(dr.cantidad) FROM dotaciones_registradas dr INNER JOIN registro_dotaciones rd ON dr.folio = rd.folio WHERE dr.clave = d.clave AND rd.id_almacen = ?), 0) 
-        - COALESCE((SELECT SUM(sr.cantidad) FROM salidas_registradas sr INNER JOIN salidas_dotaciones sd ON sr.folio = sd.folio WHERE sr.clave = d.clave AND sd.id_almacen = ?), 0) AS existencias
+        COALESCE((SELECT SUM(dr.cantidad) FROM registro_entradas_registradas dr INNER JOIN registro_entradas rd ON dr.folio = rd.folio WHERE dr.clave = d.clave AND rd.cancelado = 0 AND rd.id_almacen = ?), 0) 
+        - COALESCE((SELECT SUM(sr.cantidad) FROM registro_salidas_registradas sr INNER JOIN registro_salidas sd ON sr.folio = sd.folio WHERE sr.clave = d.clave AND sd.cancelado = 0 AND sd.id_almacen = ?), 0) AS existencias
         FROM dotaciones d
         WHERE d.programa = ?");
 

@@ -29,7 +29,7 @@ if (isset($_SESSION['usuario'])) {
         $nota = $_POST['nota'];
 
         //Hacemos el registro
-        $query = $conn->prepare("call insertar_registro_dotaciones(?, ?, ?, ?, ?, ?, ?)");
+        $query = $conn->prepare("call insertar_registro_entradas(?, ?, ?, ?, ?, ?, ?)");
         $query->bind_param("iiiisis", $id_usuario, $id_almacen, $proveedor, $entrada, $entrega, $dotacion, $nota);
         if ($query->execute()) {
             // Obtener el folio del registro realizado
@@ -41,7 +41,7 @@ if (isset($_SESSION['usuario'])) {
                 $query->close();
 
                 // Insertar los productos enviados por post con el folio generado
-                $query = $conn->prepare("INSERT INTO dotaciones_registradas (clave, folio, lote, caducidad, cantidad) VALUES (?, ?, ?, ?, ?)");
+                $query = $conn->prepare("INSERT INTO registro_entradas_registradas (clave, folio, lote, caducidad, cantidad) VALUES (?, ?, ?, ?, ?)");
                 $query->bind_param("isssi", $clave, $lastInsertedFolio, $lote, $caducidad, $cantidad);
 
                 for ($i = 0; $i < count($_POST['clave']); $i++) {
@@ -77,11 +77,11 @@ if (isset($_SESSION['usuario'])) {
         // Sube el nuevo archivo
         if (move_uploaded_file($docs, $rutaCompleta)) {
             if($directorio == "DocsEntradas/"){
-                $query = $conn->prepare("UPDATE registro_dotaciones SET pdf_docs = ? WHERE folio = ?");
+                $query = $conn->prepare("UPDATE registro_entradas SET pdf_docs = ? WHERE folio = ?");
             } else if ($directorio == "DocsSalidas/"){
-                $query = $conn->prepare("UPDATE salidas_dotaciones SET pdf_docs = ? WHERE folio = ?");
+                $query = $conn->prepare("UPDATE registro_salidas SET pdf_docs = ? WHERE folio = ?");
             } else if  ($directorio == "DocsSalidasCoord/"){
-                $query = $conn->prepare("UPDATE salidas_dotaciones SET pdf_docs_coord = ? WHERE folio = ?");
+                $query = $conn->prepare("UPDATE registro_salidas SET pdf_docs_coord = ? WHERE folio = ?");
             }
             $query->bind_param("ss", $rutaCompleta, $folio);
             if ($query->execute()) {
@@ -100,11 +100,11 @@ if (isset($_SESSION['usuario'])) {
         $folio = $_POST['folioDocs'];
         $tipo = $_POST['tipo'];
         if ($tipo == "Entradas") {
-            $query = $conn->prepare("SELECT pdf_docs FROM registro_dotaciones WHERE folio = ?");
+            $query = $conn->prepare("SELECT pdf_docs FROM registro_entradas WHERE folio = ?");
         } else if ($tipo == "Salidas") {
-            $query = $conn->prepare("SELECT pdf_docs FROM salidas_dotaciones WHERE folio = ?");
+            $query = $conn->prepare("SELECT pdf_docs FROM registro_salidas WHERE folio = ?");
         } else if ($tipo == "SalidasCoord") {
-            $query = $conn->prepare("SELECT pdf_docs_coord FROM salidas_dotaciones WHERE folio = ?");
+            $query = $conn->prepare("SELECT pdf_docs_coord FROM registro_salidas WHERE folio = ?");
         }
         $query->bind_param("i", $folio);
         if ($query->execute()) {
@@ -118,7 +118,7 @@ if (isset($_SESSION['usuario'])) {
         }
     } else {
         //Entorno de pruebas
-        $query = $conn->prepare("SELECT folio FROM registro_dotaciones ORDER BY folio DESC LIMIT 1");
+        $query = $conn->prepare("SELECT folio FROM registro_entradas ORDER BY folio DESC LIMIT 1");
         $query->execute();
         $result = $query->get_result();
         $row = $result->fetch_assoc();
@@ -139,9 +139,9 @@ function generarDocumento($folio)
     d.clave, d.producto, d.medida,
     t.tipo,
     d.programa
-    FROM registro_dotaciones r
+    FROM registro_entradas r
     INNER JOIN almacenes a on r.id_almacen = a.id_almacen
-    INNER JOIN dotaciones_registradas dr on r.folio = dr.folio
+    INNER JOIN registro_entradas_registradas dr on r.folio = dr.folio
     INNER JOIN proveedores p ON r.id_proveedor = p.id_proveedor
     INNER JOIN usuarios u ON r.id_usuario = u.id
     INNER JOIN entradas t ON r.id_entrada = t.id_entrada
@@ -235,7 +235,7 @@ function generarDocumento($folio)
                     $query = $conn->prepare("SELECT
     d.clave, d.producto, d.medida, d.programa,
     dr.lote, DATE_FORMAT(dr.caducidad, '%d/%m/%Y') AS caducidad, dr.cantidad
-    FROM dotaciones_registradas dr
+    FROM registro_entradas_registradas dr
     INNER JOIN dotaciones d ON dr.clave = d.clave
     WHERE dr.folio = ?");
                     $query->bind_param("i", $folio);

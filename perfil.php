@@ -165,7 +165,7 @@ function showConfig(target) {
                         </div>
                         <div class="formInput">
                             <label for="usuario">Usuario:</label>
-                            <input type="text" name="usuario" id="usuario" value="<?php echo $usuario ?>" required>
+                            <input type="text" name="usuario" id="usuario" value="<?php echo $usuario ?>" disabled>
                         </div>
                         <div class="formInput">
                             <label for="almacen">Almacen:</label>
@@ -223,11 +223,11 @@ function showConfig(target) {
 }
 
 document.getElementById("PerfilConfigs").addEventListener("input", function(event) {
-        // Verificar si el elemento que disparó el evento es un campo de contraseña
-        if (event.target.matches("#nueva, #repetir")) {
-            verificarContraseñas();
-        }
-    });
+    // Verificar si el elemento que disparó el evento es un campo de contraseña
+    if (event.target.matches("#nueva, #repetir")) {
+        verificarContraseñas();
+    }
+});
 
     // Función para verificar si las contraseñas coinciden
     function verificarContraseñas() {
