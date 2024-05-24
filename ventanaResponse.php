@@ -104,7 +104,11 @@
         $('#WaitDoc').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
         $('#WaitDoc .WaitDocText').text(message);
-        $('.WaitResponseDocClose').attr('onclick', closeFunction);
+        if(closeFunction == "CloseResponse()"){
+            $('.WaitResponseDocClose').attr('onclick', closeFunction);
+        } else {
+            $('.WaitResponseDocClose').off('click').on('click', closeFunction);
+        }
     }
 
     function ResponseDoc(title, objectData, downloadName, closeFunction) {
@@ -499,12 +503,13 @@
                     WaitDoc("Registro " + folio + " cancelado exitosamente", "La solicitud de cancelación ha sido procesada con éxito.", "location.reload()");
                     element.disabled = true;
                 } else {
-                    WaitDoc("Error al cancelar el registro", "Por favor intente de nuevo", "uncheckSlider("+element+")");
+                    console.log(response + "\n Por favor");
+                    WaitDoc("Error al cancelar el registro", response + "\n Por favor intente de nuevo", function() {uncheckSlider(element);});
                 }
             },
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);
-                WaitDoc("Error al cancelar el registro", "Por favor intente de nuevo", "uncheckSlider("+element+")");
+                WaitDoc("Error al cancelar el registro", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
     }
