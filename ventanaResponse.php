@@ -11,6 +11,7 @@
 
 <body>
     <div id="ResponseDocCont">
+        <!-- Ventana de respuesta con objeto normal -->
         <div id="ResponseDoc">
             <div class="ResponseTitle">
                 <h2 style="color: var(--Background);">Registro generado exitosamente</h2>
@@ -20,15 +21,17 @@
             </div>
             <object class="ResponseObject" data="" download=""></object>
         </div>
+        <!-- Ventana de información -->
         <div id="WaitDoc">
             <div class="ResponseTitle">
                 <h2 style="color: var(--Background);">Generando registro...</h2>
-                <button id="ResponseDocClose" onclick="CloseResponse()">
+                <button id="ResponseDocClose" class="WaitResponseDocClose" onclick="">
                     <i class="bi bi-x-circle"></i>
                 </button>
             </div>
-            <h4>Por favor espere un momento</h4>
+            <h3 class="WaitDocText">Por favor espere un momento</h3>
         </div>
+        <!-- Ventana de subida de documentos -->
         <div id="UploadDoc">
             <div class="ResponseTitle">
                 <h2 style="color: var(--Background);">Sube tus documentos</h2>
@@ -49,6 +52,7 @@
                 <span>Subir</span>
             </button>
         </div>
+        <!-- Ventana de respuesta con objeto editable -->
         <div id="ResponseDocEditable">
             <div class="ResponseTitle">
                 <h2 style="color: var(--Background);">Documentos subidos</h2>
@@ -62,83 +66,105 @@
                 <span>Reemplazar</span>
             </button>
         </div>
+        <!-- Ventana de respuesta con campo para nota de cancelacion -->
+        <div id="ResponseCancel">
+            <div class="ResponseTitle">
+                <h2 style="color: var(--Background);">Cancelar registro</h2>
+                <button id="ResponseDocClose" class="CancelResponseDocClose" onclick="">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+            </div>
+            <h3>¿Estás seguro de que deseas cancelar este registro?</h3>
+            <h4>⚠️ Una vez cancelado, no se podrá reactivar ⚠️</h4>
+            <textarea class="ResponseCancelNote" placeholder="Escribe una nota de cancelación (max. 500 carácteres)" maxlength="500"></textarea>
+            <button class="ResponseCancelButton" onclick="">
+                <i class="bi bi-x-octagon"></i>
+                <span>Cancelar registro</span>
+            </button>
+        </div>
     </div>
 </body>
 
 </html>
 <script>
-
-    function WaitDoc(title, message) {
-        $('#ResponseDocCont').css('display', 'flex');
-        $('#ResponseDoc').css('display', 'none');
-        $('#WaitDoc').css('display', 'flex');
-        $('#UploadDoc').css('display', 'none');
-        $('#ResponseDocEditable').css('display', 'none');
-        $('.ResponseTitle h2').text(title);
-        $('#WaitDoc h4').text(message);
+    function CloseResponse() {
         data = null;
         blob = null;
-    }
-
-    function ResponseDoc(title, objectData, downloadName, closeFunction) {
-        $('#ResponseDocCont').css('display', 'flex');
-        $('#ResponseDoc').css('display', 'flex');
+        $('#ResponseDocCont').css('display', 'none');
+        $('#ResponseDoc').css('display', 'none');
         $('#WaitDoc').css('display', 'none');
         $('#UploadDoc').css('display', 'none');
         $('#ResponseDocEditable').css('display', 'none');
+        $('#ResponseCancel').css('display', 'none');
+    }
+
+    function WaitDoc(title, message, closeFunction) {
+        CloseResponse();
+        $('#ResponseDocCont').css('display', 'flex');
+        $('#WaitDoc').css('display', 'flex');
+        $('.ResponseTitle h2').text(title);
+        $('#WaitDoc .WaitDocText').text(message);
+        if(closeFunction == "CloseResponse()"){
+            $('.WaitResponseDocClose').attr('onclick', closeFunction);
+        } else {
+            $('.WaitResponseDocClose').off('click').on('click', closeFunction);
+        }
+    }
+
+    function ResponseDoc(title, objectData, downloadName, closeFunction) {
+        CloseResponse();
+        $('#ResponseDocCont').css('display', 'flex');
+        $('#ResponseDoc').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
         $('.ResponseObject').attr('data', objectData);
         $('.ResponseObject').attr('download', downloadName);
         $('#ResponseObjectFail').attr('href', objectData);
         $('#ResponseObjectFail').attr('download', downloadName);
         $('#ResponseDocClose').attr('onclick', closeFunction);
-        data = null;
-        blob = null;
-    }
-
-    function CloseResponse() {
-        $('#ResponseDocCont').css('display', 'none');
-        $('#ResponseDoc').css('display', 'none');
-        $('#WaitDoc').css('display', 'none');
-        $('#UploadDoc').css('display', 'none');
-        $('#ResponseDocEditable').css('display', 'none');
-        data = null;
-        blob = null;
     }
 
     function UploadDoc(title, folio, accion) {
+        CloseResponse();
         $('#ResponseDocCont').css('display', 'flex');
-        $('#ResponseDoc').css('display', 'none');
-        $('#WaitDoc').css('display', 'none');
         $('#UploadDoc').css('display', 'flex');
-        $('#ResponseDocEditable').css('display', 'none');
         $('.ResponseTitle h2').text(title);
         $('#folio').val(folio);
-        data = null;
-        blob = null;
-        if (accion == "Entradas") {
+        if (accion == "Entradas") { 
             $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsEntradas/", "ENTRADAS_' + folio + '.pdf")');
         } else if (accion == "Salidas") {
             $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidas/", "SALIDAS_' + folio + '.pdf")');
+        } else if (accion == "SalidasCoord") {
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidasCoord/", "SALIDAS_COORDINADOR_' + folio + '.pdf")');
         }
     }
 
     function ResponseDocEditable(title,objectData, closeFunction, replaceFunction) {
+        CloseResponse();
         $('#ResponseDocCont').css('display', 'flex');
-        $('#ResponseDoc').css('display', 'none');
-        $('#WaitDoc').css('display', 'none');
-        $('#UploadDoc').css('display', 'none');
         $('#ResponseDocEditable').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
         $('.ResponseObject').attr('data', objectData);
         $('#ResponseDocEditable .ResponseDocCloseCustom').attr('onclick', closeFunction);
         $('#ResponseDocEditable .ResponseDocReplaceButton').attr('onclick', replaceFunction);
-        data = null;
-        blob = null;
     }
 
+    function ResponseCancel(title, accion, tipo, folio, closeFunction, element){
+        CloseResponse();
+        $('#ResponseDocCont').css('display', 'flex');
+        $('#ResponseCancel').css('display', 'flex');
+        $('.ResponseTitle h2').text(title);
+        $('#ResponseCancel .ResponseCancelButton').off('click').on('click', function() {accionesRegistros(accion, tipo, folio, element);});
+        $('.CancelResponseDocClose').off('click').on('click', closeFunction);
+    }
+    function uncheckSlider(element) {
+        CloseResponse();
+        element.checked = false;
+        $('.ResponseCancelNote').val('');
+    }
+    
+
     function generarEntradasyPDF(datoAEnviar, orientacion, toDownload) {
-        WaitDoc("Generando registro...", "Por favor espere un momento");
+        WaitDoc("Generando registro...", "Por favor espere un momento", "CloseResponse()");
         // Enviar los datos a enviarEntradas.php para darle formato HTML-->>PDF y/o guardar en BD
         $.ajax({
             url: 'enviarEntradas.php',
@@ -188,7 +214,7 @@
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr, status, error);
-                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo");
+                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo", "CloseResponse()");
                     }
                 });
 
@@ -196,7 +222,7 @@
             error: function (xhr, status, error) {
                 // Maneja los errores aquí
                 console.error(xhr, status, error);
-                WaitDoc("Error al generar el registro", "Por favor intente de nuevo");
+                WaitDoc("Error al generar el registro", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
         data = null;
@@ -204,7 +230,7 @@
     }
 
     function consultarPDFEntradas(datoAEnviar, orientacion, toDownload) {
-        WaitDoc("Generando registro...", "Por favor espere un momento");
+        WaitDoc("Generando registro...", "Por favor espere un momento", "CloseResponse()");
         // Enviar los datos a enviarEntradas.php para darle formato HTML-->>PDF y/o guardar en BD
         $.ajax({
             url: 'enviarEntradas.php',
@@ -251,7 +277,7 @@
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr, status, error);
-                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo");
+                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo", "CloseResponse()");
                     }
                 });
 
@@ -259,7 +285,7 @@
             error: function (xhr, status, error) {
                 // Maneja los errores aquí
                 console.error(xhr, status, error);
-                WaitDoc("Error al generar el registro", "Por favor intente de nuevo");
+                WaitDoc("Error al generar el registro", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
         data = null;
@@ -267,7 +293,7 @@
     }
 
     function subirDocumentos(targetDirectory, nombrePersonalizado) {
-        WaitDoc("Subiendo tus documentos...", "Por favor espere un momento...");
+        WaitDoc("Subiendo tus documentos...", "Por favor espere un momento...", "CloseResponse()");
         
         var folio = document.getElementById("folio").value;
         var docs = document.getElementById("SubirDocs").files[0]; // Acceder al archivo seleccionado
@@ -293,19 +319,19 @@
                     ResponseDocEditable("Documentos subidos exitosamente", response, 'location.reload()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
                     folioGlobal = folio;
                 } else {
-                    WaitDoc("Error al subir los documentos", "Por favor intente de nuevo");
+                    WaitDoc("Error al subir los documentos", "Por favor intente de nuevo", "CloseResponse()");
                 }
             },
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);
-                WaitDoc("Error al enviar los documentos al servidor", "Por favor intente de nuevo");
+                WaitDoc("Error al enviar los documentos al servidor", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
         data = null;
         blob = null;
     }
 
-    function consultarDoc(folio, tipo) {
+    function consultarDoc(folio, tipo, rol) {
         $.ajax({
             url: 'enviarEntradas.php',
             type: 'POST',
@@ -315,11 +341,15 @@
             },
             success: function (response) {
                 console.log(response);
-                ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
+                if(rol == 3 && tipo != "SalidasCoord") {
+                    ResponseDoc("Documentos subidos", response, 'ARCHIVOS ' + folio + '.pdf', 'CloseResponse()');
+                } else {
+                    ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos coord", ' + folio + ', "SalidasCoord")');
+                }
             },
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);
-                WaitDoc("Error al consultar los documentos", "Por favor intente de nuevo");
+                WaitDoc("Error al consultar los documentos", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
         data = null;
@@ -327,7 +357,7 @@
     }
 
     function generarSalidasyPDF(datoAEnviar, orientacion, toDownload) {
-        WaitDoc("Generando registro...", "Por favor espere un momento");
+        WaitDoc("Generando registro...", "Por favor espere un momento", "CloseResponse()");
         // Enviar los datos a enviarSalidas.php para darle formato HTML-->>PDF y/o guardar en BD
         $.ajax({
             url: 'enviarSalidas.php',
@@ -377,7 +407,7 @@
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr, status, error);
-                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo");
+                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo", "CloseResponse()");
                     }
                 });
 
@@ -385,7 +415,7 @@
             error: function (xhr, status, error) {
                 // Maneja los errores aquí
                 console.error(xhr, status, error);
-                WaitDoc("Error al generar el registro", "Por favor intente de nuevo");
+                WaitDoc("Error al generar el registro", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
         data = null;
@@ -393,7 +423,7 @@
     }
 
     function consultarPDFSalidas(datoAEnviar, orientacion, toDownload) {
-        WaitDoc("Generando registro...", "Por favor espere un momento");
+        WaitDoc("Generando registro...", "Por favor espere un momento", "CloseResponse()");
         // Enviar los datos a enviarEntradas.php para darle formato HTML-->>PDF y/o guardar en BD
         $.ajax({
             url: 'enviarSalidas.php',
@@ -440,7 +470,7 @@
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr, status, error);
-                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo");
+                        WaitDoc("Error al generar el archivo PDF", "Por favor intente de nuevo", "CloseResponse()");
                     }
                 });
 
@@ -448,11 +478,40 @@
             error: function (xhr, status, error) {
                 // Maneja los errores aquí
                 console.error(xhr, status, error);
-                WaitDoc("Error al generar el registro", "Por favor intente de nuevo");
+                WaitDoc("Error al generar el registro", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
         data = null;
         blob = null;
+    }
+
+    function accionesRegistros(accion, tipo, folio, element){
+        var nota = $('#ResponseCancel .ResponseCancelNote').val();
+
+        $.ajax({
+            url: 'accionesRegistros.php',
+            type: 'POST',
+            data: {
+                folio: folio,
+                tipo: tipo,
+                nota: nota,
+                accion: accion
+            },
+            success: function (response) {
+                console.log(response);
+                if(response == "Success"){
+                    WaitDoc("Registro " + folio + " cancelado exitosamente", "La solicitud de cancelación ha sido procesada con éxito.", "location.reload()");
+                    element.disabled = true;
+                } else {
+                    console.log(response + "\n Por favor");
+                    WaitDoc("Error al cancelar el registro", response + "\n Por favor intente de nuevo", function() {uncheckSlider(element);});
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr, status, error);
+                WaitDoc("Error al cancelar el registro", "Por favor intente de nuevo", "CloseResponse()");
+            }
+        });
     }
 
 

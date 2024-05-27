@@ -142,7 +142,7 @@
     height: fit-content;
 }
 
-#HeaderAccountMenu a, span {
+#HeaderAccountMenu a, #HeaderAccountMenu span {
     padding: 10px 20px;
     max-width: 700px;
     width: 200px;

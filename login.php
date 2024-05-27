@@ -25,10 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if(mysqli_num_rows($result) > 0){
                 // Comprobar contraseña
                 $row = $result->fetch_assoc();
+                
                 if(password_verify($password, $row['contrasena'])){
                     session_start();
                     $_SESSION['usuario'] = $row['usuario'];
                     $_SESSION['rol'] = $row['id_rol'];
+                    $_SESSION['id_almacen'] = $row['id_almacen'];
                     $_SESSION['LoggedIn'] = true;
                     $conn->close();
                     header('Location: index.php');

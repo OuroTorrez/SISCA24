@@ -1,0 +1,148 @@
+#Perfil {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: center;
+    gap: 100px;
+    width: 100vw;
+    padding: 0 10vw 0 10vw;
+}
+
+#PerfilMenuDatos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 20%;
+} 
+
+#PerfilMenuImage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    filter: invert(14%) sepia(25%) saturate(5844%) hue-rotate(298deg) brightness(89%) contrast(98%);
+}
+
+#PerfilMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: 2px solid var(--Primary);
+    margin-top: 50px;
+    border-radius: 10px;
+    background-color: var(--Background);
+    overflow: hidden;
+}
+
+.PerfilMenuButton {
+    text-decoration: none;
+    text-align: center;
+    color: var(--Primary);
+    padding: 10px;
+    width: 100%;
+    font-size: 130%;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.PerfilMenuButton:hover {
+    background-color: #801456 !important;
+    color: var(--Background);
+}
+
+.PerfilMenuButton:active {
+    background-color: var(--Primary);
+    font-size: 120%;
+}
+
+.PerfilMenuButton.active {
+    background-color: var(--Secondary);
+    color: var(--Background);
+}
+
+#PerfilMenu hr {
+    margin: 0 auto 0 auto !important;
+}
+
+#PerfilConfigs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    border: 2px solid var(--Secondary);
+    border-radius: 10px;
+    margin-top: 50px;
+    overflow: hidden;
+    transition: font-size .1s, opacity .25s, margin .25s, padding .25s;
+}
+
+#PerfilConfigs.show {
+    /* unshrink, then fade in */
+    transition: font-size .1s, opacity .25s, margin .25s, padding .25s;
+}
+
+#PerfilConfigs.hide {
+    font-size: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    /* fade out, then shrink */
+}
+
+#PerfilConfigs #formGeneral {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 20px;
+}
+
+#formGeneral .formInput {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 30%;
+    margin: 10px;
+}
+
+#formGeneral .formInput input {
+    width: 100%;
+    font-size: 100%;
+}
+
+#PerfilConfigs #formSeguridad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+}
+
+#formSeguridad .formInput {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 40%;
+    margin: 10px;
+}
+
+#formSeguridad .formInput input {
+    width: 100%;
+    font-size: 100%;
+}
+
+.contraActual {
+    width: 50% !important;
+}

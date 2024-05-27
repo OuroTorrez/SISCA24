@@ -1,7 +1,15 @@
+#Consulta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
 
 #tablaRegistros_wrapper {
     width: 99vw;
 }
+
 .dt-layout-row {
     display: flex;
     flex-direction: row;

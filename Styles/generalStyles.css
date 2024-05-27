@@ -76,6 +76,34 @@ td {
     margin: 20px;
 }
 
+#Avisos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#Aviso {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    height: fit-content;
+    background-color: var(--Background);
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 1px #00000090;
+    border-left: 10px solid green;
+    padding: 0px 20px;
+    margin: 20px;
+}
+
+#mensajeContraseña {
+    font-weight: bold;
+}
+
 /*########## Form ##########*/
 label {
     font-weight: bold;
@@ -280,6 +308,66 @@ input[type="file"]::file-selector-button:hover {
     background: var(--Primary);
 }
 
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .2s;
+    transition: .2s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .2s;
+  }
+  
+  input:checked + .slider {
+    background-color: var(--Secondary);
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px var(--Secondary);
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
 /*########## Tooltip ##########*/
 [data-tooltip] {
     position: relative;
@@ -369,4 +457,54 @@ tbody tr:nth-child(odd) {
 
 tr {
     border-bottom: 2px solid #74325a57;
+}
+
+.tablaCancelado {
+    background-color: #ff000080 !important; /* color rojo */
+}
+
+/*########## Menú de opciones ##########*/
+
+.OpcMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: 2px solid var(--Primary);
+    margin-top: 50px;
+    border-radius: 10px;
+    background-color: var(--Background);
+    overflow: hidden;
+}
+
+.OpcMenuButton {
+    text-decoration: none;
+    text-align: center;
+    color: var(--Primary);
+    padding: 10px;
+    width: 100%;
+    font-size: 130%;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.OpcMenuButton:hover {
+    background-color: #801456 !important;
+    color: var(--Background);
+}
+
+.OpcMenuButton:active {
+    background-color: var(--Primary);
+    font-size: 120%;
+}
+
+.OpcMenuButton.active {
+    background-color: var(--Secondary);
+    color: var(--Background);
+}
+
+.OpcMenu hr {
+    margin: 0 auto 0 auto !important;
 }
