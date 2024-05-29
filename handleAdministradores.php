@@ -118,7 +118,7 @@ if ($_POST['accion'] == "showExistencias") {
                             <th>Fecha de registro</th>
                             <th>Entrega</th>
                             <th>Documentos</th>
-                        <?php if ($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) { ?>
+                        <?php if ($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) { ?>
                             <th>Cancelar</th>
                         <?php } ?>
                         <?php if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) { ?>
@@ -185,7 +185,7 @@ if ($_POST['accion'] == "showExistencias") {
                                 }
 
                                 /* Cancelar registro de entradas */
-                                if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) && $verificado == 1) { 
+                                if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) && $verificado == 1) { 
                                     ?>
                                         <td class="t-center"><a data-tooltip="Cancelar">
                                                 <label class="switch">
@@ -194,7 +194,7 @@ if ($_POST['accion'] == "showExistencias") {
                                                 </label>
                                             </a></td>
                                     <?php
-                                } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) && $activo == 0) {
+                                } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) && $activo == 0) {
                                     ?>
                                     <td class="t-center"><a data-tooltip="Cancelar">
                                             <label class="switch">
@@ -203,7 +203,7 @@ if ($_POST['accion'] == "showExistencias") {
                                             </label>
                                         </a></td>
                                 <?php
-                                } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) && $activo == 1) {
+                                } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) && $activo == 1) {
                                     ?>
                                         <td class="t-center"><a data-tooltip="Cancelar"
                                                 onclick="WaitDoc('Nota de cancelacion', '<?php echo $nota_cancelacion ?>', 'CloseResponse()');">
@@ -292,7 +292,7 @@ if ($_POST['accion'] == "showExistencias") {
                         <?php if($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1){ ?>
                             <th>Documentos</th>
                         <?php } ?>
-                        <?php if($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1){ ?>
+                        <?php if($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1){ ?>
                             <th>Cancelar</th>
                         <?php } ?>
                         <?php if($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1){ ?>
@@ -387,7 +387,7 @@ if ($_POST['accion'] == "showExistencias") {
                         }
 
                         /* Cancelar registro de salidas */
-                        if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) && $verificado == 1) {
+                        if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) && $verificado == 1) {
                             ?>
                             <td class="t-center"><a data-tooltip="Cancelar">
                                 <label class="switch">
@@ -396,7 +396,7 @@ if ($_POST['accion'] == "showExistencias") {
                                 </label>
                             </a></td>
                             <?php
-                        } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) && $activo == 0) {
+                        } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) && $activo == 0) {
                             ?>
                             <td class="t-center"><a data-tooltip="Cancelar">
                                 <label class="switch">
@@ -405,7 +405,7 @@ if ($_POST['accion'] == "showExistencias") {
                                 </label>
                             </a></td>
                             <?php
-                        } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) && $activo == 1) {
+                        } else if (($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) && $activo == 1) {
                             ?>
                             <td class="t-center"><a data-tooltip="Cancelar" onclick="WaitDoc('Nota de cancelacion', '<?php echo $nota_cancelacion ?>', 'CloseResponse()');">
                                 <label class="switch">

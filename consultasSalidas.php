@@ -78,7 +78,7 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
     }];
 } else if (<?php echo $_SESSION['rol'] == 5 ? 'true' : 'false'; ?>) {
     columnDefs = [{
-        "targets": [5, 6, 7, 8, 9],
+        "targets": [5, 6, 7, 8],
         "orderable": false
     }];
 } else if (<?php echo $_SESSION['rol'] == 3 ? 'true' : 'false'; ?>) {
