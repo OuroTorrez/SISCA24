@@ -74,12 +74,16 @@
                     <i class="bi bi-x-circle"></i>
                 </button>
             </div>
-            <h3>¿Estás seguro de que deseas cancelar este registro?</h3>
-            <h4>⚠️ Una vez cancelado, no se podrá reactivar ⚠️</h4>
-            <textarea class="ResponseCancelNote" placeholder="Escribe una nota de cancelación (max. 500 carácteres)" maxlength="500"></textarea>
+            <h3 id="ResponseCancelQuestion">¿Estás seguro de que deseas cancelar este registro?</h3>
+            <h4 id="ResponseCancelWarning">⚠️ Una vez cancelado, no se podrá reactivar ⚠️</h4>
+            <textarea id="ResponseCancelTextarea" class="ResponseCancelNote" placeholder="Escribe una nota de cancelación (max. 500 carácteres)" maxlength="500"></textarea>
             <button class="ResponseCancelButton" onclick="">
                 <i class="bi bi-x-octagon"></i>
                 <span>Cancelar registro</span>
+            </button>
+            <button class="ResponseVerifyButton" onclick="">
+                <i class="bi bi-check-circle"></i>
+                <span>Verificar registro</span>
             </button>
         </div>
     </div>
@@ -104,7 +108,7 @@
         $('#WaitDoc').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
         $('#WaitDoc .WaitDocText').text(message);
-        if(closeFunction == "CloseResponse()"){
+        if(closeFunction == "CloseResponse()" || closeFunction == "location.reload()"){
             $('.WaitResponseDocClose').attr('onclick', closeFunction);
         } else {
             $('.WaitResponseDocClose').off('click').on('click', closeFunction);
@@ -150,10 +154,25 @@
 
     function ResponseCancel(title, accion, tipo, folio, closeFunction, element){
         CloseResponse();
+        if(accion=="Verificar"){
+            $('#ResponseCancelQuestion').text('¿Estás seguro de que deseas verificar este registro?');
+            $('#ResponseCancelWarning').text('⚠️ Una vez verificado, no se podrá deshacer ⚠️');
+            $('#ResponseCancelTextarea').css('display', 'none');
+            $('.ResponseCancelButton').css('display', 'none');
+            $('.ResponseVerifyButton').css('display', 'flex');
+        } else if(accion=="Cancelar"){
+            $('#ResponseCancelQuestion').text('¿Estás seguro de que deseas cancelar este registro?');
+            $('#ResponseCancelWarning').text('⚠️ Una vez cancelado, no se podrá reactivar ⚠️');
+            $('#ResponseCancelTextarea').css('display', 'block');
+            $('.ResponseCancelButton').css('display', 'flex');
+            $('.ResponseVerifyButton').css('display', 'none');
+
+        }
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseCancel').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
         $('#ResponseCancel .ResponseCancelButton').off('click').on('click', function() {accionesRegistros(accion, tipo, folio, element);});
+        $('#ResponseCancel .ResponseVerifyButton').off('click').on('click', function() {accionesRegistros(accion, tipo, folio, element);});
         $('.CancelResponseDocClose').off('click').on('click', closeFunction);
     }
     function uncheckSlider(element) {
@@ -331,7 +350,7 @@
         blob = null;
     }
 
-    function consultarDoc(folio, tipo, rol) {
+    function consultarDoc(folio, tipo, rol, isEditable) {
         $.ajax({
             url: 'enviarEntradas.php',
             type: 'POST',
@@ -341,10 +360,12 @@
             },
             success: function (response) {
                 console.log(response);
-                if(rol == 3 && tipo != "SalidasCoord") {
-                    ResponseDoc("Documentos subidos", response, 'ARCHIVOS ' + folio + '.pdf', 'CloseResponse()');
+                console.log(isEditable);
+                if (isEditable) {
+                    ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
                 } else {
-                    ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos coord", ' + folio + ', "SalidasCoord")');
+                    ResponseDoc("Documentos subidos", response, 'ARCHIVOS ' + folio + '.pdf', 'CloseResponse()');
+
                 }
             },
             error: function (xhr, status, error) {
@@ -499,12 +520,18 @@
             },
             success: function (response) {
                 console.log(response);
-                if(response == "Success"){
+                if(response == "Success" && accion == "Cancelar"){
                     WaitDoc("Registro " + folio + " cancelado exitosamente", "La solicitud de cancelación ha sido procesada con éxito.", "location.reload()");
                     element.disabled = true;
-                } else {
+                } else if(response != "Success" && accion == "Cancelar"){
                     console.log(response + "\n Por favor");
                     WaitDoc("Error al cancelar el registro", response + "\n Por favor intente de nuevo", function() {uncheckSlider(element);});
+                }else if(response == "Success" && accion == "Verificar"){
+                    WaitDoc("Registro " + folio + " verificado exitosamente", "La solicitud de verificación ha sido procesada con éxito.", "location.reload()");
+                    element.disabled = true;
+                } else {
+                    console.log(response);
+                    WaitDoc("Error al verificar el registro", "Por favor intente de nuevo", function() {uncheckSlider(element);});
                 }
             },
             error: function (xhr, status, error) {

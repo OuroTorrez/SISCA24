@@ -52,6 +52,19 @@
                 } else {
                     echo "Error: " . $conn->error;
                 }
+            break;
+            case 'Verificar':
+                if($_POST['tipo'] == 'Entradas'){
+                    $query = $conn->prepare("UPDATE registro_entradas SET verificado = 1 WHERE folio = ? ");
+                } else if($_POST['tipo'] == 'Salidas'){
+                    $query = $conn->prepare("UPDATE registro_salidas SET verificado = 1 WHERE folio = ? ");
+                }
+                $query->bind_param("s", $_POST['folio']);
+                if($query->execute()) {
+                    echo "Success";
+                } else {
+                    echo "Error: " . $conn->error;
+                }
                 break;
         }
     }

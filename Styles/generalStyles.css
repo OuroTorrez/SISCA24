@@ -463,6 +463,10 @@ tr {
     background-color: #ff000080 !important; /* color rojo */
 }
 
+.tablaVerificado {
+    background-color: #00aa0080 !important; /* color verde */
+}
+
 /*########## Menú de opciones ##########*/
 
 .OpcMenu {

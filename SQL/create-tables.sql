@@ -8,6 +8,7 @@ CREATE Table roles(
 INSERT INTO roles(id_rol, nombre, descripcion) VALUES(1, 'ADMINISTRADOR', 'Todos los permisos de administrador'), (2, 'ALMACENISTA', 'Únicamente funciones de almacenista');
 INSERT INTO roles(id_rol, rol, descripcion) VALUES(3, 'Coordinador administrativo', 'Supervisa las operaciones de los almacenes pero no puede realizar capturas');
 INSERT INTO roles(id_rol, rol, descripcion) VALUES(4, 'Control de almacenes', 'Supervisa y aprueba o cancela las operaciones de los almacenes pero no puede realizar capturas ni subir documentos');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(5, 'Supervisor', 'Supervisa y aprueba la información de entradas y salidas para marcarlos como verificados');
 /* Permisos */
 /* Crear usuarios */
 /* Registrar entradas */
@@ -340,67 +341,6 @@ CALL insertar_registro_entradas(
 );
 
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
-INSERT INTO roles(id_rol, rol, descripcion) VALUES(4, 'Control de almacenes', 'Supervisa y aprueba o cancela las operaciones de los almacenes pero no puede realizar capturas ni subir documentos');
-
-ALTER TABLE salidas_dotaciones RENAME registro_salidas;
-alter Table registro_dotaciones RENAME registro_entradas;
-
-ALTER TABLE dotaciones_registradas RENAME registro_entradas_registradas;
-ALTER TABLE salidas_registradas RENAME registro_salidas_registradas;
-
-ALTER TABLE registro_entradas ADD nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion';
-ALTER TABLE registro_entradas ADD cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada';
-ALTER TABLE registro_salidas ADD nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion';
-ALTER TABLE registro_salidas ADD cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada';
-
-
-DROP PROCEDURE insertar_salida_dotaciones;
-CREATE PROCEDURE insertar_registro_salidas(
-    IN p_id_usuario INT, IN p_id_almacen INT, IN p_afavor VARCHAR(255), IN p_municipio VARCHAR(255), IN p_id_salida INT, IN p_recibe VARCHAR(255), 
-    IN p_referencia VARCHAR(100), IN p_monto DECIMAL(10, 2), IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),IN p_nota VARCHAR(255)
-)
-BEGIN
-    DECLARE v_ultimo_id INT DEFAULT 0;
-    DECLARE v_ultimo_folio INT DEFAULT 0;
-
-    -- Obtener el último folio del almacén especificado
-    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_salidas WHERE id_almacen = p_id_almacen;
-
-    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
-    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
-
-    -- Insertar el nuevo registro
-    INSERT INTO registro_salidas(id_usuario, id_almacen, afavor, municipio, id_salida, recibe, referencia, monto, dotacion, folio,nota) 
-    VALUES(p_id_usuario, p_id_almacen, p_afavor, p_municipio, p_id_salida, p_recibe, p_referencia, p_monto, p_dotacion, CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')),p_nota);
-
-    -- Obtener el ID del último registro insertado
-    SET v_ultimo_id = LAST_INSERT_ID();
-
-    -- Devolver el folio del último registro insertado
-    SELECT folio FROM registro_salidas WHERE id = v_ultimo_id;
-END
-
-DROP PROCEDURE insertar_registro_dotaciones;
-CREATE PROCEDURE insertar_registro_entradas(IN p_id_usuario INT, IN p_id_almacen INT, IN p_id_proveedor INT, IN p_id_entrada INT, 
-    IN p_entrega VARCHAR(255), IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'), IN p_nota VARCHAR(255)
-)
-BEGIN
-    DECLARE v_ultimo_id INT DEFAULT 0;
-    DECLARE v_ultimo_folio INT DEFAULT 0;
-
-    -- Obtener el último folio del almacén especificado
-    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_entradas WHERE id_almacen = p_id_almacen;
-
-    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
-    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
-
-    -- Insertar el nuevo registro
-    INSERT INTO registro_entradas(id_usuario, id_almacen, id_proveedor, id_entrada, entrega, dotacion, nota, folio) 
-    VALUES(p_id_usuario, p_id_almacen, p_id_proveedor, p_id_entrada, p_entrega, p_dotacion, p_nota, CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')));
-
-    -- Obtener el ID del último registro insertado
-    SET v_ultimo_id = LAST_INSERT_ID();
-
-    -- Devolver el folio del último registro insertado
-    SELECT folio FROM registro_entradas WHERE id = v_ultimo_id;
-END
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(5, 'Supervisor', 'Supervisa y aprueba la información de entradas y salidas para marcarlos como verificados');
+ALTER TABLE registro_entradas ADD COLUMN verificado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido verificada';
+ALTER TABLE registro_salidas ADD COLUMN verificado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido verificada';

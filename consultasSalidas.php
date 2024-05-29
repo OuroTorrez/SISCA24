@@ -73,12 +73,27 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
 if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
     columnDefs = [{
-        "targets": [5, 4, 6],
+        "targets": [5,6,7,8],
+        "orderable": false
+    }];
+} else if (<?php echo $_SESSION['rol'] == 5 ? 'true' : 'false'; ?>) {
+    columnDefs = [{
+        "targets": [5, 6, 7, 8, 9],
+        "orderable": false
+    }];
+} else if (<?php echo $_SESSION['rol'] == 3 ? 'true' : 'false'; ?>) {
+    columnDefs = [{
+        "targets": [5, 6, 7],
+        "orderable": false
+    }];
+} else if (<?php echo $_SESSION['rol'] == 1 ? 'true' : 'false'; ?>) {
+    columnDefs = [{
+        "targets": [5, 6, 7, 8, 9],
         "orderable": false
     }];
 } else {
     columnDefs = [{
-        "targets": [4, 5],
+        "targets": [5, 6],
         "orderable": false
     }];
 }
@@ -179,7 +194,18 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
         activoSliders.forEach(function (element) {
             element.addEventListener('click', function () {
                 if (element.checked) {
-                    ResponseCancel('Cancelar registro de entrada ' + element.value, 'Cancelar', 'Entradas', element.value, function() {uncheckSlider(element);}, element);
+                    ResponseCancel('Cancelar registro de entrada ' + element.value, 'Cancelar', 'Salidas', element.value, function() {uncheckSlider(element);}, element);
+                } else {
+                    console.log('unchecked');
+                }
+            });
+        });
+
+        var verificadoSliders = document.querySelectorAll('.verificado');
+        verificadoSliders.forEach(function (element) {
+            element.addEventListener('click', function () {
+                if (element.checked) {
+                    ResponseCancel('Verificar registro de entrada ' + element.value, 'Verificar', 'Salidas', element.value, function() {uncheckSlider(element);}, element);
                 } else {
                     console.log('unchecked');
                 }

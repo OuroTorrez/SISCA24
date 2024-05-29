@@ -30,7 +30,7 @@
                 <li class="MenuNavOption"><a href="index.php">Inicio</a></li><!-- Boton de incio -->
                 
                 
-                <?php if(isset($_SESSION['rol']) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4)){ ?><!-- Menu para coordinador administrativo -->
+                <?php if(isset($_SESSION['rol']) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 5)) { ?><!-- Menu para coordinador administrativo y control de almacenes -->
                     <li class="MenuNavOption"><a href="consultas.php">Entradas</a><!-- Boton de entradas coordinador -->
                         <ul class="HeaderMenuSubNav">
                             <li class="MenuNavOption"><a href="consultas.php">Consulta</a></li>
