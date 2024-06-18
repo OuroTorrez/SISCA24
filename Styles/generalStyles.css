@@ -283,8 +283,8 @@ button:focus {
 .inputFileLabel.drag-active {
     background-color: #69154941;
     border: 2px dashed var(--Primary);
-  }
-  
+}
+
 
 input[type="file"] {
     width: 80%;
@@ -313,15 +313,15 @@ input[type="file"]::file-selector-button:hover {
     display: inline-block;
     width: 60px;
     height: 34px;
-  }
-  
-  .switch input { 
+}
+
+.switch input {
     opacity: 0;
     width: 0;
     height: 0;
-  }
-  
-  .slider {
+}
+
+.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -331,9 +331,9 @@ input[type="file"]::file-selector-button:hover {
     background-color: #ccc;
     -webkit-transition: .2s;
     transition: .2s;
-  }
-  
-  .slider:before {
+}
+
+.slider:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -343,30 +343,84 @@ input[type="file"]::file-selector-button:hover {
     background-color: white;
     -webkit-transition: .2s;
     transition: .2s;
-  }
-  
-  input:checked + .slider {
+}
+
+input:checked + .slider {
     background-color: var(--Secondary);
-  }
-  
-  input:focus + .slider {
+}
+
+input:focus + .slider {
     box-shadow: 0 0 1px var(--Secondary);
-  }
-  
-  input:checked + .slider:before {
+}
+
+input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
+}
+
+.FormData {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    padding: 10px;
+}
+
+.FormData > * {
+    width: 100%;
+}
+
+.FormData > *:not(label) {
+    min-height: 47px;
+}
+
+/* Rounded sliders */
+.slider.round {
     border-radius: 34px;
-  }
-  
-  .slider.round:before {
+}
+
+.slider.round:before {
     border-radius: 50%;
-  }
+}
+
+/* Radio buttons Menu */
+.radioMenu {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.radioMenu label {
+    display: flex;
+    gap: 5px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--Background);
+    color: var(--Primary);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.radioMenu label:hover {
+    background-color: #69154941;
+    color: var(--Secondary);
+}
+
+.radioMenu input[type="radio"] {
+    display: none;
+}
+
+.radioMenu input[type="radio"]:checked+label {
+    background-color: var(--Secondary);
+    color: var(--Background);
+}
 
 /*########## Tooltip ##########*/
 [data-tooltip] {
@@ -511,4 +565,24 @@ tr {
 
 .OpcMenu hr {
     margin: 0 auto 0 auto !important;
+}
+
+.OpcMenuContent {
+    border: 2px solid var(--Secondary);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: font-size .1s, opacity .25s, margin .25s, padding .25s;
+}
+
+.OpcMenuContent.show {
+    /* unshrink, then fade in */
+    transition: font-size .1s, opacity .25s, margin .25s, padding .25s;
+}
+
+.OpcMenuContent.hide {
+    font-size: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    /* fade out, then shrink */
 }

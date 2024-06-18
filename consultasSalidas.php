@@ -45,7 +45,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 $query->fetch();
                 echo "<h2>$nombre $apellido_paterno $apellido_materno</h2>";
                 echo "<h3>$almacen</h3>";
-                if($_SESSION['rol'] == 1 || $_SESSION['rol'] == 4){
+                if($_SESSION['id_almacen'] == 0){
                     $query = $conn->prepare("SELECT * FROM almacenes");
                     $query->execute();
                     $query->bind_result($id_almacen, $almacen);

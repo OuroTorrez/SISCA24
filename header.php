@@ -63,7 +63,7 @@
 
 
                 <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] == 1){ ?> <!-- Opción solo para administradores -->
-                <li class="MenuNavOption"><a href="registro.php">Usuarios</a></li> <!-- Boton de registro de usuarios -->
+                <li class="MenuNavOption"><a href="controlUsuarios.php">Usuarios</a></li> <!-- Boton de registro y modificación de usuarios -->
                 <?php } ?>
             </ul>
         </div>
