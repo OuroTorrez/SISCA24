@@ -91,7 +91,8 @@ if ($_POST['accion'] == "showExistencias") {
     ?>
     </table>
     <?php
-} else if ($_POST['accion'] == "showEntradas") {
+}
+else if ($_POST['accion'] == "showEntradas") {
     $id_almacen = $_POST['almacen'];
     if($id_almacen != 0) {
         $query = $conn->prepare("SELECT DISTINCT rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
@@ -259,7 +260,8 @@ if ($_POST['accion'] == "showExistencias") {
     } else {
         echo "<h3>No se pudieron obtener los registros de entradas " . $conn->error . "</h3>";
     }
-} else if ($_POST['accion'] == "showSalidas") {
+}
+else if ($_POST['accion'] == "showSalidas") {
     $almacen = $_POST['almacen'];
     if($almacen != 0){
         $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado
@@ -288,9 +290,9 @@ if ($_POST['accion'] == "showExistencias") {
                         <th>Dotacion</th>
                         <th>Fecha de registro</th>
                         <th>Salida</th>
-                        <th>Documentos</th>
+                        <th>Escaneo salida</th>
                         <?php if($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1){ ?>
-                            <th>Documentos</th>
+                            <th>Pago</th>
                         <?php } ?>
                         <?php if($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1){ ?>
                             <th>Cancelar</th>
