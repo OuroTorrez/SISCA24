@@ -1,6 +1,6 @@
 <?php
     session_start();
-    if ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4) {
+    if ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 6) {
         header('Location: indexCoord.php');
     }
 ?>

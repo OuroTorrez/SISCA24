@@ -2,13 +2,16 @@
 
 CREATE Table roles(
     id_rol int NOT NULL PRIMARY KEY COMMENT 'ID del rol',
-    nombre VARCHAR(100) NOT NULL COMMENT 'Nombre del rol',
+    rol VARCHAR(100) NOT NULL COMMENT 'Nombre del rol',
     descripcion VARCHAR(255) NOT NULL COMMENT 'Descripcion del rol'
 ) COMMENT 'Tabla para almacenar los roles de los usuarios';
-INSERT INTO roles(id_rol, nombre, descripcion) VALUES(1, 'ADMINISTRADOR', 'Todos los permisos de administrador'), (2, 'ALMACENISTA', 'Únicamente funciones de almacenista');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(1, 'ADMINISTRADOR', 'Todos los permisos de administrador'), (2, 'ALMACENISTA', 'Únicamente funciones de almacenista');
 INSERT INTO roles(id_rol, rol, descripcion) VALUES(3, 'Coordinador administrativo', 'Supervisa las operaciones de los almacenes pero no puede realizar capturas');
 INSERT INTO roles(id_rol, rol, descripcion) VALUES(4, 'Control de almacenes', 'Supervisa y aprueba o cancela las operaciones de los almacenes pero no puede realizar capturas ni subir documentos');
 INSERT INTO roles(id_rol, rol, descripcion) VALUES(5, 'Supervisor', 'Supervisa y aprueba la información de entradas y salidas para marcarlos como verificados');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(6, 'Enlace', 'Permisos de Coordinador administrativo sin poder subir pagos');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES (7, 'AFEVEM', 'Permisos de supervisor sin poder marcar entradas y salidas como verificados');
+
 /* Permisos */
 /* Crear usuarios */
 /* Registrar entradas */
@@ -341,6 +344,5 @@ CALL insertar_registro_entradas(
 );
 
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
-INSERT INTO roles(id_rol, rol, descripcion) VALUES(5, 'Supervisor', 'Supervisa y aprueba la información de entradas y salidas para marcarlos como verificados');
-ALTER TABLE registro_entradas ADD COLUMN verificado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido verificada';
-ALTER TABLE registro_salidas ADD COLUMN verificado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido verificada';
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(6, 'Enlace', 'Permisos de Coordinador administrativo sin poder subir pagos');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES (7, 'AFEVEM', 'Permisos de supervisor sin poder marcar entradas y salidas como verificados');

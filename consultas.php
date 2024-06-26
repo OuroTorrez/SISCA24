@@ -91,6 +91,11 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
         "orderable": false
     }];
 
+} else if (<?php echo $_SESSION['rol'] == 7 ? 'true' : 'false'; ?>){
+    columnDefs = [{
+        "targets": [5,4],
+        "orderable": false
+    }];
 } else {
     columnDefs = [{
         "targets": [4, 5],
@@ -103,7 +108,7 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
     
     // Iterar sobre todos los botones y ajustar la clase activa
     buttons.forEach(button => {
-        if (button.getAttribute('data-target') == almacen) {
+        if (button.getAttribute('data-target') === almacen) {
             button.classList.add('active'); // Marcar el botón como activo si coincide con el target
         } else {
             button.classList.remove('active'); // Quitar la clase activa de los otros botones
