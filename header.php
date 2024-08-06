@@ -30,7 +30,7 @@
                 <li class="MenuNavOption"><a href="index.php">Inicio</a></li><!-- Boton de incio -->
                 
                 
-                <?php if(isset($_SESSION['rol']) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4)){ ?><!-- Menu para coordinador administrativo -->
+                <?php if(isset($_SESSION['rol']) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 6 || $_SESSION['rol'] == 7)) { ?><!-- Menu para coordinador administrativo y control de almacenes -->
                     <li class="MenuNavOption"><a href="consultas.php">Entradas</a><!-- Boton de entradas coordinador -->
                         <ul class="HeaderMenuSubNav">
                             <li class="MenuNavOption"><a href="consultas.php">Consulta</a></li>
@@ -63,7 +63,7 @@
 
 
                 <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] == 1){ ?> <!-- Opción solo para administradores -->
-                <li class="MenuNavOption"><a href="registro.php">Usuarios</a></li> <!-- Boton de registro de usuarios -->
+                <li class="MenuNavOption"><a href="controlUsuarios.php">Usuarios</a></li> <!-- Boton de registro y modificación de usuarios -->
                 <?php } ?>
             </ul>
         </div>

@@ -45,7 +45,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 $query->fetch();
                 echo "<h2>$nombre $apellido_paterno $apellido_materno</h2>";
                 echo "<h3>$almacen</h3>";
-                if($_SESSION['rol'] == 1 || $_SESSION['rol'] == 4){
+                if($_SESSION['id_almacen'] == 0){
                     $query = $conn->prepare("SELECT * FROM almacenes");
                     $query->execute();
                     $query->bind_result($id_almacen, $almacen);
@@ -79,6 +79,23 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
         "targets": [5, 4, 6],
         "orderable": false
     }];
+} else if (<?php echo $_SESSION['rol'] == 1 ? 'true' : 'false'; ?>){
+    columnDefs = [{
+        "targets": [5, 4, 6, 7],
+        "orderable": false
+    }];
+
+}else if (<?php echo $_SESSION['rol'] == 5 ? 'true' : 'false'; ?>){
+    columnDefs = [{
+        "targets": [5, 4, 6, 7],
+        "orderable": false
+    }];
+
+} else if (<?php echo $_SESSION['rol'] == 7 ? 'true' : 'false'; ?>){
+    columnDefs = [{
+        "targets": [5,4],
+        "orderable": false
+    }];
 } else {
     columnDefs = [{
         "targets": [4, 5],
@@ -91,7 +108,7 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
     
     // Iterar sobre todos los botones y ajustar la clase activa
     buttons.forEach(button => {
-        if (button.getAttribute('data-target') == almacen) {
+        if (button.getAttribute('data-target') === almacen) {
             button.classList.add('active'); // Marcar el botón como activo si coincide con el target
         } else {
             button.classList.remove('active'); // Quitar la clase activa de los otros botones
@@ -183,6 +200,17 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
             element.addEventListener('click', function () {
                 if (element.checked) {
                     ResponseCancel('Cancelar registro de entrada ' + element.value, 'Cancelar', 'Entradas', element.value, function() {uncheckSlider(element);}, element);
+                } else {
+                    console.log('unchecked');
+                }
+            });
+        });
+
+        var verificadoSliders = document.querySelectorAll('.verificado');
+        verificadoSliders.forEach(function (element) {
+            element.addEventListener('click', function () {
+                if (element.checked) {
+                    ResponseCancel('Verificar registro de entrada ' + element.value, 'Verificar', 'Entradas', element.value, function() {uncheckSlider(element);}, element);
                 } else {
                     console.log('unchecked');
                 }

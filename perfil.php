@@ -183,6 +183,7 @@ function showConfig(target) {
                 configs.innerHTML = 
                 `
                     <h1>Seguridad</h1>
+                    <h3>Cambio de contraseña</h3>
                     <?php if (isset($mensajeCambios) && $mensajeCambios != "") { ?>
                         <div id="Avisos">
                             <div id="Aviso">

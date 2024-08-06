@@ -120,7 +120,7 @@
 #ResponseCancel {
     display: none;
     flex-direction: column;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
     width: 30vw;
     height: 40vh;
@@ -140,4 +140,29 @@
     width: 90%;
     height: 100%;
     margin: 20px 0;
+}
+
+#ResponseModify {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 35vw;
+    height: fit-content;
+    max-height: 90vh;
+    background-color: var(--Background);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 1px #00000067;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px;
+    overflow: auto;
+}
+
+.FormModify {
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 40px;
 }

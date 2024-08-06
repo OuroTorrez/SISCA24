@@ -2,12 +2,16 @@
 
 CREATE Table roles(
     id_rol int NOT NULL PRIMARY KEY COMMENT 'ID del rol',
-    nombre VARCHAR(100) NOT NULL COMMENT 'Nombre del rol',
+    rol VARCHAR(100) NOT NULL COMMENT 'Nombre del rol',
     descripcion VARCHAR(255) NOT NULL COMMENT 'Descripcion del rol'
 ) COMMENT 'Tabla para almacenar los roles de los usuarios';
-INSERT INTO roles(id_rol, nombre, descripcion) VALUES(1, 'ADMINISTRADOR', 'Todos los permisos de administrador'), (2, 'ALMACENISTA', 'Únicamente funciones de almacenista');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(1, 'ADMINISTRADOR', 'Todos los permisos de administrador'), (2, 'ALMACENISTA', 'Únicamente funciones de almacenista');
 INSERT INTO roles(id_rol, rol, descripcion) VALUES(3, 'Coordinador administrativo', 'Supervisa las operaciones de los almacenes pero no puede realizar capturas');
 INSERT INTO roles(id_rol, rol, descripcion) VALUES(4, 'Control de almacenes', 'Supervisa y aprueba o cancela las operaciones de los almacenes pero no puede realizar capturas ni subir documentos');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(5, 'Supervisor', 'Supervisa y aprueba la información de entradas y salidas para marcarlos como verificados');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES(6, 'Enlace', 'Permisos de Coordinador administrativo sin poder subir pagos');
+INSERT INTO roles(id_rol, rol, descripcion) VALUES (7, 'AFEVEM', 'Permisos de supervisor sin poder marcar entradas y salidas como verificados');
+
 /* Permisos */
 /* Crear usuarios */
 /* Registrar entradas */
@@ -82,6 +86,7 @@ CREATE Table registro_entradas(
     pdf_docs VARCHAR(50) COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del registro',
     nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion',
+    nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación',
     cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_almacen) REFERENCES almacenes(id_almacen),
@@ -155,9 +160,10 @@ CREATE Table registro_salidas(
     monto DECIMAL(10, 2) NOT NULL COMMENT 'Monto de la salida',
     dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9') NOT NULL COMMENT 'Numero de dotacion al año al que pertenece',
     nota VARCHAR(255) COMMENT 'Nota opcional de la dotacion',
-    pdf_docs VARCHAR(50) DEFAULT NULLCOMMENT 'PDF con los documentos que se generan al llegar la dotacion',
+    pdf_docs VARCHAR(50) DEFAULT NULL COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del registro',
     nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion',
+    nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación',
     cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_almacen) REFERENCES almacenes(id_almacen),
@@ -309,98 +315,7 @@ CREATE Table registro_salidas_registradas(
 ) COMMENT 'Tabla para almacenar las salidas de dotaciones registradas en el sistema';
 
 
-TRUNCATE Table registro_entradas;
-
-DROP TABLE registro_entradas;
-
-TRUNCATE Table registro_entradas_registradas;
-
-DROP TABLE registro_entradas_registradas;
-
-TRUNCATE Table proveedores;
-
-DROP TABLE proveedores;
-
-DROP TABLE proveedores_autorizados;
-
-DROP TABLE dotaciones;
-
-set FOREIGN_KEY_CHECKS=0;
-
-set FOREIGN_KEY_CHECKS=1;
-
-CALL insertar_registro_entradas(
-    1, -- p_id_usuario
-    1, -- p_id_almacen
-    1, -- p_id_proveedor
-    1, -- p_id_entrada
-    'Fulanito Ramirez', -- p_entrega
-    '1', -- p_dotacion
-    'Nota de prueba 1' -- p_nota
-);
-
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
-INSERT INTO roles(id_rol, rol, descripcion) VALUES(4, 'Control de almacenes', 'Supervisa y aprueba o cancela las operaciones de los almacenes pero no puede realizar capturas ni subir documentos');
 
-ALTER TABLE salidas_dotaciones RENAME registro_salidas;
-alter Table registro_dotaciones RENAME registro_entradas;
-
-ALTER TABLE dotaciones_registradas RENAME registro_entradas_registradas;
-ALTER TABLE salidas_registradas RENAME registro_salidas_registradas;
-
-ALTER TABLE registro_entradas ADD nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion';
-ALTER TABLE registro_entradas ADD cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada';
-ALTER TABLE registro_salidas ADD nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion';
-ALTER TABLE registro_salidas ADD cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada';
-
-
-DROP PROCEDURE insertar_salida_dotaciones;
-CREATE PROCEDURE insertar_registro_salidas(
-    IN p_id_usuario INT, IN p_id_almacen INT, IN p_afavor VARCHAR(255), IN p_municipio VARCHAR(255), IN p_id_salida INT, IN p_recibe VARCHAR(255), 
-    IN p_referencia VARCHAR(100), IN p_monto DECIMAL(10, 2), IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),IN p_nota VARCHAR(255)
-)
-BEGIN
-    DECLARE v_ultimo_id INT DEFAULT 0;
-    DECLARE v_ultimo_folio INT DEFAULT 0;
-
-    -- Obtener el último folio del almacén especificado
-    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_salidas WHERE id_almacen = p_id_almacen;
-
-    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
-    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
-
-    -- Insertar el nuevo registro
-    INSERT INTO registro_salidas(id_usuario, id_almacen, afavor, municipio, id_salida, recibe, referencia, monto, dotacion, folio,nota) 
-    VALUES(p_id_usuario, p_id_almacen, p_afavor, p_municipio, p_id_salida, p_recibe, p_referencia, p_monto, p_dotacion, CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')),p_nota);
-
-    -- Obtener el ID del último registro insertado
-    SET v_ultimo_id = LAST_INSERT_ID();
-
-    -- Devolver el folio del último registro insertado
-    SELECT folio FROM registro_salidas WHERE id = v_ultimo_id;
-END
-
-DROP PROCEDURE insertar_registro_dotaciones;
-CREATE PROCEDURE insertar_registro_entradas(IN p_id_usuario INT, IN p_id_almacen INT, IN p_id_proveedor INT, IN p_id_entrada INT, 
-    IN p_entrega VARCHAR(255), IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'), IN p_nota VARCHAR(255)
-)
-BEGIN
-    DECLARE v_ultimo_id INT DEFAULT 0;
-    DECLARE v_ultimo_folio INT DEFAULT 0;
-
-    -- Obtener el último folio del almacén especificado
-    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_entradas WHERE id_almacen = p_id_almacen;
-
-    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
-    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
-
-    -- Insertar el nuevo registro
-    INSERT INTO registro_entradas(id_usuario, id_almacen, id_proveedor, id_entrada, entrega, dotacion, nota, folio) 
-    VALUES(p_id_usuario, p_id_almacen, p_id_proveedor, p_id_entrada, p_entrega, p_dotacion, p_nota, CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')));
-
-    -- Obtener el ID del último registro insertado
-    SET v_ultimo_id = LAST_INSERT_ID();
-
-    -- Devolver el folio del último registro insertado
-    SELECT folio FROM registro_entradas WHERE id = v_ultimo_id;
-END
+ALTER TABLE registro_entradas ADD COLUMN nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación';
+ALTER TABLE registro_salidas ADD COLUMN nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación';

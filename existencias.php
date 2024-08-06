@@ -46,7 +46,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         ?>
     </div>
     <div id="ConsultaCont">
-        <?php if($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) { ?>
+        <?php if($_SESSION['id_almacen'] == 0) { ?>
         <div id="ConsultaOpcMenu" class="OpcMenu">
             <?php
                 $query = $conn->prepare("SELECT * FROM almacenes");
@@ -65,6 +65,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         </div>
         <?php } ?>
         <div id="Consulta">
+
         </div>
     </div>
 </body>

@@ -1,13 +1,52 @@
-#Consulta {
+#ContenidoUsuarios {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
     justify-content: center;
+    align-items: start;
     width: 100%;
+    margin: 0 auto;
 }
 
-#tablaRegistros_wrapper {
-    width: 99vw;
+#MenuUsuarios {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    margin: 80px auto;
+}
+
+#ConfiguracionesUsuarios {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    padding: 50px 10px;
+    margin: 0 auto;
+    border: 2px solid var(--Secondary);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: font-size .1s, opacity .25s, margin .25s, padding .25s;
+}
+
+.ConfiguracionesUsuariosForm {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 70%;
+    padding: 20px;
+}
+#tablaUsuarios_wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+#tablaUsuarios {
+    width: 100%;
+    box-shadow: 0px 0px 15px 1px #00000067;
 }
 
 .dt-layout-row {
@@ -44,16 +83,16 @@
 table.dataTable thead > tr > th.dt-orderable-asc span.dt-column-order:before, table.dataTable thead > tr > th.dt-ordering-asc span.dt-column-order:before,
 table.dataTable thead > tr > td.dt-orderable-asc span.dt-column-order:before,
 table.dataTable thead > tr > td.dt-ordering-asc span.dt-column-order:before {
-  display: block;
-  content: "▲";
-  content: "▲"/"";
+    display: block;
+    content: "▲";
+    content: "▲"/"";
 }
 table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:after, table.dataTable thead > tr > th.dt-ordering-desc span.dt-column-order:after,
 table.dataTable thead > tr > td.dt-orderable-desc span.dt-column-order:after,
 table.dataTable thead > tr > td.dt-ordering-desc span.dt-column-order:after {
-  display: block;
-  content: "▼";
-  content: "▼"/"";
+    display: block;
+    content: "▼";
+    content: "▼"/"";
 }
 
 table.dataTable thead > tr > th.dt-orderable-asc, table.dataTable thead > tr > th.dt-orderable-desc, table.dataTable thead > tr > th.dt-ordering-asc, table.dataTable thead > tr > th.dt-ordering-desc,
@@ -61,19 +100,19 @@ table.dataTable thead > tr > td.dt-orderable-asc,
 table.dataTable thead > tr > td.dt-orderable-desc,
 table.dataTable thead > tr > td.dt-ordering-asc,
 table.dataTable thead > tr > td.dt-ordering-desc {
-  position: relative;
-  padding-right: 30px;
+    position: relative;
+    padding-right: 30px;
 }
 table.dataTable thead > tr > th.dt-orderable-asc span.dt-column-order, table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order, table.dataTable thead > tr > th.dt-ordering-asc span.dt-column-order, table.dataTable thead > tr > th.dt-ordering-desc span.dt-column-order,
 table.dataTable thead > tr > td.dt-orderable-asc span.dt-column-order,
 table.dataTable thead > tr > td.dt-orderable-desc span.dt-column-order,
 table.dataTable thead > tr > td.dt-ordering-asc span.dt-column-order,
 table.dataTable thead > tr > td.dt-ordering-desc span.dt-column-order {
-  position: absolute;
-  right: 12px;
-  top: 0;
-  bottom: 0;
-  width: 12px;
+    position: absolute;
+    right: 12px;
+    top: 0;
+    bottom: 0;
+    width: 12px;
 }
 table.dataTable thead > tr > th.dt-orderable-asc span.dt-column-order:before, table.dataTable thead > tr > th.dt-orderable-asc span.dt-column-order:after, table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:before, table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order:after, table.dataTable thead > tr > th.dt-ordering-asc span.dt-column-order:before, table.dataTable thead > tr > th.dt-ordering-asc span.dt-column-order:after, table.dataTable thead > tr > th.dt-ordering-desc span.dt-column-order:before, table.dataTable thead > tr > th.dt-ordering-desc span.dt-column-order:after,
 table.dataTable thead > tr > td.dt-orderable-asc span.dt-column-order:before,
@@ -84,28 +123,28 @@ table.dataTable thead > tr > td.dt-ordering-asc span.dt-column-order:before,
 table.dataTable thead > tr > td.dt-ordering-asc span.dt-column-order:after,
 table.dataTable thead > tr > td.dt-ordering-desc span.dt-column-order:before,
 table.dataTable thead > tr > td.dt-ordering-desc span.dt-column-order:after {
-  left: 0;
-  opacity: 0.3;
-  line-height: 9px;
-  font-size: 0.8em;
+    left: 0;
+    opacity: 0.3;
+    line-height: 9px;
+    font-size: 0.8em;
 }
 table.dataTable thead > tr > th.dt-orderable-asc, table.dataTable thead > tr > th.dt-orderable-desc,
 table.dataTable thead > tr > td.dt-orderable-asc,
 table.dataTable thead > tr > td.dt-orderable-desc {
-  cursor: pointer;
+    cursor: pointer;
 }
 table.dataTable thead > tr > th.dt-ordering-asc span.dt-column-order:before, table.dataTable thead > tr > th.dt-ordering-desc span.dt-column-order:after,
 table.dataTable thead > tr > td.dt-ordering-asc span.dt-column-order:before,
 table.dataTable thead > tr > td.dt-ordering-desc span.dt-column-order:after {
-  opacity: 1;
+    opacity: 1;
 }
 
-#tablaRegistros_wrapper input,
-#tablaRegistros_wrapper select {
+#tablaUsuarios_wrapper input,
+#tablaUsuarios_wrapper select {
     margin: 10px;
 }
 
-#tablaRegistros_wrapper label {
+#tablaUsuarios_wrapper label {
     font-size: 120%;
 }
 
@@ -117,7 +156,7 @@ table.dataTable thead > tr > td.dt-ordering-desc span.dt-column-order:after {
     width: 100%;
 }
 
-#tablaRegistros {
+#tablaUsuarios {
     width: 100% !important;
     margin: 15px 0;
     border-collapse: collapse;
@@ -159,13 +198,11 @@ tr {
     border-bottom: 2px solid #74325a57;
 }
 
-col[data-dt-column="0"] { width: 10% !important; }
+col[data-dt-column="0"] { width: 5% !important; }
 col[data-dt-column="1"] { width: 30% !important; }
-col[data-dt-column="2"] { width: 20% !important; }
-col[data-dt-column="3"] { width: 10% !important; }
-col[data-dt-column="4"] { width: 20% !important; }
-col[data-dt-column="5"] { width: 5% !important; }
-col[data-dt-column="6"] { width: 5% !important; }
+col[data-dt-column="2"] { width: 10% !important; }
+col[data-dt-column="3"] { width: 30% !important; }
+col[data-dt-column="4"] { width: 5% !important; }
 
 .dt-info {
     font-family: "Asap Condensed", sans-serif;
