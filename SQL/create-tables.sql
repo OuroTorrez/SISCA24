@@ -86,6 +86,7 @@ CREATE Table registro_entradas(
     pdf_docs VARCHAR(50) COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del registro',
     nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion',
+    nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación',
     cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_almacen) REFERENCES almacenes(id_almacen),
@@ -159,9 +160,10 @@ CREATE Table registro_salidas(
     monto DECIMAL(10, 2) NOT NULL COMMENT 'Monto de la salida',
     dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9') NOT NULL COMMENT 'Numero de dotacion al año al que pertenece',
     nota VARCHAR(255) COMMENT 'Nota opcional de la dotacion',
-    pdf_docs VARCHAR(50) DEFAULT NULLCOMMENT 'PDF con los documentos que se generan al llegar la dotacion',
+    pdf_docs VARCHAR(50) DEFAULT NULL COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del registro',
     nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion',
+    nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación',
     cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_almacen) REFERENCES almacenes(id_almacen),
@@ -313,36 +315,7 @@ CREATE Table registro_salidas_registradas(
 ) COMMENT 'Tabla para almacenar las salidas de dotaciones registradas en el sistema';
 
 
-TRUNCATE Table registro_entradas;
-
-DROP TABLE registro_entradas;
-
-TRUNCATE Table registro_entradas_registradas;
-
-DROP TABLE registro_entradas_registradas;
-
-TRUNCATE Table proveedores;
-
-DROP TABLE proveedores;
-
-DROP TABLE proveedores_autorizados;
-
-DROP TABLE dotaciones;
-
-set FOREIGN_KEY_CHECKS=0;
-
-set FOREIGN_KEY_CHECKS=1;
-
-CALL insertar_registro_entradas(
-    1, -- p_id_usuario
-    1, -- p_id_almacen
-    1, -- p_id_proveedor
-    1, -- p_id_entrada
-    'Fulanito Ramirez', -- p_entrega
-    '1', -- p_dotacion
-    'Nota de prueba 1' -- p_nota
-);
-
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
-INSERT INTO roles(id_rol, rol, descripcion) VALUES(6, 'Enlace', 'Permisos de Coordinador administrativo sin poder subir pagos');
-INSERT INTO roles(id_rol, rol, descripcion) VALUES (7, 'AFEVEM', 'Permisos de supervisor sin poder marcar entradas y salidas como verificados');
+
+ALTER TABLE registro_entradas ADD COLUMN nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación';
+ALTER TABLE registro_salidas ADD COLUMN nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación';

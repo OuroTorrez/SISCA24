@@ -117,7 +117,10 @@ else if ($_POST['accion'] == "showEntradas") {
                             <th>Proveedor</th>
                             <th>Dotación</th>
                             <th>Fecha de registro</th>
-                            <th>Entrega</th>
+                        <?php if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) { ?>
+                            <th>Modificar</th>
+                        <?php } ?>
+                            <th>Entrada</th>
                             <th>Documentos</th>
                         <?php if ($_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) { ?>
                             <th>Cancelar</th>
@@ -150,6 +153,18 @@ else if ($_POST['accion'] == "showEntradas") {
                                 <td data-tooltip="<?php echo $programa ?>"><?php echo $proveedor; ?></td>
                                 <td class="t-center"><?php echo $dotacion; ?></td>
                                 <td class="t-center"><?php echo $fecha; ?></td>
+                                <!-- Modificar datos para entrada -->
+                                <?php
+                                if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1){
+                                    ?>
+                                    <td class="t-center">
+                                        <a data-tooltip="Modificar entrada" onclick="ResponseModify('Modificar la entrada '+ <?php echo $folio ?>, <?php echo $folio ?>, 'Entrada', 'CloseResponse()')">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                    <?php
+                                }
+                                ?>
                                 <td class="t-center"><a data-tooltip="Consultar registro de entrada <?php echo $_SESSION['rol'] ?>"
                                         onclick="consultarPDFEntradas(<?php echo $folio ?>, 'portrait', false)"><i
                                             class="bi bi-file-earmark-text"></i></a></td>
@@ -260,8 +275,7 @@ else if ($_POST['accion'] == "showEntradas") {
     } else {
         echo "<h3>No se pudieron obtener los registros de entradas " . $conn->error . "</h3>";
     }
-}
-else if ($_POST['accion'] == "showSalidas") {
+} else if ($_POST['accion'] == "showSalidas") {
     $almacen = $_POST['almacen'];
     if($almacen != 0){
         $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado
@@ -289,6 +303,9 @@ else if ($_POST['accion'] == "showSalidas") {
                         <th>Municipio</th>
                         <th>Dotacion</th>
                         <th>Fecha de registro</th>
+                        <?php if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) { ?>
+                            <th>Modificar</th>
+                        <?php } ?>
                         <th>Salida</th>
                         <th>Escaneo salida</th>
                         <?php if($_SESSION['rol'] == 3 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 1 || $_SESSION['rol'] == 6 || $_SESSION['rol'] == 7){ ?>
@@ -324,6 +341,18 @@ else if ($_POST['accion'] == "showSalidas") {
                         <td class="t-center"><?php echo $municipio ?></td>
                         <td class="t-center"><?php echo $dotacion ?></td>
                         <td class="t-center"><?php echo $fecha ?></td>
+                        <!-- Modificar datos para salidas -->
+                        <?php
+                        if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1){
+                            ?>
+                            <td class="t-center">
+                                <a data-tooltip="Modificar salida" onclick="ResponseModify('Modificar la salida '+ <?php echo $folio ?>, <?php echo $folio ?>, 'Salida', 'CloseResponse()')">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                            <?php
+                        }
+                        ?>
                         <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, 'portrait', false)"><i
                                     class="bi bi-file-earmark-text"></i></a></td>
 

@@ -82,9 +82,21 @@
                 <span>Cancelar registro</span>
             </button>
             <button class="ResponseVerifyButton" onclick="">
-                <i class="bi bi-check-circle"></i>
+                <i class="F"></i>
                 <span>Verificar registro</span>
             </button>
+        </div>
+        <!-- Modificar registros de entradas -->
+        <div id="ResponseModify">
+            <div class="ResponseTitle">
+                <h2 style="color: var(--Background);">Modificar registro</h2>
+                <button id="ResponseDocClose" class="ResponseModifyClose" onclick="">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+            </div>
+            <div id="ContFormModify" style="width: 100%;">
+
+            </div>
         </div>
     </div>
 </body>
@@ -100,6 +112,7 @@
         $('#UploadDoc').css('display', 'none');
         $('#ResponseDocEditable').css('display', 'none');
         $('#ResponseCancel').css('display', 'none');
+        $('#ResponseModify').css('display', 'none');
     }
 
     function WaitDoc(title, message, closeFunction) {
@@ -180,7 +193,39 @@
         element.checked = false;
         $('.ResponseCancelNote').val('');
     }
-    
+
+    async function ResponseModify(title, folio, tipo, closeFunction) {
+        CloseResponse();
+        if (tipo == "Entrada") {
+            $('#ContFormModify').html(await ResponseModifyForm(folio, 'FormEntrada'));
+        } else if (tipo == "Salida") {
+            $('#ContFormModify').html(await ResponseModifyForm(folio, 'FormSalida'));
+        }
+        $('#folio').val(folio);
+        $('#ResponseDocCont').css('display', 'flex');
+        $('#ResponseModify').css('display', 'flex');
+        $('.ResponseTitle h2').text(title);
+        $('.ResponseModifyClose').attr('onclick', closeFunction);
+    }
+    async function ResponseModifyForm(folio, accion){
+        try {
+            const formData = new FormData();
+            formData.append('folio', folio);
+            formData.append('accion', accion);
+
+            const response = await fetch('accionesRegistros.php', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                return await response.text();
+            } else {
+                throw new Error('Error en la respuesta del servidor');
+            }
+        } catch (error) {
+            return error;
+        }
+    }
 
     function generarEntradasyPDF(datoAEnviar, orientacion, toDownload) {
         WaitDoc("Generando registro...", "Por favor espere un momento", "CloseResponse()");
@@ -569,5 +614,34 @@
             });
         }
     });
+
+    async function enviarModificacion(accion) {
+        const form = document.getElementById('FormModificar');
+        const formData = new FormData(form);
+        formData.append('accion', accion);
+        console.log("folio" + document.getElementById('folio').value);
+        try {
+            const response = await fetch('accionesRegistros.php', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                const result = await response.text();
+                console.log(result);
+                if (result === "Success") {
+                    console.log(result);
+                    WaitDoc('Modificar entrada', 'La entrada fue modificada correctamente', 'location.reload()');
+                } else {
+                    WaitDoc('Error al modificar entrada', result, 'location.reload()');
+                }
+            } else {
+                throw new Error('Error en la respuesta del servidor');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            WaitDoc('Error al modificar la entrada', error, 'location.reload()');
+        }
+    }
+
 
 </script>
