@@ -54,7 +54,7 @@ if ($_POST['accion'] == "showHistoricos") {
                 0
             ) AS existencias_ant,
             -- Cantidad de entradas durante el mes y año especificado
-            COALESCE(
+             COALESCE(
                 (SELECT SUM(dr.cantidad) 
                 FROM registro_entradas_registradas dr 
                 INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
@@ -81,6 +81,28 @@ if ($_POST['accion'] == "showHistoricos") {
 
             -- Cálculo de existencias
             COALESCE(
+                (SELECT SUM(dr.cantidad) 
+                FROM registro_entradas_registradas dr 
+                INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
+                WHERE dr.clave = d.clave 
+                AND rd.cancelado = 0
+                AND rd.id_almacen = ? 
+                AND MONTH(rd.fecha_registro) = $mesant 
+                AND YEAR(rd.fecha_registro) = $anio), 
+                0
+            ) 
+            - COALESCE(
+                (SELECT SUM(sr.cantidad) 
+                FROM registro_salidas_registradas sr 
+                INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
+                WHERE sr.clave = d.clave 
+                AND sd.cancelado = 0
+                AND sd.id_almacen = ? 
+                AND MONTH(sd.fecha_registro) = $mesant 
+                AND YEAR(sd.fecha_registro) = $anio), 
+                0
+            )
+            + COALESCE(
                 (SELECT SUM(dr.cantidad) 
                 FROM registro_entradas_registradas dr 
                 INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
@@ -158,6 +180,26 @@ if ($_POST['accion'] == "showHistoricos") {
 
             -- Cálculo de existencias
             COALESCE(
+                (SELECT SUM(dr.cantidad) 
+                FROM registro_entradas_registradas dr 
+                INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
+                WHERE dr.clave = d.clave 
+                AND rd.cancelado = 0 
+                AND MONTH(rd.fecha_registro) = $mesant 
+                AND YEAR(rd.fecha_registro) = $anio), 
+                0
+            ) 
+            - COALESCE(
+                (SELECT SUM(sr.cantidad) 
+                FROM registro_salidas_registradas sr 
+                INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
+                WHERE sr.clave = d.clave 
+                AND sd.cancelado = 0 
+                AND MONTH(sd.fecha_registro) = $mesant 
+                AND YEAR(sd.fecha_registro) = $anio), 
+                0
+            )
+            + COALESCE(
                 (SELECT SUM(dr.cantidad) 
                 FROM registro_entradas_registradas dr 
                 INNER JOIN registro_entradas rd ON dr.folio = rd.folio 

@@ -28,7 +28,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             </div>
         </div>
     <?php } ?>
-    <h1 class="PageTitle">Consulta de existencias historicas</h1>
+    <h1 class="PageTitle">Acta de inventario</h1>
 
     <div id="UserTitle">
         <?php

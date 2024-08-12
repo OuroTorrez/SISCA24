@@ -316,6 +316,4 @@ CREATE Table registro_salidas_registradas(
 
 
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
-
-ALTER TABLE registro_entradas ADD COLUMN nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación';
-ALTER TABLE registro_salidas ADD COLUMN nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación';
+INSERT 
