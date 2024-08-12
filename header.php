@@ -63,7 +63,7 @@ if (!isset($_SESSION['usuario']) || !$_SESSION['LoggedIn']) {
                     <ul class="HeaderMenuSubNav">
                         <li class="MenuNavOption"><a href="existencias.php">Actuales</a></li><!-- Submenu de existencias -->
                         <hr>
-                        <li class="MenuNavOption"><a href="historicos.php">Historicos</a></li><!-- Submenu de existencias -->
+                        <li class="MenuNavOption"><a href="historicos.php">Acta</a></li><!-- Submenu de existencias -->
                     </ul>
                 </li>
 
