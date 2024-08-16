@@ -21,16 +21,16 @@ if ($_POST['accion'] == "showHistoricos") {
         $mes = $_POST['mes'];
         $anio = $_POST['anio'];
         $mesant = $mes - 1;
+        $anioant = $anio;
         if($mesant == 0){
             $mesant = 12;
-            $anio = $anio - 1;
+            $anioant = $anio - 1;
         }
     } else {
         $almacen = 0;
     }
     if ($almacen != 0) {
-        $query = $conn->prepare("
-        SELECT d.clave, d.programa, d.producto, d.medida,
+        $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida,
 
             -- Calculo de existencias mes anterior
             COALESCE(entradas_ant.cantidad, 0) - COALESCE(salidas_ant.cantidad, 0) AS existencias_ant,
@@ -54,7 +54,7 @@ if ($_POST['accion'] == "showHistoricos") {
                 WHERE rd.cancelado = 0 
                 AND rd.id_almacen = ? 
                 AND MONTH(rd.fecha_registro) = $mesant 
-                AND YEAR(rd.fecha_registro) = $anio
+                AND YEAR(rd.fecha_registro) = $anioant
                 GROUP BY dr.clave
             ) entradas_ant ON entradas_ant.clave = d.clave
 
@@ -65,7 +65,7 @@ if ($_POST['accion'] == "showHistoricos") {
                 WHERE sd.cancelado = 0 
                 AND sd.id_almacen = ? 
                 AND MONTH(sd.fecha_registro) = $mesant 
-                AND YEAR(sd.fecha_registro) = $anio
+                AND YEAR(sd.fecha_registro) = $anioant
                 GROUP BY sr.clave
             ) salidas_ant ON salidas_ant.clave = d.clave
 
@@ -94,8 +94,7 @@ if ($_POST['accion'] == "showHistoricos") {
 
         $query->bind_param("iiii", $almacen, $almacen, $almacen, $almacen);
     } else {
-        $query = $conn->prepare("
-        SELECT d.clave, d.programa, d.producto, d.medida,
+        $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida,
 
             -- Calculo de existencias mes anterior
             COALESCE(entradas_ant.cantidad, 0) - COALESCE(salidas_ant.cantidad, 0) AS existencias_ant,
@@ -118,7 +117,7 @@ if ($_POST['accion'] == "showHistoricos") {
                 INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
                 WHERE rd.cancelado = 0 
                 AND MONTH(rd.fecha_registro) = $mesant 
-                AND YEAR(rd.fecha_registro) = $anio
+                AND YEAR(rd.fecha_registro) = $anioant
                 GROUP BY dr.clave
             ) entradas_ant ON entradas_ant.clave = d.clave
 
@@ -128,7 +127,7 @@ if ($_POST['accion'] == "showHistoricos") {
                 INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
                 WHERE sd.cancelado = 0 
                 AND MONTH(sd.fecha_registro) = $mesant 
-                AND YEAR(sd.fecha_registro) = $anio
+                AND YEAR(sd.fecha_registro) = $anioant
                 GROUP BY sr.clave
             ) salidas_ant ON salidas_ant.clave = d.clave
 
