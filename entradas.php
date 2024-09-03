@@ -22,11 +22,11 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     <!-- Contenido -->
     <content>
         <?php if (isset($error)) { ?>
-        <div id="Errores">
-            <div id="Error">
-                <p><?php echo $error; ?></p>
+            <div id="Errores">
+                <div id="Error">
+                    <p><?php echo $error; ?></p>
+                </div>
             </div>
-        </div>
         <?php } ?>
         <h1 class="PageTitle">Capturar dotaciones</h1>
         <div id="UserTitle">
@@ -68,24 +68,25 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
 </html>
 <script>
-document.getElementById('SelectDotaciones').addEventListener('change', function() {
-    var programa = document.getElementById('SelectDotaciones').value;
-    // Send the value to the server
-    $.ajax({
-        url: 'handleEntradas.php',
-        type: 'POST',
-        data: {
-            data: programa
-        },
-        success: function(response) {
-            // You can use the response here
-            $(".EntradasForm").html(response);
-        },
-        error: function(response) {
-            console.log("response error:");
-            console.log(response);
-        }
+    $(document).ready(function () {
+        document.getElementById('SelectDotaciones').addEventListener('change', function () {
+            var programa = document.getElementById('SelectDotaciones').value;
+            // Send the value to the server
+            $.ajax({
+                url: 'handleEntradas.php',
+                type: 'POST',
+                data: {
+                    data: programa
+                },
+                success: function (response) {
+                    // You can use the response here
+                    $(".EntradasForm").html(response);
+                },
+                error: function (response) {
+                    console.log("response error:");
+                    console.log(response);
+                }
+            });
+        });
     });
-
-});
 </script>
