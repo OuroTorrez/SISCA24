@@ -588,8 +588,6 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     // Envía los datos del formulario para registrar las entradas
     document.getElementById('guardarBtn').addEventListener('click', function(e) {
         e.preventDefault();
-
-
         var form = document.getElementById('registroDotaciones');
         var dataForm = new FormData(form);
 

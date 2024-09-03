@@ -244,7 +244,7 @@
                 if (toDownload) {
                     var parser = new DOMParser();
                     var htmlDoc = parser.parseFromString(response, 'text/html');
-                    var folio = htmlDoc.querySelector('#folioElement').innerText;
+                    var folio = htmlDoc.querySelector('#folioElement')?.innerText;
                 }
 
                 // Envia los datos para generar el PDF a generatePDF.php
@@ -307,7 +307,7 @@
                 if (toDownload) {
                     var parser = new DOMParser();
                     var htmlDoc = parser.parseFromString(response, 'text/html');
-                    var folio = htmlDoc.querySelector('#folioElement').innerText;
+                    var folio = htmlDoc.querySelector('#folioElement')?.innerText;
                 }
 
                 // Envia los datos para generar el PDF a generatePDF.php
@@ -439,7 +439,7 @@
                 if (toDownload) {
                     var parser = new DOMParser();
                     var htmlDoc = parser.parseFromString(response, 'text/html');
-                    var folio = htmlDoc.querySelector('#folioElement').innerText;
+                    var folio = htmlDoc.querySelector('#folioElement')?.innerText;
                 }
 
                 // Envia los datos para generar el PDF a generatePDF.php
@@ -502,7 +502,7 @@
                 if (toDownload) {
                     var parser = new DOMParser();
                     var htmlDoc = parser.parseFromString(response, 'text/html');
-                    var folio = htmlDoc.querySelector('#folioElement').innerText;
+                    var folio = htmlDoc.querySelector('#folioElement')?.innerText;
                 }
 
                 // Envia los datos para generar el PDF a generatePDF.php
