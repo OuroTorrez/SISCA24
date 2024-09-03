@@ -237,16 +237,12 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(datoAEnviar);
-                console.log(data);
-                console.log(response);
                 // Extraer el folio del registro de la respuesta HTML
                 if (toDownload) {
                     var parser = new DOMParser();
                     var htmlDoc = parser.parseFromString(response, 'text/html');
                     var folio = htmlDoc.querySelector('#folioElement')?.innerText;
                 }
-
                 // Envia los datos para generar el PDF a generatePDF.php
                 $.ajax({
                     url: 'generatePDF.php',
@@ -259,6 +255,7 @@
                         responseType: 'blob'
                     },
                     success: function (response) {
+                        console.log(response);
                         // Crea un objeto Blob con los datos del PDF, esto para que pueda ser leído por el elemento object
                         var blob = new Blob([response], {
                             type: 'application/pdf'

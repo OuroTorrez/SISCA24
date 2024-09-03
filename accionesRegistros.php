@@ -5,6 +5,23 @@ $conn = conectar();
 if (empty($conn) || !($conn instanceof mysqli)) {
     $error = "⛔Error de conexión: <br>" . $conn;
 }
+$municipios = [
+    "Acuitzio","Aguililla","Álvaro Obregón","Angamacutiro","Angangueo",
+    "Apatzingán","Aporo","Aquila","Ario","Arteaga","Briseñas","Buenavista","Carácuaro",
+    "Coahuayana","Coalcomán de Vázquez Pallares","Coeneo","Contepec","Copándaro","Cotija","Cuitzeo","Charapan","Charo","Chavinda","Cherán",
+    "Chilchota","Chinicuila","Chucándiro","Churintzio","Churumuco","Ecuandureo","Epitacio Huerta",
+    "Erongarícuaro","Gabriel Zamora","Hidalgo","La Huacana","Huandacareo","Huaniqueo","Huetamo",
+    "Huiramba","Indaparapeo","Irimbo","Ixtlán","Jacona","Jiménez","Jiquilpan","Juárez",
+    "Jungapeo","Lagunillas","Madero","Maravatío","Marcos Castellanos","Lázaro Cárdenas","Morelia",
+    "Morelos","Múgica","Nahuatzen","Nocupétaro","Nuevo Parangaricutiro","Nuevo Urecho","Numarán","Ocampo","Pajacuarán",
+    "Panindícuaro","Parácuaro","Paracho","Pátzcuaro","Penjamillo","Peribán",
+    "La Piedad","Purépero","Puruándiro","Queréndaro","Quiroga","Cojumatlán de Régules","Los Reyes",
+    "Sahuayo","San Lucas","Santa Ana Maya","Salvador Escalante","Senguio","Susupuato","Tacámbaro","Tancítaro","Tangamandapio",
+    "Tangancícuaro","Tanhuato","Taretan","Tarímbaro","Tepalcatepec","Tingambato","Tingüindín",
+    "Tiquicheo de Nicolás Romero","Tlalpujahua","Tlazazalca","Tocumbo","Tumbiscatío","Turicato","Tuxpan","Tuzantla",
+    "Tzintzuntzan","Tzitzio","Uruapan","Venustiano Carranza","Villamar","Vista Hermosa","Yurécuaro",
+    "Zacapu","Zamora","Zináparo","Zinapécuaro","Ziracuaretiro","Zitácuaro","José Sixto Verduzco"
+];
 if (isset($_POST['accion'])) {
     if ($_POST['accion'] == 'Cancelar'){
         if ($_POST['tipo'] == 'Entradas') {
@@ -131,10 +148,10 @@ if (isset($_POST['accion'])) {
         <?php
     }
     else if ($_POST['accion'] == 'FormSalida') {
-        $query = $conn->prepare("SELECT id_salida, dotacion, nota, nota_modificacion, recibe, monto FROM registro_salidas WHERE folio = ?");
+        $query = $conn->prepare("SELECT id_salida, dotacion, nota, nota_modificacion, recibe, monto, afavor, municipio FROM registro_salidas WHERE folio = ?");
         $query->bind_param("i", $_POST['folio']);
         $query->execute();
-        $query->bind_result($id_salidaBD, $dotacionBD, $notaBD, $nota_modificacionBD, $recibe, $monto);
+        $query->bind_result($id_salidaBD, $dotacionBD, $notaBD, $nota_modificacionBD, $recibe, $monto, $afavor, $municipioBD);
         $query->fetch();
         $query->close();
         ?>
@@ -173,6 +190,24 @@ if (isset($_POST['accion'])) {
                             echo "<option value='$i' selected>$i</option>";
                         } else {
                             echo "<option value='$i'>$i</option>";
+                        }
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="FormData">
+                <label for="afavor" class="req">A favor de:</label>
+                <input type="text" name="afavor" id="afavor" value="<?php echo $afavor; ?>" required>
+            </div>
+            <div class="FormData" style="width: 100%">
+                <label for="municipio" class="req">Municipio:</label>
+                <select name="municipio" id="municipio" required>
+                    <?php
+                    foreach ($municipios as $municipio) {
+                        if ($municipio == $municipioBD){
+                            echo "<option value='$municipio' selected>$municipio</option>";
+                        } else {
+                            echo "<option value='$municipio'>$municipio</option>";
                         }
                     }
                     ?>
@@ -225,8 +260,10 @@ if (isset($_POST['accion'])) {
         $nota_modificacion = $_POST['nota_modificacion'];
         $recibe = $_POST['recibe'];
         $monto = $_POST['monto'];
-        $query = $conn->prepare("UPDATE registro_salidas SET id_salida = ?, dotacion = ?, nota = ?, nota_modificacion = ?, recibe = ?, monto = ? WHERE folio = ?");
-        $query->bind_param("iisssii", $salida, $dotacion, $nota, $nota_modificacion, $recibe, $monto, $folio);
+        $afavor = $_POST['afavor'];
+        $municipio = $_POST['municipio'];
+        $query = $conn->prepare("UPDATE registro_salidas SET id_salida = ?, dotacion = ?, nota = ?, nota_modificacion = ?, recibe = ?, monto = ?, afavor = ?, municipio = ? WHERE folio = ?");
+        $query->bind_param("iisssissi", $salida, $dotacion, $nota, $nota_modificacion, $recibe, $monto, $afavor, $municipio, $folio);
         if($query->execute()){
             echo "Success";
         } else {

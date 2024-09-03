@@ -276,7 +276,7 @@ else if ($_POST['accion'] == "showEntradas") {
         echo "<h3>No se pudieron obtener los registros de entradas " . $conn->error . "</h3>";
     }
 } else if ($_POST['accion'] == "showSalidas") {
-    $almacen = $_POST['almacen'];
+    $almacen = $_POST['almacen'] ?? '0';
     if($almacen != 0){
         $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado
         FROM registro_salidas sd
