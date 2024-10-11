@@ -14,6 +14,9 @@
         <!-- Ventana de respuesta con objeto normal -->
         <div id="ResponseDoc">
             <div class="ResponseTitle">
+                <button id="ResponseDocRemove" class="ResponseDocRemoveCustom" onclick="">
+                    <i class="bi bi-trash3"></i>
+                </button>
                 <h2 style="color: var(--Background);">Registro generado exitosamente</h2>
                 <button id="ResponseDocClose" class="ResponseDocCloseCustom" onclick="CloseResponse()">
                     <i class="bi bi-x-circle"></i>
@@ -55,6 +58,9 @@
         <!-- Ventana de respuesta con objeto editable -->
         <div id="ResponseDocEditable">
             <div class="ResponseTitle">
+            <button id="ResponseDocRemove" class="ResponseDocRemoveCustom" onclick="">
+                    <i class="bi bi-trash3"></i>
+                </button>
                 <h2 style="color: var(--Background);">Documentos subidos</h2>
                 <button id="ResponseDocClose" class="ResponseDocCloseCustom" onclick="CloseResponse()">
                     <i class="bi bi-x-circle"></i>
@@ -98,6 +104,21 @@
 
             </div>
         </div>
+        <!-- Ventana de respuesta para eliminación de documentos -->
+        <div id="ResponseRemoveDoc">
+            <div class="ResponseTitle">
+                <h2 style="color: var(--Background);">Eliminar documento</h2>
+                <button id="ResponseDocClose" class="RemoveDocClose" onclick="">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+            </div>
+            <h3 id="Question">¿Estás seguro de que deseas eliminar el documento de este registro?</h3>
+            <h4 id="Warning">⚠️ Una vez eliminado no se podrá visualizar ⚠️</h4>
+            <button class="ResponseRemoveDocButton" onclick="">
+                <i class="bi bi-x-octagon"></i>
+                <span>Eliminar documento</span>
+            </button>
+        </div>
     </div>
 </body>
 
@@ -113,6 +134,7 @@
         $('#ResponseDocEditable').css('display', 'none');
         $('#ResponseCancel').css('display', 'none');
         $('#ResponseModify').css('display', 'none');
+        $('#ResponseRemoveDoc').css('display', 'none');
     }
 
     function WaitDoc(title, message, closeFunction) {
@@ -128,7 +150,7 @@
         }
     }
 
-    function ResponseDoc(title, objectData, downloadName, closeFunction) {
+    function ResponseDoc(title, objectData, downloadName, closeFunction, removeFunction, isRemovable) {
         CloseResponse();
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseDoc').css('display', 'flex');
@@ -138,6 +160,11 @@
         $('#ResponseObjectFail').attr('href', objectData);
         $('#ResponseObjectFail').attr('download', downloadName);
         $('#ResponseDocClose').attr('onclick', closeFunction);
+        if(!isRemovable) {
+            $('#ResponseDocRemove').css('display', 'none');
+        } else {
+            $('.ResponseDocRemoveCustom').attr('onclick', removeFunction);
+        }
     }
 
     function UploadDoc(title, folio, accion) {
@@ -146,16 +173,27 @@
         $('#UploadDoc').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
         $('#folio').val(folio);
+        const date = new Date();
+
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        let seconds = date.getSeconds();
+        // This arrangement can be altered based on how we want the date's format to appear.
+        let currentDate = `${day}${month}${year}-${hours}${minutes}${seconds}`;
+        console.log(currentDate);
         if (accion == "Entradas") { 
-            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsEntradas/", "ENTRADAS_' + folio + '.pdf")');
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsEntradas/", "ENTRADAS_' + folio + '_' + currentDate + '.pdf")');
         } else if (accion == "Salidas") {
-            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidas/", "SALIDAS_' + folio + '.pdf")');
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidas/", "SALIDAS_' + folio + '_' + currentDate + '.pdf")');
         } else if (accion == "SalidasCoord") {
-            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidasCoord/", "SALIDAS_COORDINADOR_' + folio + '.pdf")');
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidasCoord/", "SALIDAS_COORDINADOR_' + folio + '_' + currentDate + '.pdf")');
         }
     }
 
-    function ResponseDocEditable(title,objectData, closeFunction, replaceFunction) {
+    function ResponseDocEditable(title, objectData, closeFunction, replaceFunction, removeFunction, isRemovable) {
         CloseResponse();
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseDocEditable').css('display', 'flex');
@@ -163,6 +201,11 @@
         $('.ResponseObject').attr('data', objectData);
         $('#ResponseDocEditable .ResponseDocCloseCustom').attr('onclick', closeFunction);
         $('#ResponseDocEditable .ResponseDocReplaceButton').attr('onclick', replaceFunction);
+        if(!isRemovable) {
+            $('#ResponseDocRemove').css('display', 'none');
+        } else {
+            $('.ResponseDocRemoveCustom').attr('onclick', removeFunction);
+        }
     }
 
     function ResponseCancel(title, accion, tipo, folio, closeFunction, element){
@@ -192,6 +235,42 @@
         CloseResponse();
         element.checked = false;
         $('.ResponseCancelNote').val('');
+    }
+
+    function RemoveDoc(title, folio, ruta){
+        CloseResponse();
+        $('#ResponseDocCont').css('display', 'flex');
+        $('#ResponseRemoveDoc').css('display', 'flex');
+        $('.ResponseTitle h2').text(title);
+        $('.RemoveDocClose').off('click').on('click', function() { location.reload(); });
+        let directorio = ruta.split('/')[0]; // Divide la cadena por '/' y toma la primera parte
+        $('.ResponseRemoveDocButton').off('click').on('click', function() { accionRemoveDoc("RemoveDoc", folio, directorio); });
+    }
+
+    function accionRemoveDoc(accion, folio, directorio) {
+        $.ajax({
+            url: 'accionesRegistros.php',
+            type: 'POST',
+            data: {
+                folio: folio,
+                directorio: directorio,
+                accion: accion
+            },
+            success: function (response) {
+                console.log(response);
+                if(response == "Success"){
+                    WaitDoc("Documento del registro " + folio + " eliminado exitosamente", "La solicitud de eliminación ha sido procesada con éxito.", "location.reload()");
+                    element.disabled = true;
+                } else {
+                    console.log(response);
+                    WaitDoc("Error al verificar el registro", "Por favor intente de nuevo", "location.reload()");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr, status, error);
+                WaitDoc("Error al cancelar el registro", "Por favor intente de nuevo", "CloseResponse()");
+            }
+        });
     }
 
     async function ResponseModify(title, folio, tipo, closeFunction) {
@@ -377,7 +456,7 @@
             success: function (response) {
                 console.log(response);
                 if (response != "") {
-                    ResponseDocEditable("Documentos subidos exitosamente", response, 'location.reload()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
+                    ResponseDocEditable("Documentos subidos exitosamente", response, 'location.reload()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', isRemovable);
                     folioGlobal = folio;
                 } else {
                     WaitDoc("Error al subir los documentos", "Por favor intente de nuevo", "CloseResponse()");
@@ -392,7 +471,7 @@
         blob = null;
     }
 
-    function consultarDoc(folio, tipo, rol, isEditable) {
+    function consultarDoc(folio, tipo, rol, isEditable, isRemovable) {
         $.ajax({
             url: 'enviarEntradas.php',
             type: 'POST',
@@ -404,10 +483,9 @@
                 console.log(response);
                 console.log(isEditable);
                 if (isEditable) {
-                    ResponseDocEditable("Documentos subidos", response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')');
+                    ResponseDocEditable("Documentos subidos de: " + folio, response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', isRemovable);
                 } else {
-                    ResponseDoc("Documentos subidos", response, 'ARCHIVOS ' + folio + '.pdf', 'CloseResponse()');
-
+                    ResponseDoc("Documentos subidos de: " + folio, response, 'ARCHIVOS ' + folio + '.pdf', 'CloseResponse()', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', isRemovable);
                 }
             },
             error: function (xhr, status, error) {

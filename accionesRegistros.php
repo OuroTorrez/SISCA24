@@ -270,4 +270,25 @@ if (isset($_POST['accion'])) {
             echo "Error: " . $conn->error;
         }
     }
+    else if($_POST['accion'] == 'RemoveDoc'){
+        $folio = $_POST['folio'];
+        $directorio = $_POST['directorio'];
+        if ($directorio == "DocsEntradas") {
+            $query = $conn->prepare("UPDATE registro_entradas SET pdf_docs = NULL WHERE folio = ?");
+        } else if ($directorio == "DocsSalidas") {
+            $query = $conn->prepare("UPDATE registro_salidas SET pdf_docs = NULL WHERE folio = ?");
+        } else if ($directorio == "DocsSalidasCoord") {
+            $query = $conn->prepare("UPDATE registro_salidas SET pdf_docs_coord = NULL WHERE folio = ?");
+        } else {
+            echo "Directorio no válido";
+            exit;
+        }
+        $query->bind_param("s", $folio);
+        if ($query->execute()) {
+            $query->close();
+            echo "Success";
+        } else {
+            echo "Error al ejecutar la consulta: " . $query->error;
+        }
+    }
 }

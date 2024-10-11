@@ -173,7 +173,7 @@ else if ($_POST['accion'] == "showEntradas") {
                                 if ($pdf_docs != null && ($activo != 1 && $verificado != 1)) {
                                     ?>
                                     <td class="t-center">
-                                        <a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, true)">
+                                        <a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, true, true)">
                                             <i class="bi bi-file-earmark-text"></i>
                                         </a>
                                     </td>
@@ -181,7 +181,7 @@ else if ($_POST['accion'] == "showEntradas") {
                                 } else if($pdf_docs != null && ($activo == 1 || $verificado == 1)){
                                     ?>
                                     <td class="t-center"><a data-tooltip="Consultar documentos"
-                                            onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, false)"><i
+                                            onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, false, false)"><i
                                                 class="bi bi-file-earmark-text"></i></a></td>
                                 <?php
                                 } else if($pdf_docs == null && ($activo == 1 || $verificado == 1)) {
@@ -360,12 +360,12 @@ else if ($_POST['accion'] == "showEntradas") {
                         <?php
                         if ($pdf_docs != null && ($activo != 1 && $verificado != 1)) {
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, true)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, true, true)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if ($pdf_docs != null && ($activo == 1 || $verificado == 1)) {
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs == null && ($activo == 1 || $verificado == 1)) {
@@ -385,22 +385,22 @@ else if ($_POST['accion'] == "showEntradas") {
                         /* Subir documentos de coordinador saida de almacen */
                         if($pdf_docs_coord != null && ($activo != 1 && $verificado != 1) && ($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 7)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs_coord != null && ($activo != 1 && $verificado != 1) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 1 || $_SESSION['rol'] == 6)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, true)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, true, true)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs_coord != null && ($activo == 1 || $verificado == 1) && ($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 7)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs_coord != null && ($activo == 1 || $verificado == 1) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 1 || $_SESSION['rol'] == 6)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if ($pdf_docs_coord == null && ($activo == 1 || $verificado == 1) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 1 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 6)) {
