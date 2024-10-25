@@ -58,7 +58,7 @@
         <!-- Ventana de respuesta con objeto editable -->
         <div id="ResponseDocEditable">
             <div class="ResponseTitle">
-            <button id="ResponseDocRemove" class="ResponseDocRemoveCustom" onclick="">
+                <button id="ResponseDocRemove" class="ResponseDocRemoveCustom" onclick="">
                     <i class="bi bi-trash3"></i>
                 </button>
                 <h2 style="color: var(--Background);">Documentos subidos</h2>
@@ -82,7 +82,8 @@
             </div>
             <h3 id="ResponseCancelQuestion">¿Estás seguro de que deseas cancelar este registro?</h3>
             <h4 id="ResponseCancelWarning">⚠️ Una vez cancelado, no se podrá reactivar ⚠️</h4>
-            <textarea id="ResponseCancelTextarea" class="ResponseCancelNote" placeholder="Escribe una nota de cancelación (max. 500 carácteres)" maxlength="500"></textarea>
+            <textarea id="ResponseCancelTextarea" class="ResponseCancelNote"
+                placeholder="Escribe una nota de cancelación (max. 500 carácteres)" maxlength="500"></textarea>
             <button class="ResponseCancelButton" onclick="">
                 <i class="bi bi-x-octagon"></i>
                 <span>Cancelar registro</span>
@@ -119,6 +120,21 @@
                 <span>Eliminar documento</span>
             </button>
         </div>
+        <!-- Ventana de respuesta para confirmación de acciones -->
+        <div id="ResponseConfirm">
+            <div class="ResponseTitle">
+                <h2 style="color: var(--Background);">Confirmar acción</h2>
+                <button id="ResponseDocClose" class="ResponseConfirmClose" onclick="">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+            </div>
+            <h3 id="Question">¿Estás seguro de que deseas realizar esta acción?</h3>
+            <h4 id="Warning">⚠️ Verifica bien los datos antes de tomar acción ⚠️</h4>
+            <button class="ResponseConfirmButton" onclick="">
+                <i class="bi bi-x-octagon"></i>
+                <span>Confirmar</span>
+            </button>
+        </div>
     </div>
 </body>
 
@@ -135,6 +151,7 @@
         $('#ResponseCancel').css('display', 'none');
         $('#ResponseModify').css('display', 'none');
         $('#ResponseRemoveDoc').css('display', 'none');
+        $('#ResponseConfirm').css('display', 'none');
     }
 
     function WaitDoc(title, message, closeFunction) {
@@ -143,7 +160,7 @@
         $('#WaitDoc').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
         $('#WaitDoc .WaitDocText').text(message);
-        if(closeFunction == "CloseResponse()" || closeFunction == "location.reload()"){
+        if (closeFunction == "CloseResponse()" || closeFunction == "location.reload()") {
             $('.WaitResponseDocClose').attr('onclick', closeFunction);
         } else {
             $('.WaitResponseDocClose').off('click').on('click', closeFunction);
@@ -160,7 +177,7 @@
         $('#ResponseObjectFail').attr('href', objectData);
         $('#ResponseObjectFail').attr('download', downloadName);
         $('#ResponseDocClose').attr('onclick', closeFunction);
-        if(!isRemovable) {
+        if (!isRemovable) {
             $('#ResponseDocRemove').css('display', 'none');
         } else {
             $('.ResponseDocRemoveCustom').attr('onclick', removeFunction);
@@ -183,13 +200,13 @@
         let seconds = date.getSeconds();
         // This arrangement can be altered based on how we want the date's format to appear.
         let currentDate = `${day}${month}${year}-${hours}${minutes}${seconds}`;
-        console.log(currentDate);
-        if (accion == "Entradas") { 
-            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsEntradas/", "ENTRADAS_' + folio + '_' + currentDate + '.pdf")');
+        if (accion == "Entradas") {
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsEntradas/", "ENTRADAS_' + folio + '_' + currentDate + '.pdf", "' + accion + '")');
         } else if (accion == "Salidas") {
-            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidas/", "SALIDAS_' + folio + '_' + currentDate + '.pdf")');
+            console.log("entra a salidas");
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidas/", "SALIDAS_' + folio + '_' + currentDate + '.pdf", "' + accion + '")');
         } else if (accion == "SalidasCoord") {
-            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidasCoord/", "SALIDAS_COORDINADOR_' + folio + '_' + currentDate + '.pdf")');
+            $('.ResponseDocUploadButton').attr('onclick', 'subirDocumentos("DocsSalidasCoord/", "SALIDAS_COORDINADOR_' + folio + '_' + currentDate + '.pdf", "' + accion + '")');
         }
     }
 
@@ -198,25 +215,27 @@
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseDocEditable').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
+        console.log(objectData);
         $('.ResponseObject').attr('data', objectData);
         $('#ResponseDocEditable .ResponseDocCloseCustom').attr('onclick', closeFunction);
         $('#ResponseDocEditable .ResponseDocReplaceButton').attr('onclick', replaceFunction);
-        if(!isRemovable) {
-            $('#ResponseDocRemove').css('display', 'none');
+        if (isRemovable == false) {
+            $('#ResponseDocRemove .ResponseDocRemoveCustom').css('display', 'none');
+            $('.ResponseDocRemoveCustom').css('display', 'none');
         } else {
             $('.ResponseDocRemoveCustom').attr('onclick', removeFunction);
         }
     }
 
-    function ResponseCancel(title, accion, tipo, folio, closeFunction, element){
+    function ResponseCancel(title, accion, tipo, folio, closeFunction, element) {
         CloseResponse();
-        if(accion=="Verificar"){
+        if (accion == "Verificar") {
             $('#ResponseCancelQuestion').text('¿Estás seguro de que deseas verificar este registro?');
             $('#ResponseCancelWarning').text('⚠️ Una vez verificado, no se podrá deshacer ⚠️');
             $('#ResponseCancelTextarea').css('display', 'none');
             $('.ResponseCancelButton').css('display', 'none');
             $('.ResponseVerifyButton').css('display', 'flex');
-        } else if(accion=="Cancelar"){
+        } else if (accion == "Cancelar") {
             $('#ResponseCancelQuestion').text('¿Estás seguro de que deseas cancelar este registro?');
             $('#ResponseCancelWarning').text('⚠️ Una vez cancelado, no se podrá reactivar ⚠️');
             $('#ResponseCancelTextarea').css('display', 'block');
@@ -227,8 +246,8 @@
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseCancel').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
-        $('#ResponseCancel .ResponseCancelButton').off('click').on('click', function() {accionesRegistros(accion, tipo, folio, element);});
-        $('#ResponseCancel .ResponseVerifyButton').off('click').on('click', function() {accionesRegistros(accion, tipo, folio, element);});
+        $('#ResponseCancel .ResponseCancelButton').off('click').on('click', function () { accionesRegistros(accion, tipo, folio, element); });
+        $('#ResponseCancel .ResponseVerifyButton').off('click').on('click', function () { accionesRegistros(accion, tipo, folio, element); });
         $('.CancelResponseDocClose').off('click').on('click', closeFunction);
     }
     function uncheckSlider(element) {
@@ -237,14 +256,14 @@
         $('.ResponseCancelNote').val('');
     }
 
-    function RemoveDoc(title, folio, ruta){
+    function RemoveDoc(title, folio, ruta) {
         CloseResponse();
         $('#ResponseDocCont').css('display', 'flex');
         $('#ResponseRemoveDoc').css('display', 'flex');
         $('.ResponseTitle h2').text(title);
-        $('.RemoveDocClose').off('click').on('click', function() { location.reload(); });
+        $('.RemoveDocClose').off('click').on('click', function () { location.reload(); });
         let directorio = ruta.split('/')[0]; // Divide la cadena por '/' y toma la primera parte
-        $('.ResponseRemoveDocButton').off('click').on('click', function() { accionRemoveDoc("RemoveDoc", folio, directorio); });
+        $('.ResponseRemoveDocButton').off('click').on('click', function () { accionRemoveDoc("RemoveDoc", folio, directorio); });
     }
 
     function accionRemoveDoc(accion, folio, directorio) {
@@ -258,7 +277,7 @@
             },
             success: function (response) {
                 console.log(response);
-                if(response == "Success"){
+                if (response == "Success") {
                     WaitDoc("Documento del registro " + folio + " eliminado exitosamente", "La solicitud de eliminación ha sido procesada con éxito.", "location.reload()");
                     element.disabled = true;
                 } else {
@@ -286,7 +305,7 @@
         $('.ResponseTitle h2').text(title);
         $('.ResponseModifyClose').attr('onclick', closeFunction);
     }
-    async function ResponseModifyForm(folio, accion){
+    async function ResponseModifyForm(folio, accion) {
         try {
             const formData = new FormData();
             formData.append('folio', folio);
@@ -304,6 +323,25 @@
         } catch (error) {
             return error;
         }
+    }
+
+    function ResponseConfirm(title, mensaje, alerta) {
+        CloseResponse();
+        $('#ResponseDocCont').css('display', 'flex');
+        $('#ResponseConfirm').css('display', 'flex');
+        $('.ResponseTitle h2').text(title);
+        $('#Question').text(mensaje);
+        $('#Warning').text(alerta);
+        return new Promise((resolve, reject) => {
+            // Configurar los botones de confirmación y cancelación
+            $('.ResponseConfirmButton').off('click').on('click', function () {
+                resolve(true);  // Usuario confirma la acción
+            });
+
+            $('.ResponseConfirmClose').off('click').on('click', function () {
+                reject(false);  // Usuario cancela la acción
+            });
+        });
     }
 
     function generarEntradasyPDF(datoAEnviar, orientacion, toDownload) {
@@ -365,8 +403,6 @@
                 WaitDoc("Error al generar el registro", "Por favor intente de nuevo", "CloseResponse()");
             }
         });
-        data = null;
-        blob = null;
     }
 
     function consultarPDFEntradas(datoAEnviar, orientacion, toDownload) {
@@ -432,9 +468,9 @@
         blob = null;
     }
 
-    function subirDocumentos(targetDirectory, nombrePersonalizado) {
+    function subirDocumentos(targetDirectory, nombrePersonalizado, tipo) {
         WaitDoc("Subiendo tus documentos...", "Por favor espere un momento...", "CloseResponse()");
-        
+
         var folio = document.getElementById("folio").value;
         var docs = document.getElementById("SubirDocs").files[0]; // Acceder al archivo seleccionado
         var targetDirectory = targetDirectory;
@@ -456,7 +492,7 @@
             success: function (response) {
                 console.log(response);
                 if (response != "") {
-                    ResponseDocEditable("Documentos subidos exitosamente", response, 'location.reload()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', isRemovable);
+                    ResponseDocEditable("Documentos subidos exitosamente", response, 'location.reload()', 'UploadDoc("Reemplaza tus documentossss", ' + folio + ')', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', false);
                     folioGlobal = folio;
                 } else {
                     WaitDoc("Error al subir los documentos", "Por favor intente de nuevo", "CloseResponse()");
@@ -480,10 +516,8 @@
                 tipo: tipo
             },
             success: function (response) {
-                console.log(response);
-                console.log(isEditable);
                 if (isEditable) {
-                    ResponseDocEditable("Documentos subidos de: " + folio, response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ')', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', isRemovable);
+                    ResponseDocEditable("Documentos subidos de: " + folio, response, 'CloseResponse()', 'UploadDoc("Reemplaza tus documentos", ' + folio + ', "' + tipo + '")', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', isRemovable);
                 } else {
                     ResponseDoc("Documentos subidos de: " + folio, response, 'ARCHIVOS ' + folio + '.pdf', 'CloseResponse()', 'RemoveDoc("Eliminar documento de: ' + folio + '", ' + folio + ', "' + response + '")', isRemovable);
                 }
@@ -626,7 +660,7 @@
         blob = null;
     }
 
-    function accionesRegistros(accion, tipo, folio, element){
+    function accionesRegistros(accion, tipo, folio, element) {
         var nota = $('#ResponseCancel .ResponseCancelNote').val();
 
         $.ajax({
@@ -640,18 +674,18 @@
             },
             success: function (response) {
                 console.log(response);
-                if(response == "Success" && accion == "Cancelar"){
+                if (response == "Success" && accion == "Cancelar") {
                     WaitDoc("Registro " + folio + " cancelado exitosamente", "La solicitud de cancelación ha sido procesada con éxito.", "location.reload()");
                     element.disabled = true;
-                } else if(response != "Success" && accion == "Cancelar"){
+                } else if (response != "Success" && accion == "Cancelar") {
                     console.log(response + "\n Por favor");
-                    WaitDoc("Error al cancelar el registro", response + "\n Por favor intente de nuevo", function() {uncheckSlider(element);});
-                }else if(response == "Success" && accion == "Verificar"){
+                    WaitDoc("Error al cancelar el registro", response + "\n Por favor intente de nuevo", function () { uncheckSlider(element); });
+                } else if (response == "Success" && accion == "Verificar") {
                     WaitDoc("Registro " + folio + " verificado exitosamente", "La solicitud de verificación ha sido procesada con éxito.", "location.reload()");
                     element.disabled = true;
                 } else {
                     console.log(response);
-                    WaitDoc("Error al verificar el registro", "Por favor intente de nuevo", function() {uncheckSlider(element);});
+                    WaitDoc("Error al verificar el registro", "Por favor intente de nuevo", function () { uncheckSlider(element); });
                 }
             },
             error: function (xhr, status, error) {
@@ -694,29 +728,44 @@
         const form = document.getElementById('FormModificar');
         const formData = new FormData(form);
         formData.append('accion', accion);
-        console.log("folio" + document.getElementById('folio').value);
+        console.log("folio: " + document.getElementById('folio').value);
+
         try {
-            const response = await fetch('accionesRegistros.php', {
-                method: 'POST',
-                body: formData
-            });
-            if (response.ok) {
-                const result = await response.text();
-                console.log(result);
-                if (result === "Success") {
+            // Llamamos a la ventana de confirmación y esperamos la respuesta del usuario
+            const confirmacion = await ResponseConfirm(
+                "Confirmar modificación",
+                "¿Quieres realizar esta modificación?",
+                "⚠️ Verifica bien los datos antes de enviar la modificación ⚠️"
+            );
+
+            // Si el usuario confirma, sigue con el envío
+            if (confirmacion) {
+                const response = await fetch('accionesRegistros.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    const result = await response.text();
                     console.log(result);
-                    WaitDoc('Modificar entrada', 'La entrada fue modificada correctamente', 'location.reload()');
+                    if (result === "Success") {
+                        WaitDoc('Modificar entrada', 'La entrada fue modificada correctamente', 'location.reload()');
+                    } else {
+                        WaitDoc('Error al modificar entrada', result, 'location.reload()');
+                    }
                 } else {
-                    WaitDoc('Error al modificar entrada', result, 'location.reload()');
+                    throw new Error('Error en la respuesta del servidor');
                 }
-            } else {
-                throw new Error('Error en la respuesta del servidor');
             }
         } catch (error) {
-            console.error('Error:', error);
-            WaitDoc('Error al modificar la entrada', error, 'location.reload()');
+            // Si el usuario cancela, también cae aquí
+            if (error === false) {
+                console.log('El usuario canceló la acción.');
+                location.reload();
+            } else {
+                console.error('Error:', error);
+                WaitDoc('Error al modificar la entrada', error, 'location.reload()');
+            }
         }
     }
-
 
 </script>

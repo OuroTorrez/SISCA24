@@ -64,7 +64,6 @@ if (isset($_SESSION['usuario'])) {
         $folio = $_POST['targetFolio'];
         $docsName = $_POST['docsName'];
         $nombrePersonalizado = $_POST['nombrePersonalizado'];
-        $timestamp = date('Y-m-d_H-i-s');
 
         // Construye el nombre completo del archivo personalizado
         $rutaCompleta = $directorio . $nombrePersonalizado;

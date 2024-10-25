@@ -189,6 +189,21 @@
     text-align: center;
 }
 
+#ResponseConfirm {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 35vw;
+    height: 40vh;
+    background-color: var(--Background);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 1px #00000067;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px;
+}
+
 #ResponseModify {
     display: none;
     flex-direction: column;
