@@ -70,7 +70,9 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 <script>
     $(document).ready(function () {
         document.getElementById('SelectDotaciones').addEventListener('change', function () {
-            var programa = document.getElementById('SelectDotaciones').value;
+            var 
+            
+            programa = document.getElementById('SelectDotaciones').value;
             // Send the value to the server
             $.ajax({
                 url: 'handleEntradas.php',
