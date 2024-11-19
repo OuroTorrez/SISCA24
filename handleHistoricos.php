@@ -143,7 +143,7 @@ if ($_POST['accion'] == "showHistoricos") {
         FROM registro_salidas_registradas sr 
         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
         WHERE sd.cancelado = 0 
-        AND sd.id_almacen = ? 
+        AND sd.id_almacen = ?  
         AND MONTH(sd.fecha_registro) = $mes 
         AND YEAR(sd.fecha_registro) = $anio
         GROUP BY sr.clave) salidas_mes ON salidas_mes.clave = d.clave;");
