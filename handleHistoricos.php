@@ -26,6 +26,7 @@ if ($_POST['accion'] == "showHistoricos") {
             $mesant = 12;
             $anioant = $anio - 1;
         }
+    echo $almacen;
     } else {
         $almacen = 0;
     }
