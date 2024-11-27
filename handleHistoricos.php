@@ -91,131 +91,161 @@ if ($_POST['accion'] == "showHistoricos") {
 
         $query->bind_param("iiii", $almacen, $almacen, $almacen, $almacen);
     } else {
-        $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida,
         
-        -- Calculo de existencias acumuladas hasta el mes anterior al consultado
+        $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, d.cuota,
+        -- Cálculo de existencias anteriores
         COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) AS existencias_ant,
-        
-        -- Cantidad de entradas durante el mes y año especificado
+        -- Multiplicación de existencias_ant por cuota
+        d.cuota * (COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0)) AS existencias_ant_cuota,
+
+        -- Entradas del mes
         COALESCE(entradas_mes.cantidad, 0) AS entradas,
-        
-        -- Cantidad de salidas durante el mes y año especificado
+        -- Multiplicación de entradas por cuota
+        d.cuota * COALESCE(entradas_mes.cantidad, 0) AS entradas_cuota,
+
+        -- Salidas del mes
         COALESCE(salidas_mes.cantidad, 0) AS salidas,
-        
-        -- Cálculo de existencias
-        COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) 
-        + COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0) AS existencias
+        -- Multiplicación de salidas por cuota
+        d.cuota * COALESCE(salidas_mes.cantidad, 0) AS salidas_cuota,
 
-        FROM dotaciones d
-
-        -- Acumulación de entradas hasta el mes anterior al consultado
-        LEFT JOIN (SELECT dr.clave, SUM(dr.cantidad) AS cantidad
-        FROM registro_entradas_registradas dr 
-        INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
-        WHERE rd.cancelado = 0 
-        AND rd.id_almacen = ? 
-        AND (YEAR(rd.fecha_registro) < $anio OR (YEAR(rd.fecha_registro) = $anio AND MONTH(rd.fecha_registro) < $mes))
-        GROUP BY dr.clave) entradas_acum_ant ON entradas_acum_ant.clave = d.clave
-
-        -- Acumulación de salidas hasta el mes anterior al consultado
-        LEFT JOIN (
-        SELECT sr.clave, SUM(sr.cantidad) AS cantidad
-        FROM registro_salidas_registradas sr 
-        INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
-        WHERE sd.cancelado = 0 
-        AND sd.id_almacen = ? 
-        AND (YEAR(sd.fecha_registro) < $anio OR (YEAR(sd.fecha_registro) = $anio AND MONTH(sd.fecha_registro) < $mes))
-        GROUP BY sr.clave) salidas_acum_ant ON salidas_acum_ant.clave = d.clave
-
-        -- Entradas del mes consultado
-        LEFT JOIN (
+        -- Existencias finales
+        COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) + 
+        COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0) AS existencias,
+        -- Multiplicación de existencias por cuota
+        d.cuota * (
+            COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) +
+            COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0)
+        ) AS existencias_cuota
+    FROM dotaciones d
+    -- Acumulación de entradas hasta el mes anterior al consultado
+    LEFT JOIN (
         SELECT dr.clave, SUM(dr.cantidad) AS cantidad
         FROM registro_entradas_registradas dr 
         INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
         WHERE rd.cancelado = 0 
-        AND rd.id_almacen = ? 
-        AND MONTH(rd.fecha_registro) = $mes 
-        AND YEAR(rd.fecha_registro) = $anio
-        GROUP BY dr.clave) entradas_mes ON entradas_mes.clave = d.clave
-
-        -- Salidas del mes consultado
-        LEFT JOIN (
+            AND (YEAR(rd.fecha_registro) < ? OR (YEAR(rd.fecha_registro) = ? AND MONTH(rd.fecha_registro) < ?))
+        GROUP BY dr.clave
+    ) entradas_acum_ant ON entradas_acum_ant.clave = d.clave
+    -- Acumulación de salidas hasta el mes anterior al consultado
+    LEFT JOIN (
+        SELECT sr.clave, SUM(sr.cantidad) AS cantidad  
+        FROM registro_salidas_registradas sr 
+        INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
+        WHERE sd.cancelado = 0 
+            AND (YEAR(sd.fecha_registro) < ? OR (YEAR(sd.fecha_registro) = ? AND MONTH(sd.fecha_registro) < ?))
+        GROUP BY sr.clave
+    ) salidas_acum_ant ON salidas_acum_ant.clave = d.clave
+    -- Entradas del mes consultado
+    LEFT JOIN (
+        SELECT dr.clave, SUM(dr.cantidad) AS cantidad
+        FROM registro_entradas_registradas dr 
+        INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
+        WHERE rd.cancelado = 0 
+            AND MONTH(rd.fecha_registro) = ? AND YEAR(rd.fecha_registro) = ?
+        GROUP BY dr.clave
+    ) entradas_mes ON entradas_mes.clave = d.clave
+    -- Salidas del mes consultado
+    LEFT JOIN (
         SELECT sr.clave, SUM(sr.cantidad) AS cantidad
         FROM registro_salidas_registradas sr 
         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
         WHERE sd.cancelado = 0 
-        AND sd.id_almacen = ?  
-        AND MONTH(sd.fecha_registro) = $mes 
-        AND YEAR(sd.fecha_registro) = $anio
-        GROUP BY sr.clave) salidas_mes ON salidas_mes.clave = d.clave;");
-        
+            AND MONTH(sd.fecha_registro) = ? AND YEAR(sd.fecha_registro) = ?
+        GROUP BY sr.clave
+    ) salidas_mes ON salidas_mes.clave = d.clave");
+        //$query->bind_param("iiiiiiiiii", $anio, $anio, $mes, $anio, $anio, $mes , $mes, $anio, $mes, $anio);
+        $query->bind_param("iiiiiiiiii", $anio, $anio, $mes, $anio, $anio, $mes , $mes, $anio, $mes, $anio);
+
         if ($query === false) {
             die('Error en la consulta SQL: ' . $conn->error);
         }
     }
     if ($query->execute()) {
-        $query->bind_result($clave, $programa, $producto, $medida, $existencias_ant, $entradas, $salidas, $existencias);
+        $query->bind_result(
+            $clave, $programa, $producto, $medida, $cuota,
+            $existencias_ant, $existencias_ant_cuota,
+            $entradas, $entradas_cuota,
+            $salidas, $salidas_cuota,
+            $existencias, $existencias_cuota
+        );
         $query->store_result();
-?>
+        ?>
         <table class="tablaHistoricos">
             <tr>
-                <th colspan='8' class='ProgramaTitle'>Personas Adultas Mayores</th>
+                <th colspan='12' class='ProgramaTitle'>Personas Adultas Mayores</th>
             </tr>
             <tr>
-                <th style="width: 15%;">Clave</th>
-                <th style="width: 40%;">Producto</th>
-                <th style="width: 15%;">Medida</th>
+                <th style="width: 5%;">Clave</th>
+                <th style="width: 20%;">Producto</th>
+                <th style="width: 5%;">Medida</th>
+                <th style="width: 5%;">Costo Unitario</th>
                 <!---->
                 <th style="width: 10%;">Existencias Anteriores</th>
+                <th style="width: 10%;">Costo Total Existencias Anteriores</th>
                 <th style="width: 10%;">Entradas</th>
+                <th style="width: 10%;">Costo Total Entradas</th>
                 <th style="width: 10%;">Salidas</th>
+                <th style="width: 10%;">Costo Total Salidas</th>
                 <!---->
                 <th style="width: 10%;">Existencias</th>
+                <th style="width: 10%;">Costo Total Existencias</th>
             </tr>
             <?php
             $previousPrograma = "Personas Adultas Mayores";
             if ($query->num_rows > 0) {
                 while ($query->fetch()) {
                     if ($programa != $previousPrograma) {
-            ?>
-        </table>
-        <table class="tablaHistoricos">
-            <tr>
-                <th colspan='8' class='ProgramaTitle'><?php echo $programa ?></th>
-            </tr>
-            <tr>
-                <th style="width: 15%;">Clave</th>
-                <th style="width: 40%;">Producto</th>
-                <th style="width: 15%;">Medida</th>
-                <!---->
-                <th style="width: 10%;">Existencias Anteriores</th>
-                <th style="width: 10%;">Entradas</th>
-                <th style="width: 10%;">Salidas</th>
-                <!---->
-                <th style="width: 10%;">Existencias</th>
-            </tr>
-<?php
+                        ?>
+                    </table>
+                    <table class="tablaHistoricos">
+                        <tr>
+                            <th colspan='12' class='ProgramaTitle'><?php echo $programa ?></th>
+                        </tr>
+                        <tr>
+                            <th style="width: 5%;">Clave</th>
+                            <th style="width: 20%;">Producto</th>
+                            <th style="width: 5%;">Medida</th>
+                            <th style="width: 5%;">Costo Unitario</th>
+                            <!---->
+                            <th style="width: 10%;">Existencias Anteriores</th>
+                            <th style="width: 10%;">Costo Total Existencias Anteriores</th>
+                            <th style="width: 10%;">Entradas</th>
+                            <th style="width: 10%;">Costo Total Entradas</th>
+                            <th style="width: 10%;">Salidas</th>
+                            <th style="width: 10%;">Costo Total Salidas</th>
+                            <!---->
+                            <th style="width: 10%;">Existencias</th>
+                            <th style="width: 10%;">Costo Total Existencias</th>
+                        </tr>
+                        <?php
                         $previousPrograma = $programa;
                     }
                     echo "<tr>";
                     echo "<td>$clave</td>";
                     echo "<td>$producto</td>";
                     echo "<td>$medida</td>";
+                    echo "<td>$cuota</td>"; // Mostrar cuota
                     //
                     echo "<td>$existencias_ant</td>";
+                    echo "<td>$existencias_ant_cuota</td>"; // Mostrar existencias_ant * cuota
                     echo "<td>$entradas</td>";
+                    echo "<td>$entradas_cuota</td>"; // Mostrar entradas * cuota
                     echo "<td>$salidas</td>";
+                    echo "<td>$salidas_cuota</td>"; // Mostrar salidas * cuota
                     //
                     echo "<td>$existencias</td>";
+                    echo "<td>$existencias_cuota</td>"; // Mostrar existencias * cuota
                     echo "</tr>";
                 }
             } else {
-                echo "<p>No hay existencias historicas</p>";
+                echo "<p>No hay existencias históricas</p>";
             }
-        } else {
-            echo "<p>Error al r las existencias historicas</p>";
-        }
-?>
-        </table>
+    } else {
+        die('Error en la ejecución: ' . $query->error);
+        echo "<p>Error al consultar las existencias históricas</p>";
+    }
+    
+    ?>
+    </table>
     <?php
 }
