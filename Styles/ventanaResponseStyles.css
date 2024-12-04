@@ -61,6 +61,26 @@
     color: red;
 }
 
+#ResponseDocRemove {
+    position: absolute;
+    cursor: pointer;
+    left: 15px;
+    border-radius: 100%;
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+#ResponseDocRemove i {
+    font-size: 30px;
+    color: #f5f5f5;
+    padding: 0;
+    margin: 0;
+}
+
+#ResponseDocRemove:hover i{
+    color: red;
+}
+
 #WaitDoc {
     display: none;
     flex-direction: column;
@@ -140,6 +160,48 @@
     width: 90%;
     height: 100%;
     margin: 20px 0;
+}
+
+#ResponseRemoveDoc {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 35vw;
+    height: 40vh;
+    background-color: var(--Background);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 1px #00000067;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+#ResponseRemoveDoc .ResponseTitle {
+    margin: 0 0 20px 0;
+}
+
+#Question {
+    text-align: center;
+}
+
+#Warning {
+    text-align: center;
+}
+
+#ResponseConfirm {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 35vw;
+    height: 40vh;
+    background-color: var(--Background);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 1px #00000067;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 20px;
 }
 
 #ResponseModify {
