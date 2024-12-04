@@ -35,18 +35,22 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         //Obtener e imprimir el nombre y almacen del usuario
         if (!empty($conn) && ($conn instanceof mysqli)) {
             $usuario = $_SESSION['usuario'];
-            $query = $conn->prepare("SELECT u.nombres, u.apellido_paterno, u.apellido_materno, a.almacen, a.id_almacen AS almacen FROM usuarios u INNER JOIN almacenes a ON u.id_almacen = a.id_almacen WHERE u.usuario = ?");
+            $query = $conn->prepare("SELECT u.nombres, u.apellido_paterno, u.apellido_materno, u.id_rol, a.almacen, a.id_almacen AS almacen
+            FROM usuarios u INNER JOIN almacenes a ON u.id_almacen = a.id_almacen WHERE u.usuario = ?");
             $query->bind_param("s", $usuario);
             $query->execute();
-            $query->bind_result($nombre, $apellido_paterno, $apellido_materno, $almacen, $usr_id_almacen);
+            $query->bind_result($nombre, $apellido_paterno, $apellido_materno, $rol, $almacen, $usr_id_almacen);
             $query->store_result();
             $query->fetch();
             echo "<h2>$nombre $apellido_paterno $apellido_materno</h2>";
             echo "<h3>$almacen</h3>";
+            echo "<input type='hidden' id='rol' name='rol' value='$rol'>";
+            
         }
+        
         ?>
     </div>
-
+    
     <div id="ConsultaCont">
         <div id="ConsultaOpcMenu" class="OpcMenu">
             <form id="filterForm">
@@ -65,10 +69,13 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                             ?>
                         </select>
                     </div>
-                <?php } else { ?>
+                    
+                    <?php
+                } else { ?>
                     <!-- Almacen ID hidden input -->
                     <input type="hidden" id="almacen" name="almacen" value="<?php echo $_SESSION['id_almacen']; ?>">
                 <?php } ?>
+
                 <!-- Selectores de Mes y Año -->
                 <div class="FormData" styles="width: 100%;">
                     <label for="mes" class="req">Seleccione Mes:</label>
@@ -96,8 +103,11 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                         for ($a = $anioActual; $a >= 2024; $a--) {
                             echo "<option value='$a'>$a</option>";
                         }
+
                         ?>
                     </select>
+                    <?php
+                    ?>
                 </div>
                 <!-- Botón de Aplicar Filtros -->
                 <button type="submit" id="ok">
@@ -118,6 +128,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         var almacen = document.getElementById('almacen').value;
         var mes = document.getElementById('mes').value;
         var anio = document.getElementById('anio').value;
+        var rol = document.getElementById('rol').value;
         // Send the value to the server
         $.ajax({
             url: 'handleHistoricos.php',
@@ -126,6 +137,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 almacen: almacen,
                 mes: mes,
                 anio: anio,
+                rol: rol,
                 accion: "showHistoricos"
             },
             success: function (response) {

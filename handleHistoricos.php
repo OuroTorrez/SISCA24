@@ -17,6 +17,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 <?php
 if ($_POST['accion'] == "showHistoricos") {
     if (isset($_POST['almacen'])) {
+        $rol = $_POST['rol'];
         $almacen = $_POST['almacen'];
         $mes = $_POST['mes'];
         $anio = $_POST['anio'];
@@ -26,68 +27,67 @@ if ($_POST['accion'] == "showHistoricos") {
             $mesant = 12;
             $anioant = $anio - 1;
         }
+        $roles_costos = [4,5];
+        echo "<h2>$rol</h2>";
     echo $almacen;
     } else {
         $almacen = 0;
     }
-    if ($almacen != 0) {
-        $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida,
+    if (in_array($rol, $roles_costos)) {
+        if ($almacen != 0) {
+            $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida,d.cuota,
         
-        -- Calculo de existencias acumuladas hasta el mes anterior al consultado
-        COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) AS existencias_ant,
-        
-        -- Cantidad de entradas durante el mes y año especificado
-        COALESCE(entradas_mes.cantidad, 0) AS entradas,
-        
-        -- Cantidad de salidas durante el mes y año especificado
-        COALESCE(salidas_mes.cantidad, 0) AS salidas,
-        
-        -- Cálculo de existencias
-        COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) 
-        + COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0) AS existencias
+            -- Calculo de existencias acumuladas hasta el mes anterior al consultado
+            COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) AS existencias_ant,
+             d.cuota * (COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0)) AS existencias_ant_cuota,
 
-        FROM dotaciones d
+            -- Cantidad de entradas durante el mes y año especificado
+            COALESCE(entradas_mes.cantidad, 0) AS entradas,
+            d.cuota * COALESCE(entradas_mes.cantidad, 0) AS entradas_cuota,
+            
+            -- Cantidad de salidas durante el mes y año especificado
+            COALESCE(salidas_mes.cantidad, 0) AS salidas,
+            d.cuota * COALESCE(salidas_mes.cantidad, 0) AS salidas_cuota,
+            
+            -- Cálculo de existencias
+            COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) 
+            + COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0) AS existencias,
+            d.cuota * (
+                COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) +
+                COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0)
+            ) AS existencias_cuota
 
-        -- Acumulación de entradas hasta el mes anterior al consultado
-        LEFT JOIN (SELECT dr.clave, SUM(dr.cantidad) AS cantidad
-        FROM registro_entradas_registradas dr 
-        INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
-        WHERE rd.cancelado = 0 
-        AND rd.id_almacen = ? 
-        AND (YEAR(rd.fecha_registro) < $anio OR (YEAR(rd.fecha_registro) = $anio AND MONTH(rd.fecha_registro) < $mes))
-        GROUP BY dr.clave) entradas_acum_ant ON entradas_acum_ant.clave = d.clave
+            FROM dotaciones d
 
-        -- Acumulación de salidas hasta el mes anterior al consultado
-        LEFT JOIN (
-        SELECT sr.clave, SUM(sr.cantidad) AS cantidad
-        FROM registro_salidas_registradas sr 
-        INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
-        WHERE sd.cancelado = 0 
-        AND sd.id_almacen = ? 
-        AND (YEAR(sd.fecha_registro) < $anio OR (YEAR(sd.fecha_registro) = $anio AND MONTH(sd.fecha_registro) < $mes))
-        GROUP BY sr.clave) salidas_acum_ant ON salidas_acum_ant.clave = d.clave
+            -- Acumulación de entradas hasta el mes anterior al consultado
+            LEFT JOIN (SELECT dr.clave, SUM(dr.cantidad) AS cantidad
+            FROM registro_entradas_registradas dr 
+            INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
+            WHERE rd.cancelado = 0 
+            AND rd.id_almacen = ? 
+            AND (YEAR(rd.fecha_registro) < $anio OR (YEAR(rd.fecha_registro) = $anio AND MONTH(rd.fecha_registro) < $mes))
+            GROUP BY dr.clave) entradas_acum_ant ON entradas_acum_ant.clave = d.clave
 
-        -- Entradas del mes consultado
-        LEFT JOIN (
-        SELECT dr.clave, SUM(dr.cantidad) AS cantidad
-        FROM registro_entradas_registradas dr 
-        INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
-        WHERE rd.cancelado = 0 
-        AND rd.id_almacen = ? 
-        AND MONTH(rd.fecha_registro) = $mes 
-        AND YEAR(rd.fecha_registro) = $anio
-        GROUP BY dr.clave) entradas_mes ON entradas_mes.clave = d.clave
+            -- Acumulación de salidas hasta el mes anterior al consultado
+            LEFT JOIN (
+            SELECT sr.clave, SUM(sr.cantidad) AS cantidad
+            FROM registro_salidas_registradas sr 
+            INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
+            WHERE sd.cancelado = 0 
+            AND sd.id_almacen = ? 
+            AND (YEAR(sd.fecha_registro) < $anio OR (YEAR(sd.fecha_registro) = $anio AND MONTH(sd.fecha_registro) < $mes))
+            GROUP BY sr.clave) salidas_acum_ant ON salidas_acum_ant.clave = d.clave
 
-        -- Salidas del mes consultado
-        LEFT JOIN (
-        SELECT sr.clave, SUM(sr.cantidad) AS cantidad
-        FROM registro_salidas_registradas sr 
-        INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
-        WHERE sd.cancelado = 0 
-        AND sd.id_almacen = ? 
-        AND MONTH(sd.fecha_registro) = $mes 
-        AND YEAR(sd.fecha_registro) = $anio
-        GROUP BY sr.clave) salidas_mes ON salidas_mes.clave = d.clave;");
+            -- Entradas del mes consultado
+            LEFT JOIN (
+            SELECT dr.clave, SUM(dr.cantidad) AS cantidad
+            FROM registro_entradas_registradas dr 
+            INNER JOIN registro_entradas rd ON dr.folio = rd.folio 
+            WHERE rd.cancelado = 0 
+            AND rd.id_almacen = ? 
+            AND MONTH(rd.fecha_registro) = $mes 
+            AND YEAR(rd.fecha_registro) = $anio
+            GROUP BY dr.clave) entradas_mes ON entradas_mes.clave = d.clave
 
         $query->bind_param("iiii", $almacen, $almacen, $almacen, $almacen);
     } else {
