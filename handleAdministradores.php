@@ -173,7 +173,7 @@ else if ($_POST['accion'] == "showEntradas") {
                                 if ($pdf_docs != null && ($activo != 1 && $verificado != 1)) {
                                     ?>
                                     <td class="t-center">
-                                        <a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, true, true)">
+                                        <a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, true)">
                                             <i class="bi bi-file-earmark-text"></i>
                                         </a>
                                     </td>
@@ -181,7 +181,7 @@ else if ($_POST['accion'] == "showEntradas") {
                                 } else if($pdf_docs != null && ($activo == 1 || $verificado == 1)){
                                     ?>
                                     <td class="t-center"><a data-tooltip="Consultar documentos"
-                                            onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, false, false)"><i
+                                            onclick="consultarDoc(<?php echo $folio ?>, 'Entradas', <?php echo $_SESSION['rol'] ?>, false)"><i
                                                 class="bi bi-file-earmark-text"></i></a></td>
                                 <?php
                                 } else if($pdf_docs == null && ($activo == 1 || $verificado == 1)) {
@@ -276,54 +276,22 @@ else if ($_POST['accion'] == "showEntradas") {
         echo "<h3>No se pudieron obtener los registros de entradas " . $conn->error . "</h3>";
     }
 } else if ($_POST['accion'] == "showSalidas") {
-    $almacen = $_POST['almacen'] ?? '0';
-    $programa = $_POST['programa'] ?? 'NULL';
-    $mes = $_POST['mes'] ?? 'NULL';
-    $año = $_POST['año'] ?? 'NULL';
-
-    $params = []; // Array para almacenar parámetros
-    $types = "";  // Cadena para tipos de datos 
-
-    $queryString = "SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado, sd.monto, sd.referencia, SUM(sd.monto) OVER () AS total_monto
+    $almacen = $_POST['almacen'];
+    if($almacen != 0){
+        $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado
         FROM registro_salidas sd
         INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio
         INNER JOIN dotaciones d ON sr.clave = d.clave
-        WHERE 1=1";
-
-    // Agregar condiciones dinámicas
-    if ($almacen != '0') {
-        $queryString .= " AND sd.id_almacen = ?";
-        $params[] = $almacen;
-        $types .= "s";
+        WHERE sd.id_almacen = ?");
+        $query->bind_param("s", $almacen);
+    } else {
+        $query = $conn->prepare("SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado
+        FROM registro_salidas sd
+        INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio
+        INNER JOIN dotaciones d ON sr.clave = d.clave");
     }
-
-    if ($programa != 'NULL') {
-        $queryString .= " AND d.programa = ?";
-        $params[] = $programa;
-        $types .= "s";
-    }
-
-    if ($mes != 'NULL') {
-        $queryString .= " AND MONTH(sd.fecha_registro) = ?";
-        $params[] = $mes;
-        $types .= "s";
-    }
-
-    if ($año != 'NULL') {
-        $queryString .= " AND YEAR(sd.fecha_registro) = ?";
-        $params[] = $año;
-        $types .= "s";
-    }
-
-    $query = $conn->prepare($queryString);
-
-    // Verificar si hay parámetros para enlazar
-    if (!empty($params)) {
-        $query->bind_param($types, ...$params);
-    }
-
     if ($query->execute()) {
-        $query->bind_result($folio, $afavor, $municipio, $dotacion, $fecha, $pdf_docs, $pdf_docs_coord, $programa, $activo, $nota_cancelacion, $verificado, $monto, $referencia, $gran_total);
+        $query->bind_result($folio, $afavor, $municipio, $dotacion, $fecha, $pdf_docs, $pdf_docs_coord, $programa, $activo, $nota_cancelacion, $verificado);
         $query->store_result();
         if ($query->num_rows > 0) {
             ?>
@@ -337,12 +305,6 @@ else if ($_POST['accion'] == "showEntradas") {
                         <th>Fecha de registro</th>
                         <?php if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1) { ?>
                             <th>Modificar</th>
-                        <?php } ?>
-                        <?php if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) { ?>
-                            <th>Referencia</th>
-                        <?php } ?>
-                        <?php if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) { ?>
-                            <th>Monto</th>
                         <?php } ?>
                         <th>Salida</th>
                         <th>Escaneo salida</th>
@@ -381,29 +343,13 @@ else if ($_POST['accion'] == "showEntradas") {
                         <td class="t-center"><?php echo $fecha ?></td>
                         <!-- Modificar datos para salidas -->
                         <?php
-                        if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 1){
+                        if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 1){
                             ?>
                             <td class="t-center">
                                 <a data-tooltip="Modificar salida" onclick="ResponseModify('Modificar la salida '+ <?php echo $folio ?>, <?php echo $folio ?>, 'Salida', 'CloseResponse()')">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                             </td>
-                            <?php
-                        }
-                        ?>
-                        <!-- Referencias de la salida -->
-                         <?php
-                        if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 1){
-                            ?>
-                                <td class="t-center" data-search="<?php echo $referencia?>"><?php echo $referencia ?></td>
-                            <?php
-                        }
-                        ?>
-                        <!-- Monto de la salida -->
-                         <?php
-                        if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 1){
-                            ?>
-                                <td class="t-center">$<?php echo $monto ?></td>
                             <?php
                         }
                         ?>
@@ -414,12 +360,12 @@ else if ($_POST['accion'] == "showEntradas") {
                         <?php
                         if ($pdf_docs != null && ($activo != 1 && $verificado != 1)) {
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, true, true)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, true)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if ($pdf_docs != null && ($activo == 1 || $verificado == 1)) {
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs == null && ($activo == 1 || $verificado == 1)) {
@@ -439,22 +385,22 @@ else if ($_POST['accion'] == "showEntradas") {
                         /* Subir documentos de coordinador saida de almacen */
                         if($pdf_docs_coord != null && ($activo != 1 && $verificado != 1) && ($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 7)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs_coord != null && ($activo != 1 && $verificado != 1) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 1 || $_SESSION['rol'] == 6)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, true, true)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, true)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs_coord != null && ($activo == 1 || $verificado == 1) && ($_SESSION['rol'] == 4 || $_SESSION['rol'] == 5 || $_SESSION['rol'] == 7)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if($pdf_docs_coord != null && ($activo == 1 || $verificado == 1) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 1 || $_SESSION['rol'] == 6)){
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false, false)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'SalidasCoord', <?php echo $_SESSION['rol'] ?>, false)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if ($pdf_docs_coord == null && ($activo == 1 || $verificado == 1) && ($_SESSION['rol'] == 3 || $_SESSION['rol'] == 1 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 6)) {
@@ -542,58 +488,4 @@ else if ($_POST['accion'] == "showEntradas") {
     } else {
         echo "<h3>No se pudieron obtener los registros de salidas ". $conn->error ."</h3>";
     }
-
-    $params = []; // Array para almacenar parámetros
-    $types = "";  // Cadena para tipos de datos 
-
-    $totalQuery = "
-    SELECT SUM(sd.monto) 
-    FROM registro_salidas sd
-    INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio
-    INNER JOIN dotaciones d ON sr.clave = d.clave
-    WHERE 1=1 AND sd.cancelado = 0";
-
-// Agrega las mismas condiciones dinámicas de tu consulta principal
-if ($almacen != '0') {
-    $totalQuery .= " AND sd.id_almacen = ?";
-    $params[] = $almacen;
-    $types .= "s";
-}
-
-if ($programa != 'NULL') {
-    $totalQuery .= " AND d.programa = ?";
-    $params[] = $programa;
-    $types .= "s";
-}
-
-if ($mes != 'NULL') {
-    $totalQuery .= " AND MONTH(sd.fecha_registro) = ?";
-    $params[] = $mes;
-    $types .= "s";
-}
-
-if ($año != 'NULL') {
-    $totalQuery .= " AND YEAR(sd.fecha_registro) = ?";
-    $params[] = $año;
-    $types .= "s";
-}
-
-$totalStmt = $conn->prepare($totalQuery);
-if (!empty($params)) {
-    $totalStmt->bind_param($types, ...$params);
-}
-
-if ($totalStmt->execute()) {
-    $totalStmt->bind_result($gran_total);
-    $totalStmt->fetch();
-    ?>
-    <script>
-        // Obtiene el valor de PHP con seguridad usando json_encode
-        var granTotal = <?php echo json_encode($gran_total); ?>;
-        $(document).ready(function () {
-            $('#GranTotalMonto').text(granTotal !== null ? "$ " + granTotal : "N/A");
-        });
-    </script>
-    <?php
-}
 }
