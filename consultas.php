@@ -104,8 +104,6 @@ if (<?php echo $_SESSION['rol'] == 4 ? 'true' : 'false'; ?>) {
 }
 
     function showEntradas(almacen) {
-    
-    
     var buttons = document.querySelectorAll(".OpcMenuButton");
     
     // Iterar sobre todos los botones y ajustar la clase activa

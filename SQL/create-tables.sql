@@ -316,3 +316,4 @@ CREATE Table registro_salidas_registradas(
 
 
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
+INSERT 
