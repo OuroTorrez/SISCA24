@@ -27,8 +27,7 @@ if ($_POST['accion'] == "showHistoricos") {
             $mesant = 12;
             $anioant = $anio - 1;
         }
-        $roles_costos = [4,5];
-        echo "<h2>$rol</h2>";
+        $roles_costos = [1,4,5];
     } else {
         $almacen = 0;
     }
