@@ -39,6 +39,10 @@ if (!isset($_SESSION['usuario']) || !$_SESSION['LoggedIn']) {
                     <li class="MenuNavOption"><a href="consultasSalidas.php">Salidas</a><!-- Boton de salidas coordinador -->
                         <ul class="HeaderMenuSubNav">
                             <li class="MenuNavOption"><a href="consultasSalidas.php">Consulta</a></li>
+                            <?php if (isset($_SESSION['rol']) && ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 5) ) { ?>
+                                                        <hr>
+                                                        <li class="MenuNavOption"><a href="consultasSalidasMontos.php">Montos</a></li><!-- Submenu de consulta de salidas con montos -->
+                                                        <?php } ?>
                         </ul>
                     </li>
 
@@ -56,6 +60,10 @@ if (!isset($_SESSION['usuario']) || !$_SESSION['LoggedIn']) {
                             <li class="MenuNavOption"><a href="salidas.php">Captura</a></li><!-- Submenu de captura de salidas -->
                             <hr>
                             <li class="MenuNavOption"><a href="consultasSalidas.php">Consulta</a></li><!-- Submenu de consulta de salidas -->
+                            <?php if (isset($_SESSION['rol']) && ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 5) ) { ?>
+                                                        <hr>
+                                                        <li class="MenuNavOption"><a href="consultasSalidasMontos.php">Montos</a></li><!-- Submenu de consulta de salidas con montos -->
+                                                        <?php } ?>
                         </ul>
                     </li>
                 <?php } ?>

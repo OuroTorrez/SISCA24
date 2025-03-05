@@ -75,7 +75,11 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 <option value="6">6</option>
                 <option value="7">7</option>
                 <option value="8">8</option>
-                <option value="9">9</option>
+                <?php if ($_POST['data'] == 'Desayunos Escolares Calientes') { ?>
+                    <option value="9">9</option>
+                <?php } else {?>
+                    <option value="9 - Ampliación">9 - Ampliación</option>
+                <?php } ?>
             </select>
         </div>
         <div class="FormData">
@@ -599,6 +603,11 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 return;
             }
         }
+        // Inspeccionar los datos de FormData
+    console.log("Datos enviados:");
+    for (var pair of dataForm.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+    }
 
         generarEntradasyPDF(dataForm, 'portrait', true);
     });

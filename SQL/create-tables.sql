@@ -81,7 +81,7 @@ CREATE Table registro_entradas(
     id_proveedor INT NOT NULL COMMENT 'ID del proveedor que realiza la dotacion',
     id_entrada INT NOT NULL COMMENT 'Tipo de entrada',
     entrega VARCHAR(255) NOT NULL COMMENT 'Quien entrega',
-    dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9') NOT NULL COMMENT 'Numero de dotacion al año al que pertenece',
+    dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación') NOT NULL COMMENT 'Numero de dotacion al año al que pertenece',
     nota VARCHAR(255) COMMENT 'Nota opcional de la dotacion',
     pdf_docs VARCHAR(50) COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del registro',
@@ -101,7 +101,7 @@ CREATE PROCEDURE insertar_registro_entradas(
     IN p_id_proveedor INT, 
     IN p_id_entrada INT, 
     IN p_entrega VARCHAR(255), 
-    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'), 
+    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'), 
     IN p_nota VARCHAR(255)
 )
 BEGIN
@@ -158,7 +158,7 @@ CREATE Table registro_salidas(
     recibe VARCHAR(255) NOT NULL COMMENT 'Quien recibe',
     referencia VARCHAR(100) NOT NULL COMMENT 'Referencia bancaria de la salida',
     monto DECIMAL(10, 2) NOT NULL COMMENT 'Monto de la salida',
-    dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9') NOT NULL COMMENT 'Numero de dotacion al año al que pertenece',
+    dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación') NOT NULL COMMENT 'Numero de dotacion al año al que pertenece',
     nota VARCHAR(255) COMMENT 'Nota opcional de la dotacion',
     pdf_docs VARCHAR(50) DEFAULT NULL COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del registro',
@@ -180,7 +180,7 @@ CREATE PROCEDURE insertar_registro_salidas(
     IN p_recibe VARCHAR(255), 
     IN p_referencia VARCHAR(100), 
     IN p_monto DECIMAL(10, 2), 
-    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),
+    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
     IN p_nota VARCHAR(255)
 )
 BEGIN
@@ -316,4 +316,113 @@ CREATE Table registro_salidas_registradas(
 
 
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
-INSERT 
+
+ALTER TABLE registro_entradas MODIFY dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación');
+ALTER TABLE registro_salidas MODIFY dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación');
+
+DROP PROCEDURE insertar_registro_salidas;
+CREATE PROCEDURE insertar_registro_salidas(
+    IN p_id_usuario INT, 
+    IN p_id_almacen INT, 
+    IN p_afavor VARCHAR(255), 
+    IN p_municipio VARCHAR(255), 
+    IN p_id_salida INT, 
+    IN p_recibe VARCHAR(255), 
+    IN p_referencia VARCHAR(100), 
+    IN p_monto DECIMAL(10, 2), 
+    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
+    IN p_nota VARCHAR(255)
+)
+BEGIN
+    DECLARE v_ultimo_id INT DEFAULT 0;
+    DECLARE v_ultimo_folio INT DEFAULT 0;
+
+    -- Obtener el último folio del almacén especificado
+    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_salidas WHERE id_almacen = p_id_almacen;
+
+    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
+    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
+
+    -- Insertar el nuevo registro
+    INSERT INTO registro_salidas(
+        id_usuario, 
+        id_almacen, 
+        afavor, 
+        municipio, 
+        id_salida, 
+        recibe, 
+        referencia, 
+        monto, 
+        dotacion, 
+        folio,
+        nota
+    ) 
+    VALUES(
+        p_id_usuario, 
+        p_id_almacen, 
+        p_afavor, 
+        p_municipio, 
+        p_id_salida, 
+        p_recibe, 
+        p_referencia, 
+        p_monto, 
+        p_dotacion, 
+        CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')),
+        p_nota
+    );
+
+    -- Obtener el ID del último registro insertado
+    SET v_ultimo_id = LAST_INSERT_ID();
+
+    -- Devolver el folio del último registro insertado
+    SELECT folio FROM registro_salidas WHERE id = v_ultimo_id;
+END 
+
+DROP PROCEDURE insertar_registro_entradas;
+CREATE PROCEDURE insertar_registro_entradas(
+    IN p_id_usuario INT, 
+    IN p_id_almacen INT, 
+    IN p_id_proveedor INT, 
+    IN p_id_entrada INT, 
+    IN p_entrega VARCHAR(255), 
+    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'), 
+    IN p_nota VARCHAR(255)
+)
+BEGIN
+    DECLARE v_ultimo_id INT DEFAULT 0;
+    DECLARE v_ultimo_folio INT DEFAULT 0;
+
+    -- Obtener el último folio del almacén especificado
+    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_entradas WHERE id_almacen = p_id_almacen;
+
+    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
+    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
+
+    -- Insertar el nuevo registro
+    INSERT INTO registro_entradas(
+        id_usuario, 
+        id_almacen, 
+        id_proveedor, 
+        id_entrada, 
+        entrega, 
+        dotacion, 
+        nota, 
+        folio
+    ) 
+    VALUES(
+        p_id_usuario, 
+        p_id_almacen, 
+        p_id_proveedor, 
+        p_id_entrada, 
+        p_entrega, 
+        p_dotacion, 
+        p_nota, 
+        CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0'))
+    );
+
+    -- Obtener el ID del último registro insertado
+    SET v_ultimo_id = LAST_INSERT_ID();
+
+    -- Devolver el folio del último registro insertado
+    SELECT folio FROM registro_entradas WHERE id = v_ultimo_id;
+END 

@@ -237,9 +237,6 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(datoAEnviar);
-                console.log(data);
-                console.log(response);
                 // Extraer el folio del registro de la respuesta HTML
                 if (toDownload) {
                     var parser = new DOMParser();
