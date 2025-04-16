@@ -561,17 +561,21 @@
                 accion: accion
             },
             success: function (response) {
+            console.log(typeof response);
+console.log("[" + response + "]");
+
                 console.log(response);
-                if(response == "Success" && accion == "Cancelar"){
+
+                if(response.trim() === "Success" && accion == "Cancelar"){
                     WaitDoc("Registro " + folio + " cancelado exitosamente", "La solicitud de cancelación ha sido procesada con éxito.", "location.reload()");
                     element.disabled = true;
-                } else if(response != "Success" && accion == "Cancelar"){
+                } else if(response.trim() !== "Success" && accion == "Cancelar"){
                     console.log(response + "\n Por favor");
                     WaitDoc("Error al cancelar el registro", response + "\n Por favor intente de nuevo", function() {uncheckSlider(element);});
-                }else if(response == "Success" && accion == "Verificar"){
+                }else if(response.trim() === "Success" && accion == "Verificar"){
                     WaitDoc("Registro " + folio + " verificado exitosamente", "La solicitud de verificación ha sido procesada con éxito.", "location.reload()");
                     element.disabled = true;
-                } else {
+                } else if(response.trim() !== "Success" && accion == "Verificar"){
                     console.log(response);
                     WaitDoc("Error al verificar el registro", "Por favor intente de nuevo", function() {uncheckSlider(element);});
                 }
