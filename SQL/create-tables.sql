@@ -242,7 +242,7 @@ CREATE Table dotaciones(
 INSERT INTO dotaciones(clave, programa, producto, medida) VALUES
 (2024001, 'Personas Adultas Mayores', 'Personas Adultas Mayores', 'Caja'),
 (2024002, 'Personas con Discapacidad', 'Personas con Discapacidad', 'Caja'),
-(2024003, 'Personas en Situación de Emergencias y Desastres', 'Personas en Situación de Emergencias y Desastres', 'Caja'),
+(2024003, 'Personas en Situación de Emergencias o Desastres', 'Personas en Situación de Emergencias o Desastres', 'Caja'),
 (2024004, 'Infantes de 2 a 5 años 11 meses', 'Infantes de 2 a 5 años 11 meses', 'Caja'),
 (2024005, 'Lactantes de 6 a 24 meses', 'Lactantes de 6 a 24 meses', 'Caja'),
 (2024006, 'Mujeres Embarazadas o en Periodo de Lactancia', 'Mujeres Embarazadas o en Periodo de Lactancia', 'Caja'),
@@ -278,19 +278,20 @@ CREATE TABLE proveedores_autorizados(
     id_proveedor INT NOT NULL COMMENT 'ID del proveedor',
     programa VARCHAR(255) NOT NULL COMMENT 'Programa al que pertenece la dotacion',
     disponibilidad ENUM('SI', 'NO') NOT NULL COMMENT 'Disponibilidad del proveedor',
+    ejercicio INT NOT NULL DEFAULT YEAR(CURDATE()) COMMENT 'Ejercicio del año al que pertenecen las dotaciones',
     PRIMARY KEY (id_proveedor, programa),
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 ) COMMENT 'Tabla para almacenar los proveedores autorizados por dotacion';
 
-INSERT INTO proveedores_autorizados(id_proveedor, programa, disponibilidad) VALUES 
-(1, 'Personas Adultas Mayores', 'SI'),
-(1, 'Personas con Discapacidad', 'SI'),
-(1, 'Personas en Situación de Emergencias y Desastres', 'SI'),
-(2, 'Infantes de 2 a 5 años 11 meses', 'SI'),
-(3, 'Lactantes de 6 a 24 meses', 'SI'),
-(3, 'Mujeres Embarazadas o en Periodo de Lactancia', 'SI'),
-(4, 'Desayunos Escolares Calientes', 'SI'),
-(3, 'Espacios de Alimentación', 'SI');
+INSERT INTO proveedores_autorizados(id_proveedor, programa, disponibilidad, ejercicio) VALUES 
+(1, 'Personas Adultas Mayores', 'SI', 2024),
+(1, 'Personas con Discapacidad', 'SI', 2024),
+(1, 'Personas en Situación de Emergencias o Desastres', 'SI', 2024),
+(2, 'Infantes de 2 a 5 años 11 meses', 'SI', 2024),
+(3, 'Lactantes de 6 a 24 meses', 'SI', 2024),
+(3, 'Mujeres Embarazadas o en Periodo de Lactancia', 'SI', 2024),
+(4, 'Desayunos Escolares Calientes', 'SI', 2024),
+(3, 'Espacios de Alimentación', 'SI', 2024);
 
 CREATE TABLE registro_entradas_registradas(
     clave INT NOT NULL COMMENT 'Clave de la dotacion',
@@ -316,7 +317,6 @@ CREATE Table registro_salidas_registradas(
 
 
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
-
 INSERT INTO dotaciones(clave, programa, producto, medida,cuota) VALUES
 (2025001, 'Personas Adultas Mayores', 'Personas Adultas Mayores', 'Caja', '329.89'),
 (2025002, 'Personas con Discapacidad', 'Personas con Discapacidad', 'Caja', '405.18'),
@@ -353,3 +353,15 @@ INSERT INTO dotaciones(clave, programa, producto, medida,cuota) VALUES
 (2025033, 'Desayunos Escolares Calientes', 'Mix de manzana deshidratada y cacahuates tostados', 'Bolsa de 30g', '6.15'),
 (2025034, 'Espacios de Alimentación', 'Pasta para sopa integral (Codito #2)', 'Bolsa de 200g', '9.17'),
 (2025035, 'Espacios de Alimentación', 'Soya texturizada', 'Bolsa de 330g', '24.05');
+
+ALTER TABLE proveedores_autorizados ADD COLUMN ejercicio INT NOT NULL DEFAULT YEAR(CURDATE()) COMMENT 'Ejercicio del año al que pertenecen las dotaciones';
+INSERT INTO proveedores(nombre, nombre_legal, rfc, direccion, telefono) VALUES ('Proveedor prueba', 'Proveedor prueba 2025 INC.', 'PP20250000000', 'Calle Somewhere 127', '443 3198 737');
+INSERT INTO proveedores_autorizados (id_proveedor, programa, disponibilidad, ejercicio) VALUES 
+(5, 'Desayunos Escolares Calientes', 'SI', 2025),
+(5, 'Espacios de Alimentación', 'SI', 2025),
+(5, 'Personas Adultas Mayores', 'SI', 2025),
+(5, 'Personas con Discapacidad', 'SI', 2025),
+(5, 'Personas en Situación de Emergencias o Desastres', 'SI', 2025),
+(5, 'Infantes de 2 a 5 años 11 meses', 'SI',2025),
+(5, 'Lactantes de 6 a 24 meses', 'SI', 2025),
+(5, 'Mujeres Embarazadas o en Periodo de Lactancia', 'SI', 2025);

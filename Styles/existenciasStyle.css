@@ -41,3 +41,14 @@
     pointer-events: none;
     font-size: 150% !important;
 }
+
+.SelectDotacionesLabel {
+    margin-top: 20px;
+    font-size: 190%;
+    color: var(--Primary);
+}
+
+#SelectEjercicio {
+    margin-bottom: 20px;
+    width: 80%;
+}

@@ -41,8 +41,21 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                         $query->fetch();
                         echo "<h2>$nombre $apellido_paterno $apellido_materno</h2>";
                         echo "<h3>$almacen</h3>";
+
+
+                        echo "<label class='SelectDotacionesLabel'>Ejercicio:</label>";
+                        echo "<select name='SelectEjercicio' id='SelectEjercicio'>";
+                        $query = $conn->prepare("SELECT DISTINCT LEFT(clave, 4) as anioClave FROM dotaciones");
+                        $query->execute();
+                        $query->bind_result($anioClave);
+                        $query->store_result();
+                        while ($query->fetch()) {
+                            echo "<option value='$anioClave'>$anioClave</option>";
+                        }
+                        echo "</select>";
+                        $query->close();
                         // Retrieve dotaciones from dotaciones table
-                        echo "<label id='SelectDotacionesLabel'>Dotaciones:</label>";
+                        echo "<label class='SelectDotacionesLabel'>Dotaciones:</label>";
                         echo "<select name='SelectDotaciones' id='SelectDotaciones'>";
                         echo "<option hidden selected>Selecciona una opción</option>";
                         $query = $conn->prepare("SELECT DISTINCT programa FROM dotaciones");
@@ -65,12 +78,37 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 <script>
 document.getElementById('SelectDotaciones').addEventListener('change', function() {
     var programa = document.getElementById('SelectDotaciones').value;
+    var ejercicio = document.getElementById('SelectEjercicio').value
     // Send the value to the server
     $.ajax({
         url: 'handleSalidas.php',
         type: 'POST',
         data: {
-            data: programa
+            data: programa,
+            ejercicio: ejercicio
+        },
+        success: function(response) {
+            // You can use the response here
+            $("#SalidasForm").html(response);
+        },
+        error: function(response) {
+            console.log("response error:");
+            console.log(response);
+        }
+    });
+
+});
+
+document.getElementById('SelectEjercicio').addEventListener('change', function() {
+    var programa = document.getElementById('SelectDotaciones').value;
+    var ejercicio = document.getElementById('SelectEjercicio').value;
+    // Send the value to the server
+    $.ajax({
+        url: 'handleSalidas.php',
+        type: 'POST',
+        data: {
+            data: programa,
+            ejercicio: ejercicio
         },
         success: function(response) {
             // You can use the response here

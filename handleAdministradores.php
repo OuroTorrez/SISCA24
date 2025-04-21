@@ -20,6 +20,7 @@ if ($_POST['accion'] == "showExistencias") {
     } else {
         $almacen = 0;
     }
+    $ejercicio = $_POST['ejercicio'];
     if ($almacen != 0) {
         $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, 
             COALESCE((SELECT SUM(dr.cantidad) FROM registro_entradas_registradas dr 
@@ -28,8 +29,8 @@ if ($_POST['accion'] == "showExistencias") {
             - COALESCE((SELECT SUM(sr.cantidad) FROM registro_salidas_registradas sr 
                         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
                         WHERE sr.clave = d.clave AND sd.cancelado = 0 AND sd.id_almacen = ?), 0) AS existencias
-            FROM dotaciones d");
-        $query->bind_param("ii", $almacen, $almacen);
+            FROM dotaciones d WHERE LEFT(clave, 4) = ?");
+        $query->bind_param("iis", $almacen, $almacen, $ejercicio);
     } else {
         $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, 
             COALESCE((SELECT SUM(dr.cantidad) FROM registro_entradas_registradas dr 
@@ -38,7 +39,8 @@ if ($_POST['accion'] == "showExistencias") {
             - COALESCE((SELECT SUM(sr.cantidad) FROM registro_salidas_registradas sr 
                         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
                         WHERE sr.clave = d.clave AND sd.cancelado = 0), 0) AS existencias
-            FROM dotaciones d");
+            FROM dotaciones d WHERE LEFT(clave, 4) = ?");
+            $query->bind_param("s", $ejercicio);
     }
     if ($query->execute()) {
         $query->bind_result($clave, $programa, $producto, $medida, $existencias);

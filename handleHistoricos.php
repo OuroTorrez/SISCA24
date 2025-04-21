@@ -96,9 +96,10 @@ if ($_POST['accion'] == "showHistoricos") {
             AND sd.id_almacen = ? 
             AND MONTH(sd.fecha_registro) = $mes 
             AND YEAR(sd.fecha_registro) = $anio
-            GROUP BY sr.clave) salidas_mes ON salidas_mes.clave = d.clave;");
+            GROUP BY sr.clave) salidas_mes ON salidas_mes.clave = d.clave
+            WHERE LEFT(d.clave, 4) = ?"); // Filtro por año en los primeros 4 caracteres de la clave
 
-            $query->bind_param("iiii", $almacen, $almacen, $almacen, $almacen);
+            $query->bind_param("iiiis", $almacen, $almacen, $almacen, $almacen, $anio);
         } else {
 
             $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, d.cuota,
@@ -161,9 +162,10 @@ if ($_POST['accion'] == "showHistoricos") {
             WHERE sd.cancelado = 0 
                 AND MONTH(sd.fecha_registro) = ? AND YEAR(sd.fecha_registro) = ?
             GROUP BY sr.clave
-            ) salidas_mes ON salidas_mes.clave = d.clave");
-            //$query->bind_param("iiiiiiiiii", $anio, $anio, $mes, $anio, $anio, $mes , $mes, $anio, $mes, $anio);
-            $query->bind_param("iiiiiiiiii", $anio, $anio, $mes, $anio, $anio, $mes, $mes, $anio, $mes, $anio);
+            ) salidas_mes ON salidas_mes.clave = d.clave
+            WHERE LEFT(d.clave, 4) = ?"); // Filtro por año en los primeros 4 caracteres de la clave
+            
+            $query->bind_param("iiiiiiiiiis", $anio, $anio, $mes, $anio, $anio, $mes, $mes, $anio, $mes, $anio, $anio);
 
             if ($query === false) {
                 die('Error en la consulta SQL: ' . $conn->error);
@@ -321,9 +323,10 @@ if ($_POST['accion'] == "showHistoricos") {
             AND sd.id_almacen = ? 
             AND MONTH(sd.fecha_registro) = $mes 
             AND YEAR(sd.fecha_registro) = $anio
-            GROUP BY sr.clave) salidas_mes ON salidas_mes.clave = d.clave;");
+            GROUP BY sr.clave) salidas_mes ON salidas_mes.clave = d.clave
+            WHERE LEFT(d.clave, 4) = ?"); // Filtro por año en los primeros 4 caracteres de la clave
 
-            $query->bind_param("iiii",$almacen,$almacen,$almacen,$almacen);
+            $query->bind_param("iiiis",$almacen,$almacen,$almacen,$almacen,$anio);
         } else {
 
             $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida,
@@ -338,7 +341,7 @@ if ($_POST['accion'] == "showHistoricos") {
 
             -- Existencias finales
             COALESCE(entradas_acum_ant.cantidad, 0) - COALESCE(salidas_acum_ant.cantidad, 0) + 
-            COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0) AS existencias,
+            COALESCE(entradas_mes.cantidad, 0) - COALESCE(salidas_mes.cantidad, 0) AS existencias
             
             FROM dotaciones d
             -- Acumulación de entradas hasta el mes anterior al consultado
@@ -376,9 +379,10 @@ if ($_POST['accion'] == "showHistoricos") {
             WHERE sd.cancelado = 0 
                 AND MONTH(sd.fecha_registro) = ? AND YEAR(sd.fecha_registro) = ?
             GROUP BY sr.clave
-            ) salidas_mes ON salidas_mes.clave = d.clave");
-            //$query->bind_param("iiiiiiiiii", $anio, $anio, $mes, $anio, $anio, $mes , $mes, $anio, $mes, $anio);
-            $query->bind_param("iiiiiiiiii", $anio, $anio, $mes, $anio, $anio, $mes, $mes, $anio, $mes, $anio);
+            ) salidas_mes ON salidas_mes.clave = d.clave
+            WHERE LEFT(d.clave, 4) = ?"); // Filtro por año en los primeros 4 caracteres de la clave
+            
+            $query->bind_param("iiiiiiiiiis", $anio, $anio, $mes, $anio, $anio, $mes, $mes, $anio, $mes, $anio, $anio);
 
             if ($query === false) {
                 die('Error en la consulta SQL: ' . $conn->error);
