@@ -101,8 +101,8 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         </div>
         <?php
         // Muestra los productos correspondientes al programa o dotación seleccionada
-        $query = $conn->prepare("SELECT clave, producto, medida FROM dotaciones WHERE programa = ?");
-        $query->bind_param("s", $_POST['data']);
+        $query = $conn->prepare("SELECT clave, producto, medida FROM dotaciones WHERE programa = ? AND LEFT(clave, 4) = ?");
+        $query->bind_param("ss", $_POST['data'], $_POST['ejercicio']);
         if ($query->execute()) {
             $result = $query->get_result();
             if ($result->num_rows > 0) {

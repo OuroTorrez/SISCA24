@@ -19,10 +19,10 @@ INSERT INTO roles(id_rol, rol, descripcion) VALUES (7, 'AFEVEM', 'Permisos de su
 
 CREATE Table almacenes(
     id_almacen int NOT NULL PRIMARY KEY COMMENT 'ID del almacen',
-    nombre VARCHAR(100) NOT NULL COMMENT 'Nombre del almacen'
+    almacen VARCHAR(100) NOT NULL COMMENT 'Nombre del almacen'
 ) COMMENT 'Tabla para almacenar los almacenes de la institución';
 
-INSERT INTO almacenes(id_almacen, nombre) VALUES(0, 'INDEFINIDO'),
+INSERT INTO almacenes(id_almacen, almacen) VALUES(0, 'INDEFINIDO'),
                                                 (1, 'Almacen Morelia'),
                                                 (2, 'Almacen Pátzcuaro');
 
@@ -64,14 +64,14 @@ CREATE Table entradas(
     id_entrada int NOT NULL PRIMARY KEY COMMENT 'ID de la entrada',
     tipo VARCHAR(20) NOT NULL COMMENT 'Tipo de entrada'
 ) COMMENT 'Tabla para almacenar los tipos de entradas de productos existentes en la institución';
-INSERT INTO entradas(id_entrada, nombre) VALUES(1, 'COMPRA'), (2, 'TRASPASO'), (3, 'DONACION'), (4, 'DEVOLUCION'), (5, 'REPOSICION'), (6, 'REMANENTE'), (7, 'MERMA');
+INSERT INTO entradas(id_entrada, tipo) VALUES(1, 'COMPRA'), (2, 'TRASPASO'), (3, 'DONACION'), (4, 'DEVOLUCION'), (5, 'REPOSICION'), (6, 'REMANENTE'), (7, 'MERMA');
 
 CREATE Table salidas(
     id_salida int NOT NULL PRIMARY KEY COMMENT 'ID de la salida',
     tipo VARCHAR(20) NOT NULL COMMENT 'Tipo de salida'
 ) COMMENT 'Tabla para almacenar las salidas de productos existentes en la institución';
 
-INSERT INTO salidas(id_salida, nombre) VALUES(1, 'CONSUMO'), (2, 'DONACION'), (3, 'DEVOLUCION'), (4, 'REPOSICION'), (5, 'REMANENTE'), (6, 'MERMA');
+INSERT INTO salidas(id_salida, tipo) VALUES(1, 'CONSUMO'), (2, 'DONACION'), (3, 'DEVOLUCION'), (4, 'REPOSICION'), (5, 'REMANENTE'), (6, 'MERMA');
 
 CREATE Table registro_entradas(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID del registro de dotacion',
@@ -96,12 +96,12 @@ CREATE Table registro_entradas(
 
 DELIMITER //
 CREATE PROCEDURE insertar_registro_entradas(
-    IN p_id_usuario INT, 
-    IN p_id_almacen INT, 
-    IN p_id_proveedor INT, 
-    IN p_id_entrada INT, 
-    IN p_entrega VARCHAR(255), 
-    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'), 
+    IN p_id_usuario INT,
+    IN p_id_almacen INT,
+    IN p_id_proveedor INT,
+    IN p_id_entrada INT,
+    IN p_entrega VARCHAR(255),
+    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
     IN p_nota VARCHAR(255)
 )
 BEGIN
@@ -116,25 +116,25 @@ BEGIN
 
     -- Insertar el nuevo registro
     INSERT INTO registro_entradas(
-        id_usuario, 
-        id_almacen, 
-        id_proveedor, 
-        id_entrada, 
-        entrega, 
-        dotacion, 
-        nota, 
+        id_usuario,
+        id_almacen,
+        id_proveedor,
+        id_entrada,
+        entrega,
+        dotacion,
+        nota,
         folio
-    ) 
+    )
     VALUES(
-        p_id_usuario, 
-        p_id_almacen, 
-        p_id_proveedor, 
-        p_id_entrada, 
-        p_entrega, 
-        p_dotacion, 
-        p_nota, 
-        CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0'))
-    );
+              p_id_usuario,
+              p_id_almacen,
+              p_id_proveedor,
+              p_id_entrada,
+              p_entrega,
+              p_dotacion,
+              p_nota,
+              CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0'))
+          );
 
     -- Obtener el ID del último registro insertado
     SET v_ultimo_id = LAST_INSERT_ID();
@@ -172,14 +172,14 @@ CREATE Table registro_salidas(
 
 DELIMITER //
 CREATE PROCEDURE insertar_registro_salidas(
-    IN p_id_usuario INT, 
-    IN p_id_almacen INT, 
-    IN p_afavor VARCHAR(255), 
-    IN p_municipio VARCHAR(255), 
-    IN p_id_salida INT, 
-    IN p_recibe VARCHAR(255), 
-    IN p_referencia VARCHAR(100), 
-    IN p_monto DECIMAL(10, 2), 
+    IN p_id_usuario INT,
+    IN p_id_almacen INT,
+    IN p_afavor VARCHAR(255),
+    IN p_municipio VARCHAR(255),
+    IN p_id_salida INT,
+    IN p_recibe VARCHAR(255),
+    IN p_referencia VARCHAR(100),
+    IN p_monto DECIMAL(10, 2),
     IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
     IN p_nota VARCHAR(255)
 )
@@ -195,31 +195,31 @@ BEGIN
 
     -- Insertar el nuevo registro
     INSERT INTO registro_salidas(
-        id_usuario, 
-        id_almacen, 
-        afavor, 
-        municipio, 
-        id_salida, 
-        recibe, 
-        referencia, 
-        monto, 
-        dotacion, 
+        id_usuario,
+        id_almacen,
+        afavor,
+        municipio,
+        id_salida,
+        recibe,
+        referencia,
+        monto,
+        dotacion,
         folio,
         nota
-    ) 
+    )
     VALUES(
-        p_id_usuario, 
-        p_id_almacen, 
-        p_afavor, 
-        p_municipio, 
-        p_id_salida, 
-        p_recibe, 
-        p_referencia, 
-        p_monto, 
-        p_dotacion, 
-        CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')),
-        p_nota
-    );
+              p_id_usuario,
+              p_id_almacen,
+              p_afavor,
+              p_municipio,
+              p_id_salida,
+              p_recibe,
+              p_referencia,
+              p_monto,
+              p_dotacion,
+              CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')),
+              p_nota
+          );
 
     -- Obtener el ID del último registro insertado
     SET v_ultimo_id = LAST_INSERT_ID();
@@ -235,11 +235,11 @@ CREATE Table dotaciones(
     programa VARCHAR(255) NOT NULL COMMENT 'Programa al que pertenece la dotacion',
     producto VARCHAR(255) NOT NULL COMMENT 'Descripcion o nombre del producto',
     medida VARCHAR(100) NOT NULL COMMENT 'Cantidad de articulos',
-    cuota DECIMAL(10, 2) NOT NULL COMMENT 'Cuota de dotacion',
+    cuota DECIMAL(10, 2) NOT NULL DEFAULT 0 COMMENT 'Cuota de dotacion',
     PRIMARY KEY (clave)
 ) COMMENT 'Tabla para almacenar las dotaciones de productos existentes en la institución';
 
-INSERT INTO dotaciones(clave, programa, producto, medida) VALUES 
+INSERT INTO dotaciones(clave, programa, producto, medida) VALUES
 (2024001, 'Personas Adultas Mayores', 'Personas Adultas Mayores', 'Caja'),
 (2024002, 'Personas con Discapacidad', 'Personas con Discapacidad', 'Caja'),
 (2024003, 'Personas en Situación de Emergencias y Desastres', 'Personas en Situación de Emergencias y Desastres', 'Caja'),
@@ -317,112 +317,39 @@ CREATE Table registro_salidas_registradas(
 
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
 
-ALTER TABLE registro_entradas MODIFY dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación');
-ALTER TABLE registro_salidas MODIFY dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación');
-
-DROP PROCEDURE insertar_registro_salidas;
-CREATE PROCEDURE insertar_registro_salidas(
-    IN p_id_usuario INT, 
-    IN p_id_almacen INT, 
-    IN p_afavor VARCHAR(255), 
-    IN p_municipio VARCHAR(255), 
-    IN p_id_salida INT, 
-    IN p_recibe VARCHAR(255), 
-    IN p_referencia VARCHAR(100), 
-    IN p_monto DECIMAL(10, 2), 
-    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
-    IN p_nota VARCHAR(255)
-)
-BEGIN
-    DECLARE v_ultimo_id INT DEFAULT 0;
-    DECLARE v_ultimo_folio INT DEFAULT 0;
-
-    -- Obtener el último folio del almacén especificado
-    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_salidas WHERE id_almacen = p_id_almacen;
-
-    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
-    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
-
-    -- Insertar el nuevo registro
-    INSERT INTO registro_salidas(
-        id_usuario, 
-        id_almacen, 
-        afavor, 
-        municipio, 
-        id_salida, 
-        recibe, 
-        referencia, 
-        monto, 
-        dotacion, 
-        folio,
-        nota
-    ) 
-    VALUES(
-        p_id_usuario, 
-        p_id_almacen, 
-        p_afavor, 
-        p_municipio, 
-        p_id_salida, 
-        p_recibe, 
-        p_referencia, 
-        p_monto, 
-        p_dotacion, 
-        CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')),
-        p_nota
-    );
-
-    -- Obtener el ID del último registro insertado
-    SET v_ultimo_id = LAST_INSERT_ID();
-
-    -- Devolver el folio del último registro insertado
-    SELECT folio FROM registro_salidas WHERE id = v_ultimo_id;
-END 
-
-DROP PROCEDURE insertar_registro_entradas;
-CREATE PROCEDURE insertar_registro_entradas(
-    IN p_id_usuario INT, 
-    IN p_id_almacen INT, 
-    IN p_id_proveedor INT, 
-    IN p_id_entrada INT, 
-    IN p_entrega VARCHAR(255), 
-    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'), 
-    IN p_nota VARCHAR(255)
-)
-BEGIN
-    DECLARE v_ultimo_id INT DEFAULT 0;
-    DECLARE v_ultimo_folio INT DEFAULT 0;
-
-    -- Obtener el último folio del almacén especificado
-    SELECT MAX(folio) INTO v_ultimo_folio FROM registro_entradas WHERE id_almacen = p_id_almacen;
-
-    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
-    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
-
-    -- Insertar el nuevo registro
-    INSERT INTO registro_entradas(
-        id_usuario, 
-        id_almacen, 
-        id_proveedor, 
-        id_entrada, 
-        entrega, 
-        dotacion, 
-        nota, 
-        folio
-    ) 
-    VALUES(
-        p_id_usuario, 
-        p_id_almacen, 
-        p_id_proveedor, 
-        p_id_entrada, 
-        p_entrega, 
-        p_dotacion, 
-        p_nota, 
-        CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0'))
-    );
-
-    -- Obtener el ID del último registro insertado
-    SET v_ultimo_id = LAST_INSERT_ID();
-
-    -- Devolver el folio del último registro insertado
-    SELECT folio FROM registro_entradas WHERE id = v_ultimo_id;
-END 
+INSERT INTO dotaciones(clave, programa, producto, medida,cuota) VALUES
+(2025001, 'Personas Adultas Mayores', 'Personas Adultas Mayores', 'Caja', '329.89'),
+(2025002, 'Personas con Discapacidad', 'Personas con Discapacidad', 'Caja', '405.18'),
+(2025003, 'Personas en Situación de Emergencias o Desastres', 'Personas en Situación de Emergencias o Desastres', 'Caja', '949.57'),
+(2025004, 'Infantes de 2 a 5 años 11 meses', 'Infantes de 2 a 5 años 11 meses', 'Caja', '257.11'),
+(2025005, 'Lactantes de 6 a 24 meses', 'Lactantes de 6 a 24 meses', 'Caja', '201.36'),
+(2025006, 'Mujeres Embarazadas o en Periodo de Lactancia', 'Mujeres Embarazadas o en Periodo de Lactancia', 'Caja', '359.40'),
+(2025007, 'Desayunos Escolares Calientes', 'Aceite vegetal comestible puro de canola', 'Botella de 1L', '52.30'),
+(2025008, 'Desayunos Escolares Calientes', 'Arroz pulido calidad extra, ultima cosecha', 'Bolsa de 900g', '28.50'),
+(2025009, 'Desayunos Escolares Calientes', 'Atun aleta amarilla en agua', 'Pouch de 1.02kg M.D. 1kg', '225.27'),
+(2025010, 'Desayunos Escolares Calientes', 'Avena en hojuelas', 'Bolsa de 1kg', '31.40'),
+(2025011, 'Desayunos Escolares Calientes', 'Carne de res deshebrada al alto vacio', 'Pouch 1kg', '294.30'),
+(2025012, 'Desayunos Escolares Calientes', 'Chícharo con zanahoria', 'Lata de 430g M.D. 252g', '18.80'),
+(2025013, 'Desayunos Escolares Calientes', 'Espagueti integral', 'Bolsa de 200g', '8.30'),
+(2025014, 'Desayunos Escolares Calientes', 'Frijol pinto nacional, ultima cosecha', 'Bolsa de 1kg', '44.90'),
+(2025015, 'Desayunos Escolares Calientes', 'Harina de maiz nixtamalizado', 'Bolsa de 1kg', '21.00'),
+(2025016, 'Desayunos Escolares Calientes', 'Leche descremada en polvo', 'Bolsa de 1kg', '114.70'),
+(2025017, 'Desayunos Escolares Calientes', 'Lenteja última cosecha', 'Bolsa de 1kg', '52.30'),
+(2025018, 'Desayunos Escolares Calientes', 'Manzana amarilla fresca', 'Pieza', '10.90'),
+(2025019, 'Desayunos Escolares Calientes', 'Mix de manzana deshidratada y cacahuates tostados', 'Bolsa de 30g', '5.90'),
+(2025020, 'Desayunos Escolares Calientes', 'Pasta para sopa integral (Codito #2)', 'Bolsa de 200g', '8.31'),
+(2025021, 'Desayunos Escolares Calientes', 'Pechuga de pollo deshidratada al alto vacio', 'Pouch de 1kg', '240.00'),
+(2025022, 'Desayunos Escolares Calientes', 'Soya texturizada', 'Bolsa de 330g', '22.30'),
+(2025023, 'Desayunos Escolares Calientes', 'Zanahoria fresca', 'Pieza', '5.29'),
+(2025024, 'Espacios de Alimentación', 'Aceite vegetal comestible puro de canola', 'Botella de 1L', '57.30'),
+(2025025, 'Espacios de Alimentación', 'Arroz pulido calidad extra ultima cosecha', 'Botella de 900g', '31.14'),
+(2025026, 'Espacios de Alimentación', 'Atun aleta amarilla en agua', 'Pouch de 1.02kg M.D. 1kg', '204.08'),
+(2025027, 'Espacios de Alimentación', 'Avena en hojuelas', 'Bolsa de 1kg', '34.39'),
+(2025028, 'Espacios de Alimentación', 'Chícharo con zanahoria', 'Lata de 430g M.D. 252g', '20.50'),
+(2025029, 'Espacios de Alimentación', 'Frijol pinto nacional ultima cosecha', 'Bolsa de 1kg', '49.09'),
+(2025030, 'Espacios de Alimentación', 'Harina de maiz nixtamalizado', 'Bolsa de 1kg', '22.30'),
+(2025031, 'Espacios de Alimentación', 'Leche descremada en polvo', 'Bolsa de 1kg', '125.00'),
+(2025032, 'Espacios de Alimentación', 'Lenteja ultima cosecha', 'Bolsa de 1kg', '57.27'),
+(2025033, 'Desayunos Escolares Calientes', 'Mix de manzana deshidratada y cacahuates tostados', 'Bolsa de 30g', '6.15'),
+(2025034, 'Espacios de Alimentación', 'Pasta para sopa integral (Codito #2)', 'Bolsa de 200g', '9.17'),
+(2025035, 'Espacios de Alimentación', 'Soya texturizada', 'Bolsa de 330g', '24.05');
