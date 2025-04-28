@@ -11,3 +11,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <!-- Data tables -->
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+<script>
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            // Si el foco está en un input que no debería enviar el formulario
+            const target = event.target;
+            const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+            if (isInput) {
+                event.preventDefault();
+                return false;
+            }
+        }
+    });
+
+</script>
