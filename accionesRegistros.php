@@ -1,3 +1,7 @@
+
+
+
+
 <?php
 session_start();
 include 'conexion.php';
@@ -66,10 +70,28 @@ if (isset($_POST['accion'])) {
         }
     }
     else if ($_POST['accion'] == 'FormEntrada') {
-        $query = $conn->prepare("SELECT id_entrada, dotacion, nota, nota_modificacion FROM registro_entradas WHERE folio = ?");
+        //$query = $conn->prepare("SELECT id_entrada, dotacion, nota, nota_modificacion FROM registro_entradas WHERE folio = ?");
+        $query = $conn->prepare("
+            SELECT 
+                re.id_entrada, 
+                re.dotacion, 
+                re.nota, 
+                re.nota_modificacion,
+                d.programa 
+            FROM 
+                registro_entradas AS re
+            JOIN 
+                registro_entradas_registradas AS rer 
+                ON re.folio = rer.folio
+            JOIN 
+                dotaciones AS d 
+                ON rer.clave = d.clave
+            WHERE 
+                re.folio = ?
+        ");
         $query->bind_param("i", $_POST['folio']);
         $query->execute();
-        $query->bind_result($id_entradaBD, $dotacionBD, $notaBD, $nota_modificacionBD);
+        $query->bind_result($id_entradaBD, $dotacionBD, $notaBD, $nota_modificacionBD, $programa);
         $query->fetch();
         $query->close();
         ?>
@@ -111,6 +133,22 @@ if (isset($_POST['accion'])) {
                             }
                         }
                     ?>
+                    <?php
+                    // Generar opciones del 1 al 8
+                    for ($i = 1; $i <= 8; $i++) {
+                        $selected = ($i == $dotacionBD) ? "selected" : "";
+                        echo "<option value='$i' $selected>$i</option>";
+                    }
+
+                    // Lógica para la opción 9 o 9 - Ampliación
+                    if ($programa == 'Desayunos Escolares Calientes') {
+                        $selected = ($dotacionBD == 9) ? "selected" : "";
+                        echo "<option value='9' $selected>9</option>";
+                    } else {
+                        $selected = ($dotacionBD == "9 - Ampliación") ? "selected" : "";
+                        echo "<option value='9 - Ampliación' $selected>9 - Ampliación</option>";
+                    }
+                    ?> 
                 </select>
             </div>
             <div class="FormData" style="width: 100%">
@@ -131,10 +169,30 @@ if (isset($_POST['accion'])) {
         <?php
     }
     else if ($_POST['accion'] == 'FormSalida') {
-        $query = $conn->prepare("SELECT id_salida, dotacion, nota, nota_modificacion, recibe, monto FROM registro_salidas WHERE folio = ?");
+        $query = $conn->prepare("
+    SELECT 
+        rs.id_salida, 
+        rs.dotacion, 
+        rs.nota, 
+        rs.nota_modificacion, 
+        rs.recibe, 
+        rs.monto, 
+        d.programa 
+    FROM 
+        registro_salidas AS rs
+    JOIN 
+        registro_salidas_registradas AS rsr 
+        ON rs.folio = rsr.folio
+    JOIN 
+        dotaciones AS d 
+        ON rsr.clave = d.clave
+    WHERE 
+        rs.folio = ?
+");
+
         $query->bind_param("i", $_POST['folio']);
         $query->execute();
-        $query->bind_result($id_salidaBD, $dotacionBD, $notaBD, $nota_modificacionBD, $recibe, $monto);
+        $query->bind_result($id_salidaBD, $dotacionBD, $notaBD, $nota_modificacionBD, $recibe, $monto, $programa);
         $query->fetch();
         $query->close();
         ?>
@@ -168,14 +226,21 @@ if (isset($_POST['accion'])) {
                 <label for="dotacion" class="req">Dotación:</label>
                 <select name="dotacion" id="dotacion" required>
                     <?php
-                    for ($i = 1 ; $i<=9 ; $i++) {
-                        if($i == $dotacionBD){
-                            echo "<option value='$i' selected>$i</option>";
-                        } else {
-                            echo "<option value='$i'>$i</option>";
-                        }
+                    // Generar opciones del 1 al 8
+                    for ($i = 1; $i <= 8; $i++) {
+                        $selected = ($i == $dotacionBD) ? "selected" : "";
+                        echo "<option value='$i' $selected>$i</option>";
                     }
-                    ?>
+
+                    // Lógica para la opción 9 o 9 - Ampliación
+                    if ($programa == 'Desayunos Escolares Calientes') {
+                        $selected = ($dotacionBD == 9) ? "selected" : "";
+                        echo "<option value='9' $selected>9</option>";
+                    } else {
+                        $selected = ($dotacionBD == "9 - Ampliación") ? "selected" : "";
+                        echo "<option value='9 - Ampliación' $selected>9 - Ampliación</option>";
+                    }
+                    ?> 
                 </select>
             </div>
             <div class="FormData" style="width: 100%">

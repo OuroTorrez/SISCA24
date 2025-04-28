@@ -30,7 +30,7 @@ if (isset($_SESSION['usuario'])) {
         $nota = $_POST['nota'];
 
         $query = $conn->prepare("call insertar_registro_salidas(?,?,?,?,?,?,?,?,?,?)");
-        $query->bind_param("iississiis", $id_usuario, $id_almacen, $afavor, $municipio, $salida, $recibe, $referencia, $monto, $dotacion, $nota);
+        $query->bind_param("iissississ", $id_usuario, $id_almacen, $afavor, $municipio, $salida, $recibe, $referencia, $monto, $dotacion, $nota);
         if($query->execute()){
             // Obtener el folio del registro realizado
             $result = $query->get_result();
@@ -66,7 +66,7 @@ function generarDocumento($folio)
 {
     global $conn;
     $query = $conn->prepare("SELECT
-    DATE_FORMAT(sd.fecha_registro, '%d/%m/%Y | %H:%i:%s') AS fecha_registro, sd.dotacion, sd.afavor, sd.recibe, sd.referencia, sd.monto, sd.nota, sd.nota, sd.municipio,
+    DATE_FORMAT(sd.fecha_registro, '%d/%m/%Y | %H:%i:%s') AS fecha_registro, sd.dotacion, sd.afavor, sd.recibe, sd.referencia, FORMAT(sd.monto, 2) AS monto, sd.nota, sd.nota, sd.municipio,
     a.almacen, u.nombres, u.apellido_paterno, u.apellido_materno, d.programa, s.tipo
     FROM registro_salidas sd
     INNER JOIN almacenes a ON sd.id_almacen = a.id_almacen
@@ -340,7 +340,7 @@ function generarDocumento($folio)
                     </table>
                     <?php
                     break;
-                case "Personas en Situación de Emergencias y Desastres":
+                case "Personas en Situación de Emergencias o Desastres":
                     ?>
                     <h5>Contenido de la caja:</h5>
                     <table>

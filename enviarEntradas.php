@@ -30,7 +30,7 @@ if (isset($_SESSION['usuario'])) {
 
         //Hacemos el registro
         $query = $conn->prepare("call insertar_registro_entradas(?, ?, ?, ?, ?, ?, ?)");
-        $query->bind_param("iiiisis", $id_usuario, $id_almacen, $proveedor, $entrada, $entrega, $dotacion, $nota);
+        $query->bind_param("iiiisss", $id_usuario, $id_almacen, $proveedor, $entrada, $entrega, $dotacion, $nota);
         if ($query->execute()) {
             // Obtener el folio del registro realizado
             $result = $query->get_result();
@@ -405,7 +405,7 @@ function generarDocumento($folio)
                     </table>
                     <?php
                     break;
-                case "Personas en Situación de Emergencias y Desastres":
+                case "Personas en Situación de Emergencias o Desastres":
                     ?>
                     <h5>Contenido de la caja:</h5>
                     <table>

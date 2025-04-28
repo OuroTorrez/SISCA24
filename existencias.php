@@ -49,6 +49,19 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         <?php if($_SESSION['id_almacen'] == 0) { ?>
         <div id="ConsultaOpcMenu" class="OpcMenu">
             <?php
+                echo "<label class='SelectDotacionesLabel'>Ejercicio:</label>";
+                echo "<select name='SelectEjercicio' id='SelectEjercicio'>";
+                $query = $conn->prepare("SELECT DISTINCT LEFT(clave, 4) as anioClave FROM dotaciones");
+                $query->execute();
+                $query->bind_result($anioClave);
+                $query->store_result();
+                while ($query->fetch()) {
+                    echo "<option value='$anioClave'>$anioClave</option>";
+                }
+                echo "</select>";
+                echo "<hr>";
+                $query->close();
+
                 $query = $conn->prepare("SELECT * FROM almacenes");
                 $query->execute();
                 $query->bind_result($id_almacen, $almacen);
@@ -78,6 +91,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
     function showExistencias(almacen) {
         var buttons = document.querySelectorAll(".OpcMenuButton");
+        var ejercicio = document.getElementById('SelectEjercicio').value;
         
         // Iterar sobre todos los botones y ajustar la clase activa
         buttons.forEach(button => {
@@ -93,6 +107,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             type: 'POST',
             data: {
                 almacen: almacen,
+                ejercicio: ejercicio,
                 accion: "showExistencias"
             },
             success: function(response) {
@@ -106,6 +121,16 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             }
         });
     }
+
+     // Agregar event listener al select de ejercicio
+     document.getElementById('SelectEjercicio').addEventListener('change', function() {
+            // Obtener el almacén activo actual
+            var activeButton = document.querySelector('.OpcMenuButton.active');
+            var almacen = activeButton ? activeButton.getAttribute('data-target') : <?php echo $_SESSION['id_almacen']; ?>;
+            
+            // Llamar a showExistencias con el almacén actual y el nuevo ejercicio
+            showExistencias(almacen);
+        });
 
     function attachTableHoverEffects() {
         // Selecciona todas las tablas existentes para aplicar los estilos de efecto hover
