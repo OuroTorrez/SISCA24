@@ -96,24 +96,25 @@ if ($_POST['accion'] == "showExistencias") {
 else if ($_POST['accion'] == "showEntradas") {
     $id_almacen = $_POST['almacen'];
     if($id_almacen != 0) {
-        $query = $conn->prepare("SELECT DISTINCT rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
+        $query = $conn->prepare("SELECT DISTINCT rd.id, rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
             FROM registro_entradas rd INNER JOIN proveedores p ON rd.id_proveedor = p.id_proveedor 
-            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio INNER JOIN dotaciones d ON dr.clave  = d.clave
+            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio AND rd.id = dr.id INNER JOIN dotaciones d ON dr.clave  = d.clave
             WHERE rd.id_almacen = ?");
         $query->bind_param("s", $id_almacen);
     } else {
-        $query = $conn->prepare("SELECT DISTINCT rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
+        $query = $conn->prepare("SELECT DISTINCT rd.id, rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
             FROM registro_entradas rd INNER JOIN proveedores p ON rd.id_proveedor = p.id_proveedor 
-            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio INNER JOIN dotaciones d ON dr.clave  = d.clave");
+            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio AND rd.id = dr.id INNER JOIN dotaciones d ON dr.clave  = d.clave");
     }
     if ($query->execute()) {
-        $query->bind_result($folio, $proveedor, $dotacion, $fecha, $programa, $pdf_docs, $activo, $nota_cancelacion, $verificado);
+        $query->bind_result($id, $folio, $proveedor, $dotacion, $fecha, $programa, $pdf_docs, $activo, $nota_cancelacion, $verificado);
         $query->store_result();
         if ($query->num_rows > 0) {
             ?>
                 <table id="tablaRegistros">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Folio</th>
                             <th>Proveedor</th>
                             <th>Dotación</th>
@@ -148,6 +149,9 @@ else if ($_POST['accion'] == "showEntradas") {
                                 <?php
                             }
                             ?>
+                                <td>
+                                <?php echo $id ?>
+                                </td>
                                 <td class="t-center" data-search="<?php echo $programa, $folio ?>">
                                 <?php echo $folio; ?>
                                 </td>
@@ -167,7 +171,7 @@ else if ($_POST['accion'] == "showEntradas") {
                                 }
                                 ?>
                                 <td class="t-center"><a data-tooltip="Consultar registro de entrada <?php echo $_SESSION['rol'] ?>"
-                                        onclick="consultarPDFEntradas(<?php echo $folio ?>, 'portrait', false)"><i
+                                        onclick="consultarPDFEntradas(<?php echo $folio ?>, <?php echo $id ?>, 'portrait', false)"><i
                                             class="bi bi-file-earmark-text"></i></a></td>
                                 <!-- Subir documentos entrada de almacen -->
                                 <?php

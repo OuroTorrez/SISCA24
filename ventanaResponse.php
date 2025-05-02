@@ -290,14 +290,15 @@
         blob = null;
     }
 
-    function consultarPDFEntradas(datoAEnviar, orientacion, toDownload) {
+    function consultarPDFEntradas(datoAEnviar, id, orientacion, toDownload) {
         WaitDoc("Generando registro...", "Por favor espere un momento", "CloseResponse()");
         // Enviar los datos a enviarEntradas.php para darle formato HTML-->>PDF y/o guardar en BD
         $.ajax({
             url: 'enviarEntradas.php',
             type: 'POST',
             data: {
-                folio: datoAEnviar
+                folio: datoAEnviar,
+                id: id
             },
             success: function (response) {
                 // Extraer el folio del registro de la respuesta HTML

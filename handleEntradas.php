@@ -15,6 +15,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 <?php } ?>
 <!-- Formulario de registro de dotaciones -->
 <form id="registroDotaciones" method="post" action="">
+    <input type="hidden" name="ejercicio" value="<?php echo $_POST['ejercicio']; ?>">
     <div id="registroDotacionesInputs">
         <div class="FormData">
             <label for="proveedor" class="req">Proveedor:</label>
@@ -1039,10 +1040,12 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             }
         }
         // Inspeccionar los datos de FormData
+        /*
         console.log("Datos enviados:");
         for (var pair of dataForm.entries()) {
             console.log(pair[0] + ': ' + pair[1]);
         }
+        */
 
         generarEntradasyPDF(dataForm, 'portrait', true);
     });

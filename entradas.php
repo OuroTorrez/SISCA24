@@ -28,7 +28,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 </div>
             </div>
         <?php } ?>
-        <h1 class="PageTitle">Capturar dotaciones</h1>
+        <h1 class="PageTitle">Capturar canastas</h1>
         <div id="UserTitle">
             <!-- Imprimir nombre y almacen, así como las dotaciones que se esperan -->
             <?php
@@ -45,6 +45,8 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 echo "<h3>$almacen</h3>";
 
 
+                // Selector de ejercicio actual por año para las dotaciones
+
                 echo "<label class='SelectDotacionesLabel'>Ejercicio:</label>";
                 echo "<select name='SelectEjercicio' id='SelectEjercicio'>";
                 $query = $conn->prepare("SELECT DISTINCT LEFT(clave, 4) as anioClave FROM dotaciones");
@@ -56,8 +58,9 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 }
                 echo "</select>";
                 $query->close();
+
                 // Retrieve dotaciones from dotaciones table
-                echo "<label class='SelectDotacionesLabel'>Dotaciones:</label>";
+                echo "<label class='SelectDotacionesLabel'>Canastas:</label>";
                 echo "<select name='SelectDotaciones' id='SelectDotaciones'>";
                 echo "<option hidden selected>Selecciona una opción</option>";
                 $query = $conn->prepare("SELECT DISTINCT programa FROM dotaciones");
