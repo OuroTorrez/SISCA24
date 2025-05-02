@@ -321,7 +321,9 @@ CREATE Table registro_salidas_registradas(
     FOREIGN KEY (id) REFERENCES registro_salidas(id)
 ) COMMENT 'Tabla para almacenar las salidas de dotaciones registradas en el sistema';
 
-
+/* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
+/* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
+/* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
 INSERT INTO dotaciones(clave, programa, producto, medida,cuota) VALUES
 (2025001, 'Personas Adultas Mayores', 'Personas Adultas Mayores', 'Caja', '329.89'),
@@ -499,15 +501,3 @@ ALTER TABLE registro_salidas_registradas ADD COLUMN id INT NOT NULL COMMENT 'ID 
 ALTER TABLE registro_salidas_registradas ADD PRIMARY KEY (id, clave, folio);
 
 UPDATE almacenes SET almacen = 'Todos los almacenes' WHERE id_almacen = 0;
-
-/* TESTING */
-DELETE FROM registro_entradas_registradas;
-ALTER TABLE registro_entradas_registradas AUTO_INCREMENT = 1;
-
-DELETE FROM registro_entradas;
-ALTER TABLE registro_entradas AUTO_INCREMENT = 1;
-
-DROP TABLE registro_entradas_registradas;
-DROP TABLE registro_entradas;
-
-ALTER TABLE registro_entradas_registradas ADD FOREIGN KEY (id) REFERENCES registro_entradas(id);

@@ -46,7 +46,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
 
                 // Selector de ejercicio actual por año para las dotaciones
-
+                /*
                 echo "<label class='SelectDotacionesLabel'>Ejercicio:</label>";
                 echo "<select name='SelectEjercicio' id='SelectEjercicio'>";
                 $query = $conn->prepare("SELECT DISTINCT LEFT(clave, 4) as anioClave FROM dotaciones");
@@ -58,7 +58,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 }
                 echo "</select>";
                 $query->close();
-
+                */
                 // Retrieve dotaciones from dotaciones table
                 echo "<label class='SelectDotacionesLabel'>Canastas:</label>";
                 echo "<select name='SelectDotaciones' id='SelectDotaciones'>";
@@ -85,14 +85,14 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     $(document).ready(function () {
         document.getElementById('SelectDotaciones').addEventListener('change', function () {
             var programa = document.getElementById('SelectDotaciones').value;
-            var ejercicio = document.getElementById('SelectEjercicio').value;
+            //var ejercicio = document.getElementById('SelectEjercicio').value;
             // Send the value to the server
             $.ajax({
                 url: 'handleEntradas.php',
                 type: 'POST',
                 data: {
                     data: programa,
-                    ejercicio: ejercicio
+                    ejercicio: 2025
                 },
                 success: function (response) {
                     // You can use the response here
@@ -109,14 +109,14 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     $(document).ready(function () {
             document.getElementById('SelectEjercicio').addEventListener('change', function () {
                 var programa = document.getElementById('SelectDotaciones').value;
-                var ejercicio = document.getElementById('SelectEjercicio').value;
+                //var ejercicio = document.getElementById('SelectEjercicio').value;
                 // Send the value to the server
                 $.ajax({
                     url: 'handleEntradas.php',
                     type: 'POST',
                     data: {
                         data: programa,
-                        ejercicio: ejercicio
+                        ejercicio: 2025
                     },
                     success: function (response) {
                         // You can use the response here
