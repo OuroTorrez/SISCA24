@@ -134,6 +134,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 <?php } ?>
 <!-- Formulario de registro de salidas -->
 <form id="salidasDotaciones" method="post" action="">
+    <input type="hidden" name="ejercicio" value="<?php echo $_POST['ejercicio']; ?>">
     <div id="salidasDotacionesInputs">
         <div class="FormData">
             <label for="afavor" class="req">A favor:</label>
@@ -228,10 +229,11 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
 
         $query = $conn->prepare("SELECT d.clave, d.producto, d.medida, 
-        COALESCE((SELECT SUM(dr.cantidad) FROM registro_entradas_registradas dr INNER JOIN registro_entradas rd ON dr.folio = rd.folio WHERE dr.clave = d.clave AND rd.cancelado = 0 AND rd.id_almacen = ?), 0) 
-        - COALESCE((SELECT SUM(sr.cantidad) FROM registro_salidas_registradas sr INNER JOIN registro_salidas sd ON sr.folio = sd.folio WHERE sr.clave = d.clave AND sd.cancelado = 0 AND sd.id_almacen = ?), 0) AS existencias
-        FROM dotaciones d
-        WHERE d.programa = ? AND LEFT(clave, 4) = ?");
+        COALESCE((SELECT SUM(dr.cantidad) FROM registro_entradas_registradas dr
+        INNER JOIN registro_entradas rd ON dr.folio = rd.folio AND dr.id = rd.id WHERE dr.clave = d.clave AND rd.cancelado = 0 AND rd.id_almacen = ?), 0)
+        - COALESCE((SELECT SUM(sr.cantidad) FROM registro_salidas_registradas sr
+        INNER JOIN registro_salidas sd ON sr.folio = sd.folio AND sr.id = sd.id WHERE sr.clave = d.clave AND sd.cancelado = 0 AND sd.id_almacen = ?), 0)
+        AS existencias FROM dotaciones d WHERE d.programa = ? AND LEFT(clave, 4) = ?");
 
 
         $query->bind_param("ssss", $id_almacen, $id_almacen, $_POST['data'], $_POST['ejercicio']);

@@ -159,13 +159,12 @@ tr {
     border-bottom: 2px solid #74325a57;
 }
 
-col[data-dt-column="0"] { width: 10% !important; }
-col[data-dt-column="1"] { width: 30% !important; }
-col[data-dt-column="2"] { width: 20% !important; }
+col[data-dt-column="0"] { width: 5% !important; }
+col[data-dt-column="1"] { width: 5% !important; }
+col[data-dt-column="2"] { width: 25% !important; }
 col[data-dt-column="3"] { width: 10% !important; }
-col[data-dt-column="4"] { width: 20% !important; }
-col[data-dt-column="5"] { width: 5% !important; }
-col[data-dt-column="6"] { width: 5% !important; }
+col[data-dt-column="4"] { width: 5% !important; }
+col[data-dt-column="5"] { width: 25% !important; }
 
 .dt-info {
     font-family: "Asap Condensed", sans-serif;

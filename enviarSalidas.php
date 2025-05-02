@@ -28,21 +28,23 @@ if (isset($_SESSION['usuario'])) {
         $monto = $_POST['monto'];
         $dotacion = $_POST['dotacion'];
         $nota = $_POST['nota'];
+        $ejercicio = $_POST['ejercicio'];
 
-        $query = $conn->prepare("call insertar_registro_salidas(?,?,?,?,?,?,?,?,?,?)");
-        $query->bind_param("iissississ", $id_usuario, $id_almacen, $afavor, $municipio, $salida, $recibe, $referencia, $monto, $dotacion, $nota);
+        $query = $conn->prepare("call insertar_registro_salidas(?,?,?,?,?,?,?,?,?,?,?)");
+        $query->bind_param("iissississi", $id_usuario, $id_almacen, $afavor, $municipio, $salida, $recibe, $referencia, $monto, $dotacion, $nota, $ejercicio);
         if($query->execute()){
             // Obtener el folio del registro realizado
             $result = $query->get_result();
             if ($result) {
                 $row = $result->fetch_assoc();
                 $lastInsertedFolio = $row['folio'];
+                $lastInsertedId = $row['id'];
 
                 $query->close();
 
                 // Insertar los productos enviados por post con el folio generado
-                $query = $conn->prepare("INSERT INTO registro_salidas_registradas (clave, folio, lote, caducidad, cantidad) VALUES (?, ?, ?, ?, ?)");
-                $query->bind_param("isssi", $clave, $lastInsertedFolio, $lote, $caducidad, $cantidad);
+                $query = $conn->prepare("INSERT INTO registro_salidas_registradas (id, clave, folio, lote, caducidad, cantidad) VALUES (?, ?, ?, ?, ?, ?)");
+                $query->bind_param("iisssi", $lastInsertedId, $clave, $lastInsertedFolio, $lote, $caducidad, $cantidad);
 
                 for ($i = 0; $i < count($_POST['clave']); $i++) {
                     $clave = $_POST['clave'][$i];
@@ -52,17 +54,17 @@ if (isset($_SESSION['usuario'])) {
                     $query->execute();
                 }
                 $query->close();
-                generarDocumento($lastInsertedFolio);
+                generarDocumento($lastInsertedFolio, $lastInsertedId);
             }
         }
     } else if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['folio'])) {
-        generarDocumento($_POST['folio']);
+        generarDocumento($_POST['folio'], $_POST['id']);
     } else {
         generarDocumento(20014);
     }
 }
 
-function generarDocumento($folio)
+function generarDocumento($folio, $id)
 {
     global $conn;
     $query = $conn->prepare("SELECT
@@ -71,7 +73,7 @@ function generarDocumento($folio)
     FROM registro_salidas sd
     INNER JOIN almacenes a ON sd.id_almacen = a.id_almacen
     INNER JOIN usuarios u ON sd.id_usuario = u.id
-    INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio
+    INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio AND sd.id = sr.id
     INNER JOIN dotaciones d ON sr.clave = d.clave
     INNER JOIN salidas s ON sd.id_salida = s.id_salida
     WHERE sd.folio = ?");

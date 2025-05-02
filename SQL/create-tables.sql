@@ -22,7 +22,7 @@ CREATE Table almacenes(
     almacen VARCHAR(100) NOT NULL COMMENT 'Nombre del almacen'
 ) COMMENT 'Tabla para almacenar los almacenes de la institución';
 
-INSERT INTO almacenes(id_almacen, almacen) VALUES(0, 'INDEFINIDO'),
+INSERT INTO almacenes(id_almacen, almacen) VALUES(0, 'Todos los almacenes'),
                                                 (1, 'Almacen Morelia'),
                                                 (2, 'Almacen Pátzcuaro');
 
@@ -70,7 +70,6 @@ CREATE Table salidas(
     id_salida int NOT NULL PRIMARY KEY COMMENT 'ID de la salida',
     tipo VARCHAR(20) NOT NULL COMMENT 'Tipo de salida'
 ) COMMENT 'Tabla para almacenar las salidas de productos existentes en la institución';
-
 INSERT INTO salidas(id_salida, tipo) VALUES(1, 'CONSUMO'), (2, 'DONACION'), (3, 'DEVOLUCION'), (4, 'REPOSICION'), (5, 'REMANENTE'), (6, 'MERMA');
 
 CREATE Table registro_entradas(
@@ -298,7 +297,7 @@ INSERT INTO proveedores_autorizados(id_proveedor, programa, disponibilidad, ejer
 (3, 'Espacios de Alimentación', 'SI', 2024);
 
 CREATE TABLE registro_entradas_registradas(
-    id INT NOT NULL COMMENT 'ID del registro de entrada',
+    id INT NOT NULL COMMENT 'ID del registro de entradas',
     clave INT NOT NULL COMMENT 'Clave de la dotacion',
     folio INT NOT NULL COMMENT 'Folio del registro',
     lote VARCHAR(100) NOT NULL COMMENT 'Lote del articulo',
@@ -311,14 +310,15 @@ CREATE TABLE registro_entradas_registradas(
 
 
 CREATE Table registro_salidas_registradas(
+    id INT NOT NULL COMMENT 'ID del registro de salidas',
     clave INT NOT NULL COMMENT 'Clave de la dotacion',
     folio INT NOT NULL COMMENT 'Folio del registro',
     lote VARCHAR(100) NOT NULL COMMENT 'Lote del articulo',
     caducidad DATE NOT NULL COMMENT 'Fecha de caducidad del articulo',
     cantidad INT NOT NULL COMMENT 'Cantidad de articulos',
-    PRIMARY KEY (clave, folio),
+    PRIMARY KEY (id, clave, folio),
     FOREIGN KEY (clave) REFERENCES dotaciones(clave),
-    FOREIGN KEY (folio) REFERENCES registro_salidas(folio)
+    FOREIGN KEY (id) REFERENCES registro_salidas(id)
 ) COMMENT 'Tabla para almacenar las salidas de dotaciones registradas en el sistema';
 
 
@@ -491,10 +491,16 @@ END
  // DELIMITER ;
 
 ALTER TABLE registro_entradas_registradas DROP PRIMARY KEY;
-ALTER TABLE registro_entradas_registradas ADD COLUMN id INT NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID para el registro de las entradas o productos registrados';
+ALTER TABLE registro_entradas_registradas ADD COLUMN id INT NOT NULL COMMENT 'ID del registro de entradas';
+ALTER TABLE registro_entradas_registradas ADD PRIMARY KEY (id, clave, folio);
 
-ALTER TABLE registro_entradas_registradas DROP PRIMARY KEY;
+ALTER TABLE registro_salidas_registradas DROP PRIMARY KEY;
+ALTER TABLE registro_salidas_registradas ADD COLUMN id INT NOT NULL COMMENT 'ID del registro de salidas';
+ALTER TABLE registro_salidas_registradas ADD PRIMARY KEY (id, clave, folio);
 
+UPDATE almacenes SET almacen = 'Todos los almacenes' WHERE id_almacen = 0;
+
+/* TESTING */
 DELETE FROM registro_entradas_registradas;
 ALTER TABLE registro_entradas_registradas AUTO_INCREMENT = 1;
 
