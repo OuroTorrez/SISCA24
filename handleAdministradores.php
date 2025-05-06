@@ -30,7 +30,7 @@ if ($_POST['accion'] == "showExistencias") {
                         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
                         WHERE sr.clave = d.clave AND sd.cancelado = 0 AND sd.id_almacen = ?), 0) AS existencias
             FROM dotaciones d WHERE LEFT(clave, 4) = ?");
-        $query->bind_param("iis", $almacen, $almacen, $ejercicio);
+        $query->bind_param("iii", $almacen, $almacen, $ejercicio);
     } else {
         $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, 
             COALESCE((SELECT SUM(dr.cantidad) FROM registro_entradas_registradas dr 
@@ -40,7 +40,7 @@ if ($_POST['accion'] == "showExistencias") {
                         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
                         WHERE sr.clave = d.clave AND sd.cancelado = 0), 0) AS existencias
             FROM dotaciones d WHERE LEFT(clave, 4) = ?");
-            $query->bind_param("s", $ejercicio);
+            $query->bind_param("i", $ejercicio);
     }
     if ($query->execute()) {
         $query->bind_result($clave, $programa, $producto, $medida, $existencias);
@@ -315,7 +315,7 @@ else if ($_POST['accion'] == "showEntradas") {
     }
 
     if ($año != 'NULL') {
-        $queryString .= " AND YEAR(sd.fecha_registro) = ?";
+        $queryString .= " AND LEFT(sr.clave, 4) = ?";
         $params[] = $año;
         $types .= "s";
     }
@@ -414,7 +414,7 @@ else if ($_POST['accion'] == "showEntradas") {
                             <?php
                         }
                         ?>
-                        <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, 'portrait', false)"><i
+                        <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, <?php echo $id ?>, 'portrait', false)"><i
                                     class="bi bi-file-earmark-text"></i></a></td>
 
                         <!-- Subir documentos salida de almacen -->

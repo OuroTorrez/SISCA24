@@ -76,8 +76,8 @@ function generarDocumento($folio, $id)
     INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio AND sd.id = sr.id
     INNER JOIN dotaciones d ON sr.clave = d.clave
     INNER JOIN salidas s ON sd.id_salida = s.id_salida
-    WHERE sd.folio = ?");
-    $query->bind_param("i", $folio);
+    WHERE sd.folio = ? AND sd.id = ?");
+    $query->bind_param("ii", $folio, $id);
     if ($query->execute()) {
         $result = $query->get_result();
         $row = $result->fetch_assoc();
@@ -168,8 +168,8 @@ function generarDocumento($folio, $id)
     sr.lote, DATE_FORMAT(sr.caducidad, '%d/%m/%Y') AS caducidad, sr.cantidad
     FROM registro_salidas_registradas sr
     INNER JOIN dotaciones d ON sr.clave = d.clave
-    WHERE sr.folio = ?");
-                    $query->bind_param("i", $folio);
+    WHERE sr.folio = ? AND sr.id = ?");
+                    $query->bind_param("ii", $folio, $id);
                     if ($query->execute()) {
                         $result = $query->get_result();
                         while ($row = $result->fetch_assoc()) {

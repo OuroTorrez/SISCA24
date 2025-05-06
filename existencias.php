@@ -46,20 +46,24 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         ?>
     </div>
     <div id="ConsultaCont">
+        <?php
+            echo "<div id='ConsultaOpcEjercicio'>";
+            echo "<label class='SelectDotacionesLabel'>Ejercicio:</label>";
+            echo "<select name='SelectEjercicio' id='SelectEjercicio'>";
+            $query = $conn->prepare("SELECT DISTINCT LEFT(clave, 4) as anioClave FROM dotaciones");
+            $query->execute();
+            $query->bind_result($anioClave);
+            $query->store_result();
+            while ($query->fetch()) {
+                echo "<option value='$anioClave'>$anioClave</option>";
+            }
+            echo "</select>";
+            echo "<hr>";
+            echo "</div>"
+        ?>
         <?php if($_SESSION['id_almacen'] == 0) { ?>
         <div id="ConsultaOpcMenu" class="OpcMenu">
             <?php
-                echo "<label class='SelectDotacionesLabel'>Ejercicio:</label>";
-                echo "<select name='SelectEjercicio' id='SelectEjercicio'>";
-                $query = $conn->prepare("SELECT DISTINCT LEFT(clave, 4) as anioClave FROM dotaciones");
-                $query->execute();
-                $query->bind_result($anioClave);
-                $query->store_result();
-                while ($query->fetch()) {
-                    echo "<option value='$anioClave'>$anioClave</option>";
-                }
-                echo "</select>";
-                echo "<hr>";
                 $query->close();
 
                 $query = $conn->prepare("SELECT * FROM almacenes");
@@ -127,7 +131,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             // Obtener el almacén activo actual
             var activeButton = document.querySelector('.OpcMenuButton.active');
             var almacen = activeButton ? activeButton.getAttribute('data-target') : <?php echo $_SESSION['id_almacen']; ?>;
-            
+
             // Llamar a showExistencias con el almacén actual y el nuevo ejercicio
             showExistencias(almacen);
         });
