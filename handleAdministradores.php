@@ -30,7 +30,7 @@ if ($_POST['accion'] == "showExistencias") {
                         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
                         WHERE sr.clave = d.clave AND sd.cancelado = 0 AND sd.id_almacen = ?), 0) AS existencias
             FROM dotaciones d WHERE LEFT(clave, 4) = ?");
-        $query->bind_param("iis", $almacen, $almacen, $ejercicio);
+        $query->bind_param("iii", $almacen, $almacen, $ejercicio);
     } else {
         $query = $conn->prepare("SELECT d.clave, d.programa, d.producto, d.medida, 
             COALESCE((SELECT SUM(dr.cantidad) FROM registro_entradas_registradas dr 
@@ -40,7 +40,7 @@ if ($_POST['accion'] == "showExistencias") {
                         INNER JOIN registro_salidas sd ON sr.folio = sd.folio 
                         WHERE sr.clave = d.clave AND sd.cancelado = 0), 0) AS existencias
             FROM dotaciones d WHERE LEFT(clave, 4) = ?");
-            $query->bind_param("s", $ejercicio);
+            $query->bind_param("i", $ejercicio);
     }
     if ($query->execute()) {
         $query->bind_result($clave, $programa, $producto, $medida, $existencias);
@@ -96,24 +96,25 @@ if ($_POST['accion'] == "showExistencias") {
 else if ($_POST['accion'] == "showEntradas") {
     $id_almacen = $_POST['almacen'];
     if($id_almacen != 0) {
-        $query = $conn->prepare("SELECT DISTINCT rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
+        $query = $conn->prepare("SELECT DISTINCT rd.id, rd.folio, p.nombre, rd.dotacion, LEFT(dr.clave, 4), DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
             FROM registro_entradas rd INNER JOIN proveedores p ON rd.id_proveedor = p.id_proveedor 
-            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio INNER JOIN dotaciones d ON dr.clave  = d.clave
+            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio AND rd.id = dr.id INNER JOIN dotaciones d ON dr.clave  = d.clave
             WHERE rd.id_almacen = ?");
         $query->bind_param("s", $id_almacen);
     } else {
-        $query = $conn->prepare("SELECT DISTINCT rd.folio, p.nombre, rd.dotacion, DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
+        $query = $conn->prepare("SELECT DISTINCT rd.id, rd.folio, p.nombre, rd.dotacion, LEFT(dr.clave, 4), DATE_FORMAT(rd.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro, d.programa, rd.pdf_docs, rd.cancelado, rd.nota_cancelacion, rd.verificado
             FROM registro_entradas rd INNER JOIN proveedores p ON rd.id_proveedor = p.id_proveedor 
-            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio INNER JOIN dotaciones d ON dr.clave  = d.clave");
+            INNER JOIN registro_entradas_registradas dr ON rd.folio = dr.folio AND rd.id = dr.id INNER JOIN dotaciones d ON dr.clave  = d.clave");
     }
     if ($query->execute()) {
-        $query->bind_result($folio, $proveedor, $dotacion, $fecha, $programa, $pdf_docs, $activo, $nota_cancelacion, $verificado);
+        $query->bind_result($id, $folio, $proveedor, $dotacion, $clave, $fecha, $programa, $pdf_docs, $activo, $nota_cancelacion, $verificado);
         $query->store_result();
         if ($query->num_rows > 0) {
             ?>
                 <table id="tablaRegistros">
                     <thead>
                         <tr>
+                            <th>Ejercicio</th>
                             <th>Folio</th>
                             <th>Proveedor</th>
                             <th>Dotación</th>
@@ -148,6 +149,9 @@ else if ($_POST['accion'] == "showEntradas") {
                                 <?php
                             }
                             ?>
+                                <td class="t-center">
+                                <?php echo $clave ?>
+                                </td>
                                 <td class="t-center" data-search="<?php echo $programa, $folio ?>">
                                 <?php echo $folio; ?>
                                 </td>
@@ -167,7 +171,7 @@ else if ($_POST['accion'] == "showEntradas") {
                                 }
                                 ?>
                                 <td class="t-center"><a data-tooltip="Consultar registro de entrada <?php echo $_SESSION['rol'] ?>"
-                                        onclick="consultarPDFEntradas(<?php echo $folio ?>, 'portrait', false)"><i
+                                        onclick="consultarPDFEntradas(<?php echo $folio ?>, <?php echo $id ?>, 'portrait', false)"><i
                                             class="bi bi-file-earmark-text"></i></a></td>
                                 <!-- Subir documentos entrada de almacen -->
                                 <?php
@@ -285,9 +289,9 @@ else if ($_POST['accion'] == "showEntradas") {
     $params = []; // Array para almacenar parámetros
     $types = "";  // Cadena para tipos de datos
 
-    $queryString = "SELECT DISTINCT sd.folio, sd.afavor, sd.municipio, sd.dotacion, sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado, FORMAT(sd.monto, 2) AS monto, sd.referencia, FORMAT(SUM(sd.monto) OVER (), 2) AS total_monto
+    $queryString = "SELECT DISTINCT sd.id, sd.folio, sd.afavor, sd.municipio, sd.dotacion, LEFT(sr.clave, 4), sd.fecha_registro, sd.pdf_docs, sd.pdf_docs_coord, d.programa, sd.cancelado, sd.nota_cancelacion, sd.verificado, FORMAT(sd.monto, 2) AS monto, sd.referencia, FORMAT(SUM(sd.monto) OVER (), 2) AS total_monto
         FROM registro_salidas sd
-        INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio
+        INNER JOIN registro_salidas_registradas sr ON sd.folio = sr.folio AND sd.id = sr.id
         INNER JOIN dotaciones d ON sr.clave = d.clave
         WHERE 1=1";
 
@@ -311,7 +315,7 @@ else if ($_POST['accion'] == "showEntradas") {
     }
 
     if ($año != 'NULL') {
-        $queryString .= " AND YEAR(sd.fecha_registro) = ?";
+        $queryString .= " AND LEFT(sr.clave, 4) = ?";
         $params[] = $año;
         $types .= "s";
     }
@@ -324,13 +328,14 @@ else if ($_POST['accion'] == "showEntradas") {
     }
 
     if ($query->execute()) {
-        $query->bind_result($folio, $afavor, $municipio, $dotacion, $fecha, $pdf_docs, $pdf_docs_coord, $programa, $activo, $nota_cancelacion, $verificado, $monto, $referencia, $gran_total);
+        $query->bind_result($id, $folio, $afavor, $municipio, $dotacion, $clave, $fecha, $pdf_docs, $pdf_docs_coord, $programa, $activo, $nota_cancelacion, $verificado, $monto, $referencia, $gran_total);
         $query->store_result();
         if ($query->num_rows > 0) {
             ?>
             <table id="tablaRegistros" style="padding-bottom: 50px;">
                 <thead>
                     <tr>
+                        <th>Ejercicio</th>
                         <th>Folio</th>
                         <th>A favor de</th>
                         <th>Municipio</th>
@@ -375,6 +380,7 @@ else if ($_POST['accion'] == "showEntradas") {
                             <?php
                         }
                         ?>
+                        <td class="t-center"><?php echo $clave ?></td>
                         <td class="t-center" data-search="<?php echo $programa, $folio ?>"><?php echo $folio ?></td>
                         <td data-tooltip="<?php echo $programa ?>"><?php echo $afavor ?></td>
                         <td class="t-center"><?php echo $municipio ?></td>
@@ -408,14 +414,14 @@ else if ($_POST['accion'] == "showEntradas") {
                             <?php
                         }
                         ?>
-                        <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, 'portrait', false)"><i
+                        <td class="t-center"><a data-tooltip="Consultar registro de salida" onclick="consultarPDFSalidas(<?php echo $folio ?>, <?php echo $id ?>, 'portrait', false)"><i
                                     class="bi bi-file-earmark-text"></i></a></td>
 
                         <!-- Subir documentos salida de almacen -->
                         <?php
                         if ($pdf_docs != null && ($activo != 1 && $verificado != 1)) {
                             ?>
-                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, true, true)"><i class="bi bi-file-earmark-text"></i></a>
+                            <td class="t-center"><a data-tooltip="Consultar documentos" onclick="consultarDoc(<?php echo $folio ?>, <?php echo $id ?>,'Salidas', <?php echo $_SESSION['rol'] ?>, true, true)"><i class="bi bi-file-earmark-text"></i></a>
                             </td>
                             <?php
                         } else if ($pdf_docs != null && ($activo == 1 || $verificado == 1)) {

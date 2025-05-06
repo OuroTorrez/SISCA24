@@ -48,20 +48,19 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                     echo "<h3>$almacen</h3>";
             
                     echo "<div id='Filtro'>";
-                    if ($_SESSION['id_almacen'] == 0) {
-                        $query = $conn->prepare("SELECT * FROM almacenes");
-                        $query->execute();
-                        $query->bind_result($id_almacen, $almacen);
-                        $query->store_result();
-                        echo "<div class='FormData' style='width: 100%;'>";
-                        echo "<select id='almacenSelect' class='ResponseVerifyButton' onchange='showEntradas(this.value, programaSelect.value, mesSelect.value, añoSelect.value)'>";
-                        while ($query->fetch()) {
-                            $selected = ($_SESSION['id_almacen'] == $id_almacen) ? "selected" : "";
-                            echo "<option value='$id_almacen' $selected>$almacen</option>";
-                        }
-                        echo "</select>";
-                        echo "</div>";
+                    $query = $conn->prepare("SELECT * FROM almacenes");
+                    $query->execute();
+                    $query->bind_result($id_almacen, $almacen);
+                    $query->store_result();
+                    echo "<div class='FormData' style='width: 100%;'>";
+                    echo "<select id='almacenSelect' class='ResponseVerifyButton' onchange='showEntradas(this.value, programaSelect.value, mesSelect.value, añoSelect.value)'>";
+                    while ($query->fetch()) {
+                        $selected = ($_SESSION['id_almacen'] == $id_almacen) ? "selected" : "";
+                        echo "<option value='$id_almacen' $selected>$almacen</option>";
                     }
+                    echo "</select>";
+                    echo "</div>";
+                }
             
                     if ($_SESSION['rol'] == 5 || $_SESSION['rol'] == 4 || $_SESSION['rol'] == 1) {
                         // Programa
@@ -108,7 +107,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                         echo "<div class='FormData' style='width: 50%; display: inline-block;'>";
                         echo "<select id='añoSelect' class='ResponseVerifyButton' onchange='showEntradas(almacenSelect.value, programaSelect.value, mesSelect.value, this.value)'>";
                         echo "<option hidden selected disabled value='NULL'>Selecciona un año</option>";
-                        $query = $conn->prepare("SELECT DISTINCT YEAR(fecha_registro) FROM registro_salidas");
+                        $query = $conn->prepare("SELECT DISTINCT LEFT(clave, 4) as anioClave FROM registro_salidas_registradas");
                         $query->execute();
                         $query->bind_result($año);
                         $query->store_result();

@@ -22,7 +22,7 @@ CREATE Table almacenes(
     almacen VARCHAR(100) NOT NULL COMMENT 'Nombre del almacen'
 ) COMMENT 'Tabla para almacenar los almacenes de la institución';
 
-INSERT INTO almacenes(id_almacen, almacen) VALUES(0, 'INDEFINIDO'),
+INSERT INTO almacenes(id_almacen, almacen) VALUES(0, 'Todos los almacenes'),
                                                 (1, 'Almacen Morelia'),
                                                 (2, 'Almacen Pátzcuaro');
 
@@ -55,10 +55,10 @@ CREATE Table proveedores(
 ) COMMENT 'Tabla para almacenar los proveedores con los que colabora la institución';
 
 INSERT into proveedores(id_proveedor, nombre, nombre_legal, rfc, direccion, telefono) 
-VALUES (1, 'Empacadora La Merced', 'Empacadora La Merced, S.A. De C.V.', 'EME710129QAA', 'Albarrán No. 162, Col. Esfuerzo Nac C.P. 55320', '55 5788 2088'),
+VALUES (1, 'Empacadora La Merced', 'Empacadora La Merced, S.A. De C.V.', 'EME710129QAA', 'Chope Albarrán No. MZ2, Col. Esfuerzo Nac C.P. 55320', '55 5788 2088'),
          (2, 'Grupo Industrial Vida', 'Grupo Industrial Vida, S.A. De C.V.', 'GIV970203LS1', 'Ejido No. 300, Col. La Venta Del Astillero C.P. 45221, Zapopan Jalisco', '33 1864 4981'),
          (3, 'Technofoods', 'Technofoods, S.A. De C.V.', '', '', ''),
-         (4, 'JDG Comercializadores Y Servicios Michoacanos', 'JDG Comercializadores Y Servicios Michoacanos, S.A. De C.V.', 'JCS100629QF9', 'Homero 14 Loc. 3 C.P. 58255, Morelia Michoacán', '443 333 2274');
+         (4, 'JDG Comercializadores Y Servicios Michoacanos', 'JDG Comercializadores Y Servicios Michoacanos, S.A. De C.V.', 'JCS100629QF9', 'Homero 14 Interior 3 Loc. 3, Residencial Lancaster C.P. 58255, Morelia Michoacán', '443 333 2274');
 
 CREATE Table entradas(
     id_entrada int NOT NULL PRIMARY KEY COMMENT 'ID de la entrada',
@@ -75,7 +75,7 @@ INSERT INTO salidas(id_salida, tipo) VALUES(1, 'CONSUMO'), (2, 'DONACION'), (3, 
 
 CREATE Table registro_entradas(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID del registro de dotacion',
-    folio int UNIQUE COMMENT 'ID del registro con formato id_almacen + 0n + id_registro',
+    folio INT NOT NULL COMMENT 'ID del registro con formato id_almacen + 0n + id_registro',
     id_usuario INT NOT NULL COMMENT 'Usuario que realiza el registro',
     id_almacen INT NOT NULL COMMENT 'ID del almacen donde se realiza el registro',
     id_proveedor INT NOT NULL COMMENT 'ID del proveedor que realiza la dotacion',
@@ -88,6 +88,7 @@ CREATE Table registro_entradas(
     nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion',
     nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación',
     cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada',
+    verificado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotación ha sido verificada',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_almacen) REFERENCES almacenes(id_almacen),
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor),
@@ -102,7 +103,8 @@ CREATE PROCEDURE insertar_registro_entradas(
     IN p_id_entrada INT,
     IN p_entrega VARCHAR(255),
     IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
-    IN p_nota VARCHAR(255)
+    IN p_nota VARCHAR(255),
+    IN p_ejercicio INT
 )
 BEGIN
     DECLARE v_ultimo_id INT DEFAULT 0;
@@ -110,6 +112,9 @@ BEGIN
 
     -- Obtener el último folio del almacén especificado
     SELECT MAX(folio) INTO v_ultimo_folio FROM registro_entradas WHERE id_almacen = p_id_almacen;
+
+    SELECT MAX(re.folio) INTO v_ultimo_folio FROM registro_entradas re JOIN registro_entradas_registradas rer ON re.folio = rer.folio
+    WHERE re.id_almacen = p_id_almacen AND LEFT(rer.clave, 4) = p_ejercicio;
 
     -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
     SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
@@ -144,12 +149,9 @@ BEGIN
 END //
 DELIMITER ;
 
-
-CALL insertar_registro_entradas(1, 1, 1, 1, 'Fulanito Ramirez', '1', 'Nota de prueba 1', '2024001', 'Lote 1', '2022-01-01', 100);
-
 CREATE Table registro_salidas(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID del registro de dotacion',
-    folio int UNIQUE COMMENT 'ID del registro con formato id_almacen + 0n + id_registro',
+    folio INT NOT NULL COMMENT 'ID del registro con formato id_almacen + 0n + id_registro',
     id_usuario INT NOT NULL COMMENT 'Usuario que realiza el registro',
     id_almacen INT NOT NULL COMMENT 'ID del almacen donde se realiza el registro',
     afavor VARCHAR(255) NOT NULL COMMENT 'Organizacion, institucion o persona a favor de quien se realiza la salida',
@@ -160,11 +162,13 @@ CREATE Table registro_salidas(
     monto DECIMAL(10, 2) NOT NULL COMMENT 'Monto de la salida',
     dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación') NOT NULL COMMENT 'Numero de dotacion al año al que pertenece',
     nota VARCHAR(255) COMMENT 'Nota opcional de la dotacion',
-    pdf_docs VARCHAR(50) DEFAULT NULL COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
+    pdf_docs VARCHAR(70) DEFAULT NULL COMMENT 'PDF con los documentos que se generan al llegar la dotacion',
+    pdf_docs_coord varchar(70) DEFAULT NULL COMMENT 'PDF con los documentos que sube el coordinador administrativo',
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del registro',
     nota_cancelacion VARCHAR(500) COMMENT 'Nota de cancelacion de la dotacion',
     nota_modificacion VARCHAR(500) COMMENT 'Nota de modificación de la dotación',
     cancelado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotacion ha sido cancelada',
+    verificado BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica si la dotación ha sido verificada',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_almacen) REFERENCES almacenes(id_almacen),
     FOREIGN KEY (id_salida) REFERENCES salidas(id_salida)
@@ -279,7 +283,7 @@ CREATE TABLE proveedores_autorizados(
     programa VARCHAR(255) NOT NULL COMMENT 'Programa al que pertenece la dotacion',
     disponibilidad ENUM('SI', 'NO') NOT NULL COMMENT 'Disponibilidad del proveedor',
     ejercicio INT NOT NULL DEFAULT YEAR(CURDATE()) COMMENT 'Ejercicio del año al que pertenecen las dotaciones',
-    PRIMARY KEY (id_proveedor, programa),
+    PRIMARY KEY (id_proveedor, programa, ejercicio),
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 ) COMMENT 'Tabla para almacenar los proveedores autorizados por dotacion';
 
@@ -294,28 +298,33 @@ INSERT INTO proveedores_autorizados(id_proveedor, programa, disponibilidad, ejer
 (3, 'Espacios de Alimentación', 'SI', 2024);
 
 CREATE TABLE registro_entradas_registradas(
+    id INT NOT NULL COMMENT 'ID del registro de entradas',
     clave INT NOT NULL COMMENT 'Clave de la dotacion',
     folio INT NOT NULL COMMENT 'Folio del registro',
     lote VARCHAR(100) NOT NULL COMMENT 'Lote del articulo',
     caducidad DATE NOT NULL COMMENT 'Fecha de caducidad del articulo',
     cantidad INT NOT NULL COMMENT 'Cantidad de articulos',
-    PRIMARY KEY (clave, folio),
+    PRIMARY KEY (id, clave, folio),
     FOREIGN KEY (clave) REFERENCES dotaciones(clave),
-    FOREIGN KEY (folio) REFERENCES registro_entradas(folio)
+    FOREIGN KEY (id) REFERENCES registro_entradas(id)
 ) COMMENT 'Tabla para indicar las dotaciones registradas en el sistema';
 
+
 CREATE Table registro_salidas_registradas(
+    id INT NOT NULL COMMENT 'ID del registro de salidas',
     clave INT NOT NULL COMMENT 'Clave de la dotacion',
     folio INT NOT NULL COMMENT 'Folio del registro',
     lote VARCHAR(100) NOT NULL COMMENT 'Lote del articulo',
     caducidad DATE NOT NULL COMMENT 'Fecha de caducidad del articulo',
     cantidad INT NOT NULL COMMENT 'Cantidad de articulos',
-    PRIMARY KEY (clave, folio),
+    PRIMARY KEY (id, clave, folio),
     FOREIGN KEY (clave) REFERENCES dotaciones(clave),
-    FOREIGN KEY (folio) REFERENCES registro_salidas(folio)
+    FOREIGN KEY (id) REFERENCES registro_salidas(id)
 ) COMMENT 'Tabla para almacenar las salidas de dotaciones registradas en el sistema';
 
-
+/* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
+/* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
+/* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
 /* ############################ SENTENCIAS PARA LA SIGUENTE ACTUALIZACION ############################ */
 INSERT INTO dotaciones(clave, programa, producto, medida,cuota) VALUES
 (2025001, 'Personas Adultas Mayores', 'Personas Adultas Mayores', 'Caja', '329.89'),
@@ -356,12 +365,139 @@ INSERT INTO dotaciones(clave, programa, producto, medida,cuota) VALUES
 
 ALTER TABLE proveedores_autorizados ADD COLUMN ejercicio INT NOT NULL DEFAULT YEAR(CURDATE()) COMMENT 'Ejercicio del año al que pertenecen las dotaciones';
 INSERT INTO proveedores(nombre, nombre_legal, rfc, direccion, telefono) VALUES ('Proveedor prueba', 'Proveedor prueba 2025 INC.', 'PP20250000000', 'Calle Somewhere 127', '443 3198 737');
+INSERT INTO proveedores(nombre, nombre_legal, rfc, direccion) VALUES ('Abastos y Distribuciones Institucionales', 'ABASTOS Y DISTRIBUCIONES INSTITUCIONALES S.A. de C.V.', 'ADI991022KX2', 'Calle 4 Manzana 5 Lote 6 Col. Ejido del Moral, Iztapalapa, Ciudad de México, C.P. 09040');
+
+ALTER TABLE proveedores_autorizados DROP PRIMARY KEY, ADD PRIMARY KEY (id_proveedor, programa, ejercicio);
+
 INSERT INTO proveedores_autorizados (id_proveedor, programa, disponibilidad, ejercicio) VALUES 
-(5, 'Desayunos Escolares Calientes', 'SI', 2025),
-(5, 'Espacios de Alimentación', 'SI', 2025),
-(5, 'Personas Adultas Mayores', 'SI', 2025),
-(5, 'Personas con Discapacidad', 'SI', 2025),
-(5, 'Personas en Situación de Emergencias o Desastres', 'SI', 2025),
+(4, 'Desayunos Escolares Calientes', 'SI', 2025),
+(4, 'Espacios de Alimentación', 'SI', 2025),
+(1, 'Personas Adultas Mayores', 'SI', 2025),
+(4, 'Personas con Discapacidad', 'SI', 2025),
+(4, 'Personas en Situación de Emergencias o Desastres', 'SI', 2025),
 (5, 'Infantes de 2 a 5 años 11 meses', 'SI',2025),
 (5, 'Lactantes de 6 a 24 meses', 'SI', 2025),
-(5, 'Mujeres Embarazadas o en Periodo de Lactancia', 'SI', 2025);
+(1, 'Mujeres Embarazadas o en Periodo de Lactancia', 'SI', 2025);
+
+DELIMITER //
+CREATE PROCEDURE insertar_registro_entradas(
+    IN p_id_usuario INT,
+    IN p_id_almacen INT,
+    IN p_id_proveedor INT,
+    IN p_id_entrada INT,
+    IN p_entrega VARCHAR(255),
+    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
+    IN p_nota VARCHAR(255),
+    IN p_ejercicio INT
+)
+BEGIN
+    DECLARE v_ultimo_id INT DEFAULT 0;
+    DECLARE v_ultimo_folio INT DEFAULT 0;
+
+    -- Obtener el último folio del almacén especificado
+    SELECT MAX(re.folio) INTO v_ultimo_folio FROM registro_entradas re JOIN registro_entradas_registradas rer ON re.folio = rer.folio
+    WHERE re.id_almacen = p_id_almacen AND LEFT(rer.clave, 4) = p_ejercicio;
+
+    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
+    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
+
+    -- Insertar el nuevo registro
+    INSERT INTO registro_entradas(
+        id_usuario,
+        id_almacen,
+        id_proveedor,
+        id_entrada,
+        entrega,
+        dotacion,
+        nota,
+        folio
+    )
+    VALUES(
+              p_id_usuario,
+              p_id_almacen,
+              p_id_proveedor,
+              p_id_entrada,
+              p_entrega,
+              p_dotacion,
+              p_nota,
+              CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0'))
+          );
+
+    -- Obtener el ID del último registro insertado
+    SET v_ultimo_id = LAST_INSERT_ID();
+
+    -- Devolver el folio del último registro insertado
+    SELECT folio, id FROM registro_entradas WHERE id = v_ultimo_id;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE insertar_registro_salidas(
+    IN p_id_usuario INT,
+    IN p_id_almacen INT,
+    IN p_afavor VARCHAR(255),
+    IN p_municipio VARCHAR(255),
+    IN p_id_salida INT,
+    IN p_recibe VARCHAR(255),
+    IN p_referencia VARCHAR(100),
+    IN p_monto DECIMAL(10, 2),
+    IN p_dotacion ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '9 - Ampliación'),
+    IN p_nota VARCHAR(255),
+    IN p_ejercicio INT
+)
+BEGIN
+    DECLARE v_ultimo_id INT DEFAULT 0;
+    DECLARE v_ultimo_folio INT DEFAULT 0;
+
+    -- Obtener el último folio del almacén especificado
+    SELECT MAX(rs.folio) INTO v_ultimo_folio FROM registro_salidas rs JOIN registro_salidas_registradas rsr ON rs.folio = rsr.folio
+    WHERE rs.id_almacen = p_id_almacen AND LEFT(rsr.clave, 4) = p_ejercicio;
+
+    -- Incrementar el último folio o iniciar desde 1 si es el primer registro para el almacén
+    SET v_ultimo_folio = COALESCE(v_ultimo_folio % 10000, 0) + 1;
+
+    -- Insertar el nuevo registro
+    INSERT INTO registro_salidas(
+        id_usuario,
+        id_almacen,
+        afavor,
+        municipio,
+        id_salida,
+        recibe,
+        referencia,
+        monto,
+        dotacion,
+        folio,
+        nota
+    )
+    VALUES(
+              p_id_usuario,
+              p_id_almacen,
+              p_afavor,
+              p_municipio,
+              p_id_salida,
+              p_recibe,
+              p_referencia,
+              p_monto,
+              p_dotacion,
+              CONCAT(p_id_almacen, LPAD(v_ultimo_folio, 4, '0')),
+              p_nota
+          );
+
+    -- Obtener el ID del último registro insertado
+    SET v_ultimo_id = LAST_INSERT_ID();
+
+    -- Devolver el folio del último registro insertado
+    SELECT folio, id FROM registro_salidas WHERE id = v_ultimo_id;
+END
+ // DELIMITER ;
+
+ALTER TABLE registro_entradas_registradas DROP PRIMARY KEY;
+ALTER TABLE registro_entradas_registradas ADD COLUMN id INT NOT NULL COMMENT 'ID del registro de entradas';
+ALTER TABLE registro_entradas_registradas ADD PRIMARY KEY (id, clave, folio);
+
+ALTER TABLE registro_salidas_registradas DROP PRIMARY KEY;
+ALTER TABLE registro_salidas_registradas ADD COLUMN id INT NOT NULL COMMENT 'ID del registro de salidas';
+ALTER TABLE registro_salidas_registradas ADD PRIMARY KEY (id, clave, folio);
+
+UPDATE almacenes SET almacen = 'Todos los almacenes' WHERE id_almacen = 0;
