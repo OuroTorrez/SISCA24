@@ -131,7 +131,6 @@ if (empty($conn) || !($conn instanceof mysqli)) {
             // Obtener el almacén activo actual
             var activeButton = document.querySelector('.OpcMenuButton.active');
             var almacen = activeButton ? activeButton.getAttribute('data-target') : <?php echo $_SESSION['id_almacen']; ?>;
-
             // Llamar a showExistencias con el almacén actual y el nuevo ejercicio
             showExistencias(almacen);
         });

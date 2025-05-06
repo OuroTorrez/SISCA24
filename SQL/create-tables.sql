@@ -70,6 +70,7 @@ CREATE Table salidas(
     id_salida int NOT NULL PRIMARY KEY COMMENT 'ID de la salida',
     tipo VARCHAR(20) NOT NULL COMMENT 'Tipo de salida'
 ) COMMENT 'Tabla para almacenar las salidas de productos existentes en la institución';
+
 INSERT INTO salidas(id_salida, tipo) VALUES(1, 'CONSUMO'), (2, 'DONACION'), (3, 'DEVOLUCION'), (4, 'REPOSICION'), (5, 'REMANENTE'), (6, 'MERMA');
 
 CREATE Table registro_entradas(
@@ -363,7 +364,6 @@ INSERT INTO dotaciones(clave, programa, producto, medida,cuota) VALUES
 (2025035, 'Espacios de Alimentación', 'Soya texturizada', 'Bolsa de 330g', '24.05');
 
 ALTER TABLE proveedores_autorizados ADD COLUMN ejercicio INT NOT NULL DEFAULT YEAR(CURDATE()) COMMENT 'Ejercicio del año al que pertenecen las dotaciones';
-
 INSERT INTO proveedores(nombre, nombre_legal, rfc, direccion, telefono) VALUES ('Proveedor prueba', 'Proveedor prueba 2025 INC.', 'PP20250000000', 'Calle Somewhere 127', '443 3198 737');
 INSERT INTO proveedores(nombre, nombre_legal, rfc, direccion) VALUES ('Abastos y Distribuciones Institucionales', 'ABASTOS Y DISTRIBUCIONES INSTITUCIONALES S.A. de C.V.', 'ADI991022KX2', 'Calle 4 Manzana 5 Lote 6 Col. Ejido del Moral, Iztapalapa, Ciudad de México, C.P. 09040');
 

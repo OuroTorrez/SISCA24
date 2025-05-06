@@ -235,7 +235,6 @@ if (empty($conn) || !($conn instanceof mysqli)) {
         INNER JOIN registro_salidas sd ON sr.folio = sd.folio AND sr.id = sd.id WHERE sr.clave = d.clave AND sd.cancelado = 0 AND sd.id_almacen = ?), 0)
         AS existencias FROM dotaciones d WHERE d.programa = ? AND LEFT(clave, 4) = ?");
 
-
         $query->bind_param("ssss", $id_almacen, $id_almacen, $_POST['data'], $_POST['ejercicio']);
         if ($query->execute()) {
             $result = $query->get_result();
