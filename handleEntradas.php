@@ -159,399 +159,409 @@ if (empty($conn) || !($conn instanceof mysqli)) {
     <?php
     switch($_POST['data']){
         case "Personas Adultas Mayores":
-            ?>
-                <h2>Contenido de la caja:</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cantidad</th>
-                            <th>Producto</th>
-                            <th>Presentación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Leche descremada en polvo</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Avena en hojuelas </td>
-                            <td>Bolsa de 400 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Arroz pulido calidad extra </td>
-                            <td>Bolsa de 450 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Frijol pinto nacional</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Lenteja </td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Pasta para sopa integral (Fideo 2)</td>
-                            <td>Bolsa de 200 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Chícharo con zanahoria </td>
-                                <td>Lata de 430 g</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Atún aleta amarilla en agua</td>
-                                <td>Lata de 140 g</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Harina de maíz nixtamalizado </td>
-                                <td>Bolsa de 1 kg</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Pechuga de pollo deshebrada al alto vacío</td>
-                                <td>Pouch de 120 g</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Aceite vegetal comestible puro de canola </td>
-                                <td>Botella de 500 ml</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <?php
-            break;
-            case "Personas con Discapacidad":
-                ?>
-                <h2>Contenido de la caja:</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cantidad</th>
-                            <th>Producto</th>
-                            <th>Presentación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Leche descremada en polvo</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Avena en hojuelas </td>
-                            <td>Bolsa de 400 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Arroz pulido calidad extra </td>
-                            <td>Bolsa de 450 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Frijol pinto nacional</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Lenteja </td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Pasta para sopa integral (Fideo 2)</td>
-                            <td>Bolsa de 200 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Chícharo con zanahoria </td>
-                            <td>Lata de 430 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Atún aleta amarilla en agua</td>
-                            <td>Lata de 140 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Harina de maíz nixtamalizado </td>
-                            <td>Bolsa de 1 kg</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Pechuga de pollo deshebrada al alto vacío</td>
-                            <td>Pouch de 120 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Aceite vegetal comestible puro de canola </td>
-                            <td>Botella de 500 ml</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <?php
-                break;
-            case "Personas en Situación de Emergencias y Desastres":
-                ?>
-                <h2>Contenido de la caja:</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cantidad</th>
-                            <th>Producto</th>
-                            <th>Presentación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Leche descremada en polvo</td>
-                            <td>Bolsa de 1 kg</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Avena en hojuelas</td>
-                            <td>Bolsa de 400 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Arroz pulido calidad extra</td>
-                            <td>Bolsa de 900 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Frijol pinto nacional</td>
-                            <td>Bolsa de 1 kg</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Lenteja</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Chícharo con Zanahoria</td>
-                            <td>Lata de 430 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Atún aleta amarilla en agua</td>
-                            <td>Lata de 140 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Harina de maíz nixtamal izada</td>
-                            <td>Bolsa de 1 kg</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Soya texturizada </td>
-                            <td>Bolsa de 330 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Aceite vegetal comestible puro de canola</td>
-                            <td>Botella de 500 ml</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <?php
-                break;
-            case "Infantes de 2 a 5 años 11 meses":
-                ?>
-                <h2>Contenido de la caja:</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cantidad</th>
-                            <th>Producto</th>
-                            <th>Presentación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Leche entera en polvo</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Avena en hojuela</td>
-                            <td>Bolsa de 400 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Arroz pulido calidad extra</td>
-                            <td>Bolsa 450 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Frijol pinto nacional</td>
-                            <td>Bolsa 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Lenteja</td>
-                            <td>Bolsa 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Pasta para sopa (Letras)</td>
-                            <td>Bolsa 200 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Atún aleta amarilla en agua</td>
-                            <td>Lata 140 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Chícharo con zanahoria</td>
-                            <td>Lata 430 g</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <?php
-                break;
-            case "Lactantes de 6 a 24 meses":
-                ?>
-                <h2>Contenido de la caja:</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cantidad</th>
-                            <th>Producto</th>
-                            <th>Presentación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Arroz pulido calidad extra </td>
-                            <td>Bolsa de 450 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Avena en hojuelas </td>
-                            <td>Bolsa de 400 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Frijol pinto nacional</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Lenteja </td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Pasta para sopa (Fideo 1) </td>
-                            <td>Bolsa de 200 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Chícharo con zanahoria </td>
-                            <td>Lata de 430 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Pechuga de pollo deshebrada al alto vació</td>
-                            <td>Pouch 120 g</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <?php
-                break;
-            case "Mujeres Embarazadas o en Periodo de Lactancia":
-                ?>
-                <h2>Contenido de la caja:</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cantidad</th>
-                            <th>Producto</th>
-                            <th>Presentación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Leche entera en polvo</td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Avena en hojuelas </td>
-                            <td>Bolsa de 400 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Arroz pulido calidad extra </td>
-                            <td>Bolsa de 450 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Soya texturizada </td>
-                            <td>Bolsa de 330 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Espagueti integral</td>
-                            <td>Bolsa de 200 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Atún aleta amarilla en agua</td>
-                            <td>Lata de 140 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Frijol pinto nacional</td>
-                            <td>Bolsa de 1 kg</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Lenteja </td>
-                            <td>Bolsa de 500 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Chícharo con zanahoria </td>
-                            <td>Lata de 430 g</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Mango deshidratado con cacahuate tostado</td>
-                            <td>Bolsa de 30 g</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Aceite vegetal comestible puro de canola </td>
-                            <td>Botella de 500 ml</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Harina de maíz nixtamalizado </td>
-                            <td>Bolsa de 1 kg</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <?php
-                break;
-            default:
-                // No se genera ninguna tabla para otros programas
-                break;
+                            ?>
+                            <h5>Contenido de la caja:</h5>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cantidad</th>
+                                        <th>Producto</th>
+                                        <th>Presentación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Aceite vegetal comestible puro de canola </td>
+                                        <td>Botella de 500 ml</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Arroz pulido calidad extra última cosecha</td>
+                                        <td>Bolsa de 450 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Atún aleta amarilla en agua</td>
+                                        <td>Lata de 140 g M.D. 100 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Avena en hojuelas </td>
+                                        <td>Bolsa de 400 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Chícharo con zanahoria </td>
+                                        <td>Lata de 430 g M.D. 252 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Frijol pinto nacional</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Harina de maíz nixtamalizado </td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Leche deslactosada descremada en polvo</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lenteja última cosecha</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pasta para sopa integral (Codito #2)</td>
+                                        <td>Bolsa de 200 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pasta para sopa integral (Fideo #2)</td>
+                                        <td>Bolsa de 200 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pechuga de pollo deshebrada al alto vacío</td>
+                                        <td>Pouch de 120 g</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <?php
+                            break;
+                        case "Personas con Discapacidad":
+                            ?>
+                            <h5>Contenido de la caja:</h5>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cantidad</th>
+                                        <th>Producto</th>
+                                        <th>Presentación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Aceite vegetal comestible puro de canola </td>
+                                        <td>Botella de 500 ml</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Arroz pulido calidad extra última cosecha</td>
+                                        <td>Bolsa de 450 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Atún aleta amarilla en agua</td>
+                                        <td>Lata de 140 g M.D. 100 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Avena en hojuelas</td>
+                                        <td>Bolsa de 400 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Chícharo con zanahoria </td>
+                                        <td>Lata de 430 g M.D. 252 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Frijol pinto nacional última cosecha</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Harina de maíz nixtamalizado </td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Leche descremada en polvo</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lenteja última cosecha</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Pasta para sopa integral (Fideo #2)</td>
+                                        <td>Bolsa de 200 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pechuga de pollo deshebrada al alto vacío</td>
+                                        <td>Pouch de 120 g</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <?php
+                            break;
+                        case "Personas en Situación de Emergencias y Desastres":
+                            ?>
+                            <h5>Contenido de la caja:</h5>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cantidad</th>
+                                        <th>Producto</th>
+                                        <th>Presentación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Aceite vegetal comestible puro de canola</td>
+                                        <td>Botella de 500 ml</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Arroz pulido calidad extra última cosecha</td>
+                                        <td>Bolsa de 900 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Atún aleta amarilla en agua</td>
+                                        <td>Lata de 140 g M.D. 100 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Avena en hojuelas</td>
+                                        <td>Bolsa de 400 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Chícharo con Zanahoria</td>
+                                        <td>Lata de 430 g M.D. 252 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Frijol pinto nacional última cosecha</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Harina de maíz nixtamal izada</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Leche descremada en polvo</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lenteja última cosecha</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Pasta para sopa integral (Codito #2)</td>
+                                        <td>Bolsa de 200 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Polvo para preparar Gelatina con agua sin azúcar sabor fresa</td>
+                                        <td>Bolsa de 25 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Soya texturizada </td>
+                                        <td>Bolsa de 330 g</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <?php
+                            break;
+                        case "Infantes de 2 a 5 años 11 meses":
+                            ?>
+                            <h5>Contenido de la caja:</h5>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cantidad</th>
+                                        <th>Producto</th>
+                                        <th>Presentación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Arroz pulido calidad extra última cosecha</td>
+                                        <td>Bolsa 450 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Avena en hojuela</td>
+                                        <td>Bolsa de 400 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Chícharo con zanahoria</td>
+                                        <td>Lata 430 g M.D. 252 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Frijol pinto nacional última cosecha</td>
+                                        <td>Bolsa 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Leche descremada en polvo</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lenteja última cosecha</td>
+                                        <td>Bolsa 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Pasta para sopa (Letras) sémola de trigo</td>
+                                        <td>Bolsa 200 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pechuga de pollo deshebrada al alto vacío</td>
+                                        <td>Pouch de 120 g</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <?php
+                            break;
+                        case "Lactantes de 6 a 24 meses":
+                            ?>
+                            <h5>Contenido de la caja:</h5>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cantidad</th>
+                                        <th>Producto</th>
+                                        <th>Presentación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Arroz pulido calidad extra última cosecha</td>
+                                        <td>Bolsa de 450 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Avena en hojuelas</td>
+                                        <td>Bolsa de 400 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Chícharo con zanahoria </td>
+                                        <td>Lata de 430 g M.D. 252 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Frijol pinto nacional última cosecha</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lenteja última cosecha</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Pasta para sopa (Fideo #1) sémola de trigo</td>
+                                        <td>Bolsa de 200 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pechuga de pollo deshebrada al alto vació</td>
+                                        <td>Pouch de 120 g</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <?php
+                            break;
+                        case "Mujeres Embarazadas o en Periodo de Lactancia":
+                            ?>
+                            <h5>Contenido de la caja:</h5>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cantidad</th>
+                                        <th>Producto</th>
+                                        <th>Presentación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Aceite vegetal comestible puro de canola </td>
+                                        <td>Botella de 500 ml</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Arroz pulido calidad extra última cosecha</td>
+                                        <td>Bolsa de 450 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Atún aleta amarilla en agua</td>
+                                        <td>Lata de 140 g M.D. 100 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Avena en hojuelas </td>
+                                        <td>Bolsa de 400 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Chícharo con zanahoria</td>
+                                        <td>Lata de 430 g M.D. 252 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Frijol pinto nacional última cosecha</td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Harina de maíz nixtamalizado </td>
+                                        <td>Bolsa de 1 kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Leche descremada en polvo</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lenteja última cosecha</td>
+                                        <td>Bolsa de 500 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Pasta para sopa integral (Fideo #2)</td>
+                                        <td>Bolsa de 200 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pechuga de pollo deshebrada al alto vacío</td>
+                                        <td>Pouch de 120 g</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <?php
+                            break;
+                        default:
+                            // No se genera ninguna tabla para otros programas
+                            break;
         }
     ?>
 </div>
