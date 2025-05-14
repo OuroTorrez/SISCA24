@@ -564,6 +564,11 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                                     </tr>
                                     <tr>
                                         <td>1</td>
+                                        <td>Espagueti integral</td>
+                                        <td>Bolsa de 2000 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
                                         <td>Frijol pinto nacional última cosecha</td>
                                         <td>Bolsa de 1 kg</td>
                                     </tr>
@@ -583,14 +588,19 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                                         <td>Bolsa de 500 g</td>
                                     </tr>
                                     <tr>
-                                        <td>2</td>
-                                        <td>Pasta para sopa integral (Fideo #2)</td>
+                                        <td>4</td>
+                                        <td>Mix de fruta deshidratada y oleaginosas</td>
+                                        <td>Bolsa de 30 g</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pasta para sopa integral (Codito #2)</td>
                                         <td>Bolsa de 200 g</td>
                                     </tr>
                                     <tr>
                                         <td>1</td>
-                                        <td>Pechuga de pollo deshebrada al alto vacío</td>
-                                        <td>Pouch de 120 g</td>
+                                        <td>Soya texturizada</td>
+                                        <td>Bolsa de 330 g</td>
                                     </tr>
                                 </tbody>
                             </table>

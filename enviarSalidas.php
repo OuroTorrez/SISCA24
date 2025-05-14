@@ -529,76 +529,86 @@ function generarDocumento($folio)
                     <?php
                     break;
                 case "Mujeres Embarazadas o en Periodo de Lactancia":
-                    ?>
-                    <h5>Contenido de la caja:</h5>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Cantidad</th>
-                                <th>Producto</th>
-                                <th>Presentación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Aceite vegetal comestible puro de canola </td>
-                                <td>Botella de 500 ml</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Arroz pulido calidad extra última cosecha</td>
-                                <td>Bolsa de 450 g</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Atún aleta amarilla en agua</td>
-                                <td>Lata de 140 g M.D. 100 g</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Avena en hojuelas </td>
-                                <td>Bolsa de 400 g</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Chícharo con zanahoria</td>
-                                <td>Lata de 430 g M.D. 252 g</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Frijol pinto nacional última cosecha</td>
-                                <td>Bolsa de 1 kg</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Harina de maíz nixtamalizado </td>
-                                <td>Bolsa de 1 kg</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Leche descremada en polvo</td>
-                                <td>Bolsa de 500 g</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Lenteja última cosecha</td>
-                                <td>Bolsa de 500 g</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Pasta para sopa integral (Fideo #2)</td>
-                                <td>Bolsa de 200 g</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Pechuga de pollo deshebrada al alto vacío</td>
-                                <td>Pouch de 120 g</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <?php
-                    break;
+                                            ?>
+                                            <h5>Contenido de la caja:</h5>
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Cantidad</th>
+                                                        <th>Producto</th>
+                                                        <th>Presentación</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Aceite vegetal comestible puro de canola </td>
+                                                        <td>Botella de 500 ml</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Arroz pulido calidad extra última cosecha</td>
+                                                        <td>Bolsa de 450 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>Atún aleta amarilla en agua</td>
+                                                        <td>Lata de 140 g M.D. 100 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Avena en hojuelas </td>
+                                                        <td>Bolsa de 400 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Chícharo con zanahoria</td>
+                                                        <td>Lata de 430 g M.D. 252 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Espagueti integral</td>
+                                                        <td>Bolsa de 2000 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Frijol pinto nacional última cosecha</td>
+                                                        <td>Bolsa de 1 kg</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Harina de maíz nixtamalizado </td>
+                                                        <td>Bolsa de 1 kg</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Leche descremada en polvo</td>
+                                                        <td>Bolsa de 500 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Lenteja última cosecha</td>
+                                                        <td>Bolsa de 500 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>Mix de fruta deshidratada y oleaginosas</td>
+                                                        <td>Bolsa de 30 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Pasta para sopa integral (Codito #2)</td>
+                                                        <td>Bolsa de 200 g</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>Soya texturizada</td>
+                                                        <td>Bolsa de 330 g</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <?php
+                                            break;
                 default:
                     // No se genera ninguna tabla para otros programas
                     break;
