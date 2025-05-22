@@ -28,7 +28,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                 </div>
             </div>
         <?php } ?>
-        <h1 class="PageTitle">Capturar dotaciones</h1>
+        <h1 class="PageTitle">Capturar canastas</h1>
         <div id="UserTitle">
             <!-- Imprimir nombre y almacen, así como las dotaciones que se esperan -->
             <?php
@@ -46,7 +46,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
 
 
                 // Retrieve dotaciones from dotaciones table
-                echo "<label id='SelectDotacionesLabel'>Dotaciones:</label>";
+                echo "<label id='SelectDotacionesLabel'>Canastas:</label>";
                 echo "<select name='SelectDotaciones' id='SelectDotaciones'>";
                 echo "<option hidden selected>Selecciona una opción</option>";
                 $query = $conn->prepare("SELECT DISTINCT programa FROM dotaciones");

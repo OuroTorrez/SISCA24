@@ -42,7 +42,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                         echo "<h2>$nombre $apellido_paterno $apellido_materno</h2>";
                         echo "<h3>$almacen</h3>";
                         // Retrieve dotaciones from dotaciones table
-                        echo "<label id='SelectDotacionesLabel'>Dotaciones:</label>";
+                        echo "<label id='SelectDotacionesLabel'>Canastas:</label>";
                         echo "<select name='SelectDotaciones' id='SelectDotaciones'>";
                         echo "<option hidden selected>Selecciona una opción</option>";
                         $query = $conn->prepare("SELECT DISTINCT programa FROM dotaciones");

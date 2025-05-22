@@ -305,7 +305,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                             </table>
                             <?php
                             break;
-                        case "Personas en Situación de Emergencias y Desastres":
+                        case "Personas en Situación de Emergencias o Desastres":
                             ?>
                             <h5>Contenido de la caja:</h5>
                             <table>
@@ -528,7 +528,7 @@ if (empty($conn) || !($conn instanceof mysqli)) {
                                                             <tr>
                                                                 <td>1</td>
                                                                 <td>Espagueti integral</td>
-                                                                <td>Bolsa de 2000 g</td>
+                                                                <td>Bolsa de 200 g</td>
                                                             </tr>
                                                             <tr>
                                                                 <td>1</td>
